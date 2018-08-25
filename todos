@@ -1,0 +1,8 @@
+todos:
+-repair login and logout redirect urls
+	-dont use harcoded urls
+-ticket printing function
+	-use javascript if possible
+-Error handling
+	-code programatic error message with err code
+	-maybe write a function to generate good looking err

@@ -1,0 +1,34 @@
+{% extends "queue_app/base.html" %}
+{% block javascript %}
+	<script>
+		{% for service in object_list %}
+			$('#{{service.id}}').on('click', function(event){
+				$.ajax({
+					url : "{% url 'printticket' service.id %}",
+					type : "GET",
+					success : print_ticket,
+					error : function(){console.log("{% url 'printticket' service.id %}");}
+				});
+			});
+		{% endfor %}
+		function print_ticket(json){
+			time = json.created;
+			console.log(time);
+		}
+	</script>
+{% endblock %}
+
+{% block content %}
+	<div class="menu">
+	{{user.username}}
+		<table class="content_table">
+		{% for service in object_list %}
+			<tr class="content_tr">
+				<td class="content_tr">
+					<input type="button" class="content_button" value="{{ service }}" id={{service.id}}>
+				</td>
+			</tr>
+		{% endfor %}
+		</table>
+	<div>
+{% endblock %}

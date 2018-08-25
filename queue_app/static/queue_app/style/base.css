@@ -1,0 +1,41 @@
+.base_bg {
+	background-color: #EAD4F5;
+}
+
+.corner_image {
+	background-image: url("../images/corner_flower.png");
+	background-position: right top;
+	background-repeat: no-repeat;
+}
+
+
+.menu {
+	position: fixed;
+	width: 500px;
+	margin-top: 30px;
+	left: 50%;
+	top: 20%;
+	transform: translate(-50%, 0);
+}
+.content_table{
+	width:100%;
+}
+.content_tr{
+/* 	border:solid; */
+	padding:20px;
+}
+.content_td{	
+}
+.content_button{
+	background-color: #b5ffca;
+	border: none;
+	padding: 20px 32px;
+	text-align: bottom;
+	text-decoration: none;
+	display: block;
+	font-size: 16px;
+	margin: auto;
+	cursor: pointer;
+	width:200px;
+	height:100px;
+}
