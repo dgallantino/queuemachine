@@ -14,11 +14,13 @@
 		function print_ticket(json){
 			time = json.created;
 			console.log(time);
+			window.print();
 		}
 	</script>
 {% endblock %}
 
 {% block content %}
+	<div id="section-to-print" class="print_div">something</div>
 	<div class="menu">
 	{{user.username}}
 		<table class="content_table">

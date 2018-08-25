@@ -24,7 +24,7 @@
 /* 	border:solid; */
 	padding:20px;
 }
-.content_td{	
+.content_td{
 }
 .content_button{
 	background-color: #b5ffca;
@@ -38,4 +38,27 @@
 	cursor: pointer;
 	width:200px;
 	height:100px;
+}
+
+#section-to-print{
+	display: none;
+}
+
+#section-to-print{
+	visibility: hidden;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #section-to-print, #section-to-print * {
+    visibility: visible;
+  }
+  #section-to-print {
+    position: absolute;
+    left: 50%;
+    top: 0;
+		transition: translate(-50%,0);
+  }
 }
