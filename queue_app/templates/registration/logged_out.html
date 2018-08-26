@@ -1,0 +1,9 @@
+{% extends 'queue_app/base.html' %}
+{% block content %}
+{% endblock %}
+{% block javascript %}
+  <script type="text/javascript">
+    window.alert('You have been loged out');
+    window.location = "{% url 'index' %}";
+  </script>
+{% endblock %}
