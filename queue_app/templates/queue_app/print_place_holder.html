@@ -1,0 +1,14 @@
+{% load static %}
+<!-- make the ticket layout here -->
+<!-- dynamic content must have these as their ids -->
+<!-- queue_service  : for service name -->
+<!-- queue_time     : for date time the queue is created -->
+<!-- queue_number   : for the queueu line number -->
+<div class="ticket_div">HELLO</div>
+<div class="ticket_div" id="queue_service">cell1_2</div>
+<div class="ticket_div" id="queue_time">cell1_3</div>
+<div class="ticket_div big_number" id="qeueu_number">cell1_4</div>
+{% block stylesheet %}
+<link href="{% static 'queue_app/style/print_place_holder_style.css' %}" rel="stylesheet" type="text/css">
+  <!-- include any styling sheet here -->
+{% endblock %}
