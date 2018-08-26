@@ -12,17 +12,20 @@
 			});
 		{% endfor %}
 		function print_ticket(json){
-			time = json.created;
-			console.log(time);
+			console.log(json);
+			$('#queue_service').text(json.service);
+			$('#qeueu_number').text(String(json.number));
+			$('#queue_time').text(json.created);
 			window.print();
 		}
 	</script>
 {% endblock %}
 
 {% block content %}
-	<div id="section-to-print" class="print_div">something</div>
+	<div class="section_to_print">
+		{% include 'queue_app/print_place_holder.html' %}
+	</div>
 	<div class="menu">
-	{{user.username}}
 		<table class="content_table">
 		{% for service in object_list %}
 			<tr class="content_tr">
@@ -32,5 +35,5 @@
 			</tr>
 		{% endfor %}
 		</table>
-	<div>
+	</div>
 {% endblock %}

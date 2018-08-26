@@ -40,11 +40,7 @@
 	height:100px;
 }
 
-#section-to-print{
-	display: none;
-}
-
-#section-to-print{
+.section_to_print{
 	visibility: hidden;
 }
 
@@ -52,13 +48,7 @@
   body * {
     visibility: hidden;
   }
-  #section-to-print, #section-to-print * {
+  .section_to_print, .section_to_print * {
     visibility: visible;
-  }
-  #section-to-print {
-    position: absolute;
-    left: 50%;
-    top: 0;
-		transition: translate(-50%,0);
   }
 }
