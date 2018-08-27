@@ -5,20 +5,20 @@
 {% block stylesheet %}
 <link href="{% static 'queue_app/style/login.css'%}" rel="stylesheet" type="text/css">
 {% endblock %}
-	{% if form.errors %}
-			<script>
-			$(window).on('load', function(){
-				var l = 5;
-				for( var i = 0; i <= 5; i++ ) {
-					$( '.form-control' ).animate( {
-							'margin-left': '+=' + ( l = -l ) + 'px',
-							'margin-right': '-=' + l + 'px'
-					 }, 50);
-				}
-			});
-			</script>
-	{% endif %}
 {% block javascript %}
+{% if form.errors %}
+		<script>
+		$(window).on('load', function(){
+			var l = 5;
+			for( var i = 0; i <= 5; i++ ) {
+				$('.form-control' ).animate( {
+					'margin-left': '+=' + ( l = -l ) + 'px',
+					'margin-right': '-=' + l + 'px'
+				}, 50);
+			}
+		});
+		</script>
+{% endif %}
 {% endblock %}
 
 {% block content %}

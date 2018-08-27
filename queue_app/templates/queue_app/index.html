@@ -2,7 +2,7 @@
 {% block javascript %}
 	<script type="text/javascript">
 		{% for service in object_list %}
-			$("#service_{{service.id}}").on('click', function(event){
+			$('body').on('click','#service_{{service.id}}', function(event){
 				$.ajax({
 					url : "{% url 'printticket' service.id %}",
 					type : "GET",
