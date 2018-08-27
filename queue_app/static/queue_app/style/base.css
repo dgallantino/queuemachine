@@ -21,7 +21,6 @@
 	width:100%;
 }
 .content_tr{
-/* 	border:solid; */
 	padding:20px;
 }
 .content_td{
@@ -40,6 +39,7 @@
 	height:100px;
 }
 
+/* making printed section invisibel */
 .section_to_print{
 	visibility: hidden;
 }

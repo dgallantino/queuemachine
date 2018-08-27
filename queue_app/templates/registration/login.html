@@ -1,13 +1,40 @@
 <!-- templates/registration/login.html -->
 {% extends 'queue_app/base.html' %}
+{% load static %}
 {% block title %}LOGIN{% endblock %}
+{% block stylesheet %}
+<link href="{% static 'queue_app/style/login.css'%}" rel="stylesheet" type="text/css">
+{% endblock %}
+	{% if form.errors %}
+			<script>
+			$(window).on('load', function(){
+				var l = 5;
+				for( var i = 0; i <= 5; i++ ) {
+					$( '.form-control' ).animate( {
+							'margin-left': '+=' + ( l = -l ) + 'px',
+							'margin-right': '-=' + l + 'px'
+					 }, 50);
+				}
+			});
+			</script>
+	{% endif %}
+{% block javascript %}
+{% endblock %}
+
 {% block content %}
-<div class="menu">
-  <h2>Login</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Login</button>
-  </form>
+<div class="login_menu">
+	<form id="login-form" method="post" action="{% url 'login' %}">
+	    {% csrf_token %}
+			<div class="login_input_div">
+				<input id="id_username" name="username" type="text" class="form-control login_textbox" placeholder="Username">
+
+				<input id="id_password" name="password" type="password" class="form-control login_textbox" placeholder="Password">
+			</div>
+			<div class="login_input_div">
+				<input type="submit" value="Login"
+		           class="btn btn-primary pull-right login_button" />
+			</div>
+	    <input type="hidden" name="next" value="{{ next }}" />
+	</form>
 </div>
 {% endblock %}
