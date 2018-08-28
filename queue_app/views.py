@@ -22,7 +22,7 @@ def print_ticket(request, service_id):
 			next_queue = Queue(service = service, number = last_queue.number +1)
 			next_queue.save()
 			return_json_obj = model_to_dict(next_queue)
-			return_json_obj['service']=service.name;
+			return_json_obj['service']=service.name
 			return JsonResponse(return_json_obj)
 		except Service.DoesNotExist :
 			return JsonResponse({'Error':'Service not found'})
