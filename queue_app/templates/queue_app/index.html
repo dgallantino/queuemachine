@@ -1,16 +1,19 @@
 {% extends "queue_app/base.html" %}
 {% block javascript %}
 	<script type="text/javascript">
-		{% for service in object_list %}
-			$('body').on('click','#service_{{service.id}}', function(event){
+		//get this shit straight
+		//dont generate function for each button
+		//make one that receive id from button and send that instead
+		//you dumb fuck
+			$('body').on('click','.content_button', function(event){
 				$.ajax({
+					data:
 					url : "{% url 'printticket' service.id %}",
 					type : "GET",
 					success : print_ticket,
 					error : function(){console.log("{% url 'printticket' service.id %}");}
 				});
 			});
-		{% endfor %}
 		function print_ticket(json){
 			console.log(json);
 			$('#queue_service').text(json.service);
