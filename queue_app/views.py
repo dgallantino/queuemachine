@@ -5,8 +5,6 @@ from django.forms.models import model_to_dict
 from django.views.generic import ListView, DetailView
 from django.http import JsonResponse
 
-# Create your views here.
-
 class IndexView(ListView):
 	login_url = '/accounts/login/'
 	template_name ='queue_app/index.html'

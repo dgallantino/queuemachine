@@ -1,7 +1,11 @@
 todos:
 -repair login and logout redirect urls
 	-dont use harcoded urls
--ticket printing function (all done)
 -Error handling
 	-code programatic error message with err code
 	-maybe write a function to generate good looking err
+
+
+ideas:
+-make json encoder for queues object(s)
+-rombak semua fokus model ke service bukan queue
