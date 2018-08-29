@@ -15,13 +15,19 @@ class Service(models.Model):
 		return self.name
 
 class QueueQueryset(models.QuerySet):
-	def last_queue(self):
+	def get_last_queue(self):
 		return self.order_by('-id')[0]
-	def last_queue_by_service(self, service):
-		return self.filter(service=service).order_by('-id')[0]
+	def get_last_service_queue(self, p_service):
+		return self.filter(service=p_service)[0]
+	def get_new_queues(self, p_last_queue):
+		pass
 
 class Queue(models.Model):
 	service=models.ForeignKey(Service, on_delete=models.CASCADE)
 	number=models.IntegerField()
-	created=models.DateTimeField(default=timezone.now)
+	date_created=models.DateTimeField(auto_now_add=True)
+	date_modified=models.DateTimeField(auto_now=True)
+	call_flag=models.BooleanField(default=False)
 	objects=QueueQueryset.as_manager()
+	class Meta:
+		ordering=['-date_created']
