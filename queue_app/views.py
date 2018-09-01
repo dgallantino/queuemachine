@@ -1,4 +1,5 @@
 from queue_app.models import Service, Queue
+from queue_app.serializers import QueueSerializer, SingleServiceSerializer
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms.models import model_to_dict
@@ -14,23 +15,24 @@ class IndexView(ListView):
 class PrintTicket(DetailView):
 	template_name ='queue_app/test.html'
 	model = Service
-	http_method_names = ['get']
+	http_method_names = ['post','get']
 	object_name = 'queue';
-	def add_next_queue(self, p_service):
-		try:
-			last_queue = Queue.objects.get_last_service_queue(p_service)
-			next_queue = Queue(service = p_service, number = last_queue.number +1)
-		except IndexError:#no queues is created yet
-			next_queue = Queue(service = p_service, number = 1)
-		next_queue.save()
+	def add_next_queue(self, service):
+		current_queue = service.queues.last()
+		if current_queue:
+			next_queue = service.queues.create(
+				number = current_queue.number + 1
+				)
+			return next_queue
+		next_queue = service.queues.create(number = 1)	
 		return next_queue
 	def get_object(self):
-		obj = super().get_object()
-		return self.add_next_queue(obj)
+		#add Queue from Service returned by super's get_object()
+		return self.add_next_queue(super().get_object())
 	def render_to_response(self, context,**response_kwargs):
 		response = super().render_to_response(context, **response_kwargs)
-		print(model_to_dict(response.context_data[self.object_name]))
-		return response
+		context_data = model_to_dict(response.context_data[self.object_name])
+		return JsonResponse(QueueSerializer(self.object).data)
 
 '''Function Based Approach'''
 def add_next_queue(p_service):

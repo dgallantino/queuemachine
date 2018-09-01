@@ -25,7 +25,7 @@ SECRET_KEY = '8jyisx^9c%bist-q7zxuos)@ab@^p#24%z&)a!b=k$#p48dv4e'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 #repair this or make implementation of root URL
 LOGIN_REDIRECT_URL = '/queuemachine/'
@@ -33,8 +33,9 @@ LOGIN_REDIRECT_URL = '/queuemachine/'
 # Application definition
 
 INSTALLED_APPS = [
+	'queue_app',
 	'rest_framework',
-	'queue_app.apps.QueueAppConfig',
+# 	'queue_app.apps.QueueAppConfig',
 	'django.contrib.admin',
 	'django.contrib.auth',
 	'django.contrib.contenttypes',
