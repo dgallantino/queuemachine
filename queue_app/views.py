@@ -5,17 +5,18 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms.models import model_to_dict
 from django.views.generic import ListView, DetailView
 from django.http import JsonResponse
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 class IndexView(LoginRequiredMixin, ListView):
 	login_url = '/accounts/login/'
 	template_name ='queue_app/index.html'
 	model = Service
-'''Class Based Approach'''
-# class PrintTicket(LoginRequiredMixin, DetailView):
-class PrintTicket(DetailView):
+	
+class PrintTicket(LoginRequiredMixin, DetailView):
 	template_name ='queue_app/test.html'
 	model = Service
-	http_method_names = ['post','get']
+	http_method_names = ['get']
 	object_name = 'queue';
 	def add_next_queue(self, service):
 		last_queue = service.queues.last()
@@ -26,13 +27,13 @@ class PrintTicket(DetailView):
 			return next_queue
 		next_queue = service.queues.create(number = 1)	
 		return next_queue
-	def get_object(self):
-		#add Queue from Service returned by super's get_object()
-		return self.add_next_queue(super().get_object())
-	def render_to_response(self, context,**response_kwargs):
-		response = super().render_to_response(context, **response_kwargs)
-		return JsonResponse(QueueSerializer(self.object).data)
+	def get(self, request, *args, **kwargs):		
+		return JsonResponse(QueueSerializer(self.add_next_queue(self.get_object())).data)
 
+class PrintTicketApi(APIView):
+	http_method_names=['post']
+	def post(self, request, pk):
+		return Response([request,pk])
 '''Function Based Approach'''
 def add_next_queue(p_service):
 	try:

@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from queue_app.models import Queue, Service
-from dataclasses import fields
 
 class SingleServiceSerializer(serializers.ModelSerializer):
 	class Meta:

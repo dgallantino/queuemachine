@@ -33,9 +33,8 @@ LOGIN_REDIRECT_URL = '/queuemachine/'
 # Application definition
 
 INSTALLED_APPS = [
-	'queue_app',
 	'rest_framework',
-# 	'queue_app.apps.QueueAppConfig',
+	'queue_app.apps.QueueAppConfig',
 	'django.contrib.admin',
 	'django.contrib.auth',
 	'django.contrib.contenttypes',

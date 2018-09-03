@@ -1,24 +1,22 @@
 {% extends "queue_app/base.html" %}
 {% block javascript %}
 	<script type="text/javascript">
-		//get this shit straight
-		//dont generate function for each button
-		//make one that receive id from button and send that instead
-		//you dumb fuck
 			$('body').on('click','.content_button', function(event){
+				var id = $(this).attr('id');
+				console.log();
+				console.log(id);
 				$.ajax({
-					data:
-					url : "{% url 'printticket' service.id %}",
+					url : "{% url "printticket" 9999 %}".replace('9999', id.toString()),
 					type : "GET",
 					success : print_ticket,
-					error : function(){console.log("{% url 'printticket' service.id %}");}
+					error : function(){console.log("");}
 				});
 			});
 		function print_ticket(json){
 			console.log(json);
 			$('#queue_service').text(json.service.name);
 			$('#qeueu_number').text(String(json.number));
-			$('#queue_time').text(json.created);
+			$('#queue_time').text(json.date_created);
 			window.print();
 		}
 
@@ -34,7 +32,7 @@
 		{% for service in object_list %}
 			<tr class="content_tr">
 				<td class="content_tr">
-					<input type="button" class="content_button" value="{{ service }}" id="service_{{service.id}}">
+					<input type="button" class="content_button" value="{{ service }}" id="{{service.id}}">
 				</td>
 			</tr>
 		{% endfor %}
