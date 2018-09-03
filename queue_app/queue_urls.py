@@ -5,7 +5,7 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
-    path('',views.IndexView.as_view(), name='index'),
-    path('printticket/<int:pk>/', views.PrintTicket.as_view(), name='printticket'),
-#     path('test/<int:pk>/', views.PrintTicket.as_view(), name='test_print'),
+    path('machine/',views.MachineDisplay.as_view(), name='index'),
+    path('printticket/<int:pk>/', views.PrintTicketView.as_view(), name='printticket'),
+    path('test/<int:pk>/', views.PrintTicketApi.as_view(), name='test_print'),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
