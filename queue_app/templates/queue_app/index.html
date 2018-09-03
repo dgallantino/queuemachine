@@ -16,7 +16,7 @@
 			});
 		function print_ticket(json){
 			console.log(json);
-			$('#queue_service').text(json.service);
+			$('#queue_service').text(json.service.name);
 			$('#qeueu_number').text(String(json.number));
 			$('#queue_time').text(json.created);
 			window.print();
