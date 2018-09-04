@@ -73,7 +73,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'queue_machine.wsgi.application'
 
-
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    )
+}
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 

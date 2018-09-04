@@ -1,14 +1,22 @@
 from queue_app.models import Service
 from queue_app.serializers import QueueSerializer
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, TemplateView
 from django.http import JsonResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication 
+
+
+class MainView(TemplateView):
+	template_name = 'queue_app/index.html'
+	def get(self, request, *args, **kwargs):
+		return TemplateView.get(self, request, *args, **kwargs)
+	
 
 class MachineDisplay(LoginRequiredMixin, ListView):
 	login_url = '/accounts/login/'
-	template_name ='queue_app/index.html'
+	template_name ='queue_app/machine.html'
 	model = Service
 	
 class PrintTicketView(LoginRequiredMixin, DetailView):
@@ -35,6 +43,9 @@ class IndexView(ListView):
 next
 '''
 class PrintTicketApi(APIView):
-	http_method_names=['post','get']
-	def post(self, request):
-		return Response([request,])
+	http_method_names=['post']
+	authentication_classes = (SessionAuthentication, BasicAuthentication)
+	def post(self, request, **kwargs):
+		user = request
+		print(repr(user))
+		return Response({'asfaffd':'iiiii'})
