@@ -12,7 +12,8 @@ class QueueSerializer(serializers.ModelSerializer):
 		model= Queue
 		fields = ('id', 'number', 'date_created','call_flag', 'service')
 		read_only_fields = ('id','number','date_created')
-
+		
+		
 class NestedQueueSerializer(serializers.ModelSerializer):
 	class Meta:
 		model= Queue

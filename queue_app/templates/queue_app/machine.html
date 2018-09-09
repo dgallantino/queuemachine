@@ -1,10 +1,13 @@
 {% extends "queue_app/base.html" %}
 {% block javascript %}
 	<script type="text/javascript">
-			$('body').on('click','.content_button', function(event){
+			$('body').on('submit','.input_form', function(event){
+				event.preventDefault();
 				var id = $(this).attr('id');
-				var data = {name:'uuuujhsadjkh'};
+				console.log(id);
+				var data = {name:'ad'};
 				var csrftoken = getCookie('csrftoken');
+				console.log(JSON.stringify($(this).serializeFormJSON()));
 				$.ajaxSetup({
 			        beforeSend: function(xhr, settings) {
 			            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
@@ -18,11 +21,28 @@
 					dataType: 'json',
 					contentType: 'application/json',
 					data:JSON.stringify(data),
-
-					success : print_ticket,
-					error : function(){console.log("gagal");}
-				});
+ 					error : function(xhr){console.log(xhr.status);}
+				})
+				.done(print_ticket);
 			});
+			(function ($) {
+			    $.fn.serializeFormJSON = function () {
+			        var o = {};
+			        var a = this.serializeArray();
+			        $.each(a, function () {
+			            if (o[this.name]) {
+			                if (!o[this.name].push) {
+			                    o[this.name] = [o[this.name]];
+			                }
+			                o[this.name].push(this.value || '');
+			            } else {
+			                o[this.name] = this.value || '';
+			            }
+			        });
+			        return o;
+			    };
+			})(jQuery);
+			
 			function csrfSafeMethod(method) {
 		        // these HTTP methods do not require CSRF protection
 		        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
@@ -60,11 +80,15 @@
 	<div class="menu">
 		<table class="content_table">
 		{% for service in object_list %}
+		<form class="input_form" id="{{ service.id }}">
 			<tr class="content_tr">
 				<td class="content_tr">
-					<input type="button" class="content_button" value="{{ service }}" id="{{service.id}}">
+					<input type="hidden" name="pk" class="service_name" value="{{ service.id }}"/>
+					<input type="hidden" name="service" class="service_desc" value="{{ service }}"/>
+					<input type="submit" class="content_button" value="{{ service }}" />
 				</td>
 			</tr>
+		</form>
 		{% endfor %}
 		</table>
 	</div>
