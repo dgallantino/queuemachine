@@ -22,7 +22,10 @@ class MachineDisplay(LoginRequiredMixin, ListView):
 	login_url = '/accounts/login/'
 	template_name ='queue_app/machine.html'
 	model = Service
-	
+
+'''
+decomissioned
+'''
 class PrintTicketView(LoginRequiredMixin, DetailView):
 	template_name ='queue_app/test.html'
 	model = Service
@@ -40,9 +43,6 @@ class PrintTicketView(LoginRequiredMixin, DetailView):
 	def get(self, request, *args, **kwargs):		
 		return JsonResponse(QueueSerializer(self.add_next_queue(self.get_object())).data)
 	
-'''
-next
-'''
 class PrintTicketApi(APIView):
 	http_method_names=('post')
 	authentication_classes = (SessionAuthentication, BasicAuthentication)
@@ -64,7 +64,6 @@ class PrintTicketApi(APIView):
 	def post(self, request, **kwargs):
 		if 'pk' in request.data:
 			service = self.get_object(request.data.get('pk'))
-			print(kwargs)
 			if service.name == request.data.get('service') :
 				return Response(
 					QueueSerializer(self.add_next_queue(service)).data,
