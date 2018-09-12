@@ -1,12 +1,12 @@
 {% extends "queue_app/base.html" %}
 {% load static %}
+{% block title %}Qeueu{% endblock %}
 {% block javascript %}
 	<script src="{% static 'queue_app/js/machine.js' %}"></script>
 	<script type="text/javascript">
 			$('body').on('submit','.input_form', function(event){
 				event.preventDefault();
 				var id = $(this).attr('id');
-				console.log(id);
 				var csrftoken = getCookie('csrftoken');
 				console.log(JSON.stringify($(this).serializeFormJSON()));
 				$.ajaxSetup({

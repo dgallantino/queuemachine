@@ -17,7 +17,7 @@ class Service(models.Model):
 
 class QueueQueryset(models.QuerySet):
 	def get_last_queue(self):
-		return self.first()
+		return self.last()
 
 class Queue(models.Model):
 	service=models.ForeignKey(

@@ -1,0 +1,12 @@
+{% extends "queue_app/base.html" %}
+{% block title %}Manager{% endblock %}
+
+{% block content %}
+	{% for Service in Services %}
+		{{ Service }}</br>
+		{% for Queue in Service.queues.all %}
+			{{ Queue.number }}
+		{% endfor %}
+		</br>
+	{% endfor %}
+{% endblock %}

@@ -7,12 +7,18 @@ class NestedServiceSerializer(serializers.ModelSerializer):
 		fields = ('id','name', 'desc')
 
 class QueueSerializer(serializers.ModelSerializer):
-	service = NestedServiceSerializer(required=False)
+	service = NestedServiceSerializer(required=True)
 	class Meta:
 		model= Queue
 		fields = ('id', 'number', 'date_created','call_flag', 'service')
-		read_only_fields = ('id','number','date_created')
-		
+		read_only_fields = ('id','date_created')
+	def create(self, validated_data):
+		#KeyError Exception
+		service_data = validated_data.pop('service')
+		#Service.DoesNotExsist Exception
+		service_object = Service.objects.get(pk=service_data.get('id'))
+		return service_object.queues.create(**validated_data)
+	
 class NestedQueueSerializer(serializers.ModelSerializer):
 	class Meta:
 		model= Queue
