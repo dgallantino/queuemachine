@@ -78,6 +78,9 @@ class ManagerDisplay(LoginRequiredMixin, ListView):
 	model = Service
 	context_object_name = 'Services'
 	
+'''
+using retrive instead of list becouse you need the data of the last listed queue
+'''
 class QueueRetriveUpdateAPI(generics.RetrieveUpdateAPIView):
 	authentication_classes = (SessionAuthentication, BasicAuthentication)
 	permission_classes = (IsAdminUser,)
@@ -88,10 +91,12 @@ class QueueRetriveUpdateAPI(generics.RetrieveUpdateAPIView):
 		return Queue.objects.filter(date_created__gt=latest_queue.date_created).filter(service=latest_queue.service)
 	def retrieve(self, request, *args, **kwargs):
 		ret = super().retrieve(self, request, *args, **kwargs)
-		ret.data = []
+		ret.data = list()
 		for queue in self.list_new_queue():
 			new_queues = self.serializer_class(queue).data
 			ret.data.append(new_queues)
 		return ret
+		
+		
 
 			

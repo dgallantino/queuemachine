@@ -29,5 +29,7 @@ class Queue(models.Model):
 	date_modified=models.DateTimeField(auto_now=True)
 	call_flag=models.BooleanField(default=False)
 	objects=QueueQueryset.as_manager()
+	def __str__(self):
+		return self.service.name+'_'+str(self.number)+'_'+str(self.pk)
 	class Meta:
 		ordering=['date_created']

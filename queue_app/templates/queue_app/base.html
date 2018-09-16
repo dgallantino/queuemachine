@@ -4,6 +4,7 @@
 	<meta charset="utf-8">
 	<title>{% block title %}HOME{% endblock %}</title>
 	<link href="{% static 'queue_app/css/base.css'%}" rel="stylesheet" type="text/css">
+	<link href="{% static 'queue_app/css/bootstrap.min.css'%}" rel="stylesheet" type="text/css">
 	{% block stylesheet %}{% endblock %}
 </head>
 
@@ -11,13 +12,12 @@
 	<header>
 	</header>
 	<main>
-		<div class="menu">
 		{% block content %}<h2>No content found</h2>{% endblock %}
-		</div>
 	</main>
 	<footer>
 	</footer>
 	<script src="{% static 'queue_app/js/jquery.js' %}"></script>
+	<script src="{% static 'queue_app/js/bootstrap.min.js' %}"></script>
 	{% block javascript %}{% endblock %}
 
 </body>

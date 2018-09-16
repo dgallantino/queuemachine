@@ -1,6 +1,10 @@
 {% extends "queue_app/base.html" %}
 {% load static %}
 {% block title %}Qeueu{% endblock %}
+{% block stylesheet %}
+	<link href="{% static 'queue_app/css/machine.css'%}" rel="stylesheet" type="text/css">
+{% endblock %}
+
 {% block javascript %}
 	<script src="{% static 'queue_app/js/machine.js' %}"></script>
 	<script type="text/javascript">
