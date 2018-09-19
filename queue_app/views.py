@@ -1,16 +1,15 @@
 from queue_app.models import Service, Queue
-from queue_app.serializers import QueueSerializer
+from queue_app.serializers import QueueSerializer, ServiceSerializer,NestedServiceSerializer
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, TemplateView
 from django.http import JsonResponse
 
-from rest_framework import status, mixins, generics
+from rest_framework import status, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication 
 from rest_framework.permissions import IsAdminUser
 from rest_framework.exceptions import NotFound, ParseError
-from queue_app import serializers
 
 
 
@@ -34,7 +33,7 @@ class PrintTicketView(LoginRequiredMixin, DetailView):
 	http_method_names = ['get', 'post']
 	object_name = 'queue';
 	def add_next_queue(self, service):
-		last_queue = service.queues.last()
+		last_queue = service.queues.get_today_list().last()
 		if last_queue:
 			next_queue = service.queues.create(
 				number = last_queue.number + 1
@@ -49,6 +48,7 @@ class PrintTicketApi(APIView):
 	http_method_names=('post')
 	authentication_classes = (SessionAuthentication, BasicAuthentication)
 	permission_classes = (IsAdminUser,)
+	serialier_class = ServiceSerializer
 	def add_next_queue(self, service):
 		last_queue = service.queues.last()
 		if last_queue:
@@ -73,6 +73,12 @@ class PrintTicketApi(APIView):
 					)
 		raise ParseError(detail="Bad request", code=400)
 	
+class PrintTicketApiTest(generics.CreateAPIView):
+	queryset = Service.objects.all()
+	serializer_clss = NestedServiceSerializer
+'''
+Manager page Views
+'''
 class ManagerDisplay(LoginRequiredMixin, ListView):
 	template_name='queue_app/manager.html'
 	model = Service
@@ -88,7 +94,8 @@ class QueueRetriveUpdateAPI(generics.RetrieveUpdateAPIView):
 	serializer_class = QueueSerializer
 	def list_new_queue(self):
 		latest_queue = self.get_object()
-		return Queue.objects.filter(date_created__gt=latest_queue.date_created).filter(service=latest_queue.service)
+# 		todays_lisl = self.queryset.get_today_list()
+		return self.queryset.filter(date_created__gt=latest_queue.date_created).filter(service=latest_queue.service)
 	def retrieve(self, request, *args, **kwargs):
 		ret = super().retrieve(self, request, *args, **kwargs)
 		ret.data = list()
@@ -96,7 +103,3 @@ class QueueRetriveUpdateAPI(generics.RetrieveUpdateAPIView):
 			new_queues = self.serializer_class(queue).data
 			ret.data.append(new_queues)
 		return ret
-		
-		
-
-			

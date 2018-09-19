@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import date
 
 # Create your models here.
 
@@ -18,6 +19,8 @@ class Service(models.Model):
 class QueueQueryset(models.QuerySet):
 	def get_last_queue(self):
 		return self.last()
+	def get_today_list(self):
+		return self.filter(date_created__date=date.today())
 
 class Queue(models.Model):
 	service=models.ForeignKey(

@@ -19,8 +19,7 @@ class QueueSerializer(serializers.ModelSerializer):
 		service_object = Service.objects.get(pk=service_data.get('id'))
 		return service_object.queues.create(**validated_data)
 	def update(self, instance, validated_data):
-		call_flag = validated_data.pop('call_flag')
-		instance.call_flag = call_flag
+		instance.call_flag = validated_data.pop('call_flag')
 		instance.save()
 		return instance
 	
