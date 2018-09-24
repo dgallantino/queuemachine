@@ -26,6 +26,7 @@ class MachineDisplay(LoginRequiredMixin, ListView):
 
 '''
 decomissioned
+API implementation without django rest framework
 '''
 class PrintTicketView(LoginRequiredMixin, DetailView):
 	template_name ='queue_app/test.html'
@@ -73,7 +74,6 @@ class PrintTicketApi(APIView):
 					)
 		raise ParseError(detail="Bad request", code=400)
 	
-
 '''
 Manager page Views
 '''
@@ -83,6 +83,7 @@ class ManagerDisplay(LoginRequiredMixin, ListView):
 	context_object_name = 'Services'
 	
 '''
+API: Update Queue in manager list
 using retrive instead of list becouse you need the data of the last listed queue
 '''
 class QueueRetriveUpdateAPI(generics.RetrieveUpdateAPIView):

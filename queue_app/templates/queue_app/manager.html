@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block javascript %}
+<script src="{% static 'queue_app/js/cookies_manager.js' %}"></script>
 <script type="text/javascript">
 //.in = muncul
 $(document).ready(function() {
@@ -30,6 +31,34 @@ $(document).ready(function() {
 		$(aId + ' .panel-collapse.show').collapse('hide');
 	}
      
+});
+
+$('body').on('submit', '.call_queue', function(event){
+	event.preventDefault();
+	var id = $(this).attr('id');
+	var csrftoken = getCookies('csrftoken');
+});
+$('body').on('click', '.update_button', function(event){
+	var last_queue_id = $(this).attr('id');
+	var csrftoken = getCookie('csrftoken');
+	$.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+    $.ajax({
+    	url : "{% url "queue_retrive_update_url"  999%}".replace(/999/,last_queue_id.toString()),
+		type : "GET",
+		dataType: 'json',
+		contentType: 'application/json',
+		data:JSON.stringify($(this).serializeFormJSON()),
+		error : function(xhr){console.log(xhr.status);}
+    })
+    .done(function(response){
+    	console.log(response);
+    });
 });
 </script>
 {% endblock %}
@@ -57,8 +86,11 @@ $(document).ready(function() {
 				<div class="panel-body d-flex  bd-highlight ">
 					<div class="number_cell p-2 bd-highlight ">{{ Queue.number }}</div>
 					<div class="mr-auto p-2 bd-highlight">{{ Queue.date_created }}</div>
+					<form class="call_queue">
+						<input type="hidden" name="queue_id" value="{{ Queue.id }}"></input>
+					</form>
 					<div class="action_button">
-						<button>Button1</button>
+						<button class="update_button" id="{{Queue.id}}">Button1</button>
 					</div>
 				</div>
 			{% endfor %}
