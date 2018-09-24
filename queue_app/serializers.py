@@ -5,6 +5,8 @@ class NestedServiceSerializer(serializers.ModelSerializer):
 	class Meta:
 		model= Service
 		fields = ('id','name', 'desc')
+	def create(self, validated_data):
+		return Service.objects.get(pk=2)
 
 class QueueSerializer(serializers.ModelSerializer):
 	service = NestedServiceSerializer(required=True)
@@ -37,4 +39,5 @@ class ServiceSerializer(serializers.ModelSerializer):
 	class Meta:
 		model=Service
 		fields = ('id', 'name', 'desc', 'queues')
-		read_only_fields=('id','queues')
+
+		
