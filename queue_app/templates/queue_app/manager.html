@@ -33,6 +33,17 @@ $(document).ready(function() {
      
 });
 
+function addQueueEntries(parent_id, json_data){
+	var html_data = '<div class="panel-body d-flex  bd-highlight ">';
+	html_data = '<div class="number_cell p-2 bd-highlight ">{{ Queue.number }}</div>';
+	html_data = '<div class="mr-auto p-2 bd-highlight">{{ Queue.date_created }}</div>';
+	html_data = '<div class="action_button">';
+	html_data = '<button class="call_button" id="{{Queue.id}}">Call</button>';
+	html_data = '</div></div>';
+	
+	$('#'+parent_id).append(html_data);
+}
+
 $('body').on('submit', '.call_queue', function(event){
 	event.preventDefault();
 	var id = $(this).attr('id');
@@ -41,6 +52,7 @@ $('body').on('submit', '.call_queue', function(event){
 $('body').on('click', '.update_button', function(event){
 	var last_queue_id = $(this).attr('id');
 	var csrftoken = getCookie('csrftoken');
+	var parent_elem = $(this).parent().attr('id');
 	$.ajaxSetup({
         beforeSend: function(xhr, settings) {
             if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
@@ -57,7 +69,10 @@ $('body').on('click', '.update_button', function(event){
 		error : function(xhr){console.log(xhr.status);}
     })
     .done(function(response){
-    	console.log(response);
+    	$.each(response, function(idx, val){
+    		console.log(parent_elem);
+	    	console.log(val);
+    	});
     });
 });
 </script>
@@ -82,15 +97,15 @@ $('body').on('click', '.update_button', function(event){
 				</h4>
 			</div>
 			<div id="collapse_{{ Service.id }}" class="collapse panel-collapse in" role="tabpanel" aria-labelledby="heading_{{ Service.id }}">
+				<div class="panel-header d-flex justify-content-center" id="collapseall_{{ Service.id }}">
+					<button class="update_button" id="{{Service.queues.first.id}}">UPDATE</button>
+				</div>
 			{% for Queue in Service.queues.all %}
 				<div class="panel-body d-flex  bd-highlight ">
 					<div class="number_cell p-2 bd-highlight ">{{ Queue.number }}</div>
 					<div class="mr-auto p-2 bd-highlight">{{ Queue.date_created }}</div>
-					<form class="call_queue">
-						<input type="hidden" name="queue_id" value="{{ Queue.id }}"></input>
-					</form>
 					<div class="action_button">
-						<button class="update_button" id="{{Queue.id}}">Button1</button>
+						<button class="call_button" id="{{Queue.id}}">Call</button>
 					</div>
 				</div>
 			{% endfor %}
