@@ -78,6 +78,7 @@ class PrintTicketApi(APIView):
 Manager page Views
 '''
 class ManagerDisplay(LoginRequiredMixin, ListView):
+	login_url = '/accounts/login/'
 	template_name='queue_app/manager.html'
 	model = Service
 	context_object_name = 'Services'

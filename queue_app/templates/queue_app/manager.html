@@ -35,11 +35,11 @@ $(document).ready(function() {
 
 function addQueueEntries(parent_id, json_data){
 	var html_data = '<div class="panel-body d-flex  bd-highlight ">';
-	html_data = '<div class="number_cell p-2 bd-highlight ">{{ Queue.number }}</div>';
-	html_data = '<div class="mr-auto p-2 bd-highlight">{{ Queue.date_created }}</div>';
-	html_data = '<div class="action_button">';
-	html_data = '<button class="call_button" id="{{Queue.id}}">Call</button>';
-	html_data = '</div></div>';
+	html_data += '<div class="number_cell p-2 bd-highlight ">'+json_data.number+'</div>';
+	html_data += '<div class="mr-auto p-2 bd-highlight">'+json_data.date_created+'</div>';
+	html_data += '<div class="action_button">';
+	html_data += '<button class="call_button" id="'+json_data.id+'">Call</button>';
+	html_data += '</div></div>';
 	
 	$('#'+parent_id).append(html_data);
 }
@@ -52,7 +52,7 @@ $('body').on('submit', '.call_queue', function(event){
 $('body').on('click', '.update_button', function(event){
 	var last_queue_id = $(this).attr('id');
 	var csrftoken = getCookie('csrftoken');
-	var parent_elem = $(this).parent().attr('id');
+	var parent_elem = $(this).parent().parent().attr('id');
 	$.ajaxSetup({
         beforeSend: function(xhr, settings) {
             if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
@@ -70,8 +70,8 @@ $('body').on('click', '.update_button', function(event){
     })
     .done(function(response){
     	$.each(response, function(idx, val){
-    		console.log(parent_elem);
-	    	console.log(val);
+    		addQueueEntries(parent_elem, val);
+	    	console.log(parent_elem);
     	});
     });
 });
@@ -90,7 +90,7 @@ $('body').on('click', '.update_button', function(event){
 		{% for Service in Services %}
 		<div class="panel panel-default">
 			<div class="panel-heading" role="tab" id="heading_{{ Service.id }}">
-				<h4 class="panel-title">
+				<h4 class="panel-title" id="headingsoso_{{ Service.id }}">
 					<a role="button" data-toggle="collapse" data-parent="#accordion" data-target="#collapse_{{ Service.id }}" aria-expanded="false" aria-controls="collapse_{{ Service.id }}">
 						{{ Service }}
 					</a>
