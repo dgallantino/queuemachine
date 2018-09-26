@@ -70,8 +70,8 @@ class PrintTicketApi(APIView):
 			if service.name == request.data.get('service') :
 				return Response(
 					serializers.QueueSerializer(self.add_next_queue(service)).data,
-						status=status.HTTP_201_CREATED
-					)
+					status=status.HTTP_201_CREATED
+				)
 		raise ParseError(detail="Bad request", code=400)
 	
 '''

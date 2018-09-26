@@ -1,7 +1,7 @@
 from django.db import models
 from datetime import date
 
-# Create your models here.
+# Next: Auto Increment pk to UUID
 
 class ServiceQueryset(models.QuerySet):
 	"""docstring for ServiceQueryset."""
