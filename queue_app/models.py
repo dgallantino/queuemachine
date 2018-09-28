@@ -1,7 +1,8 @@
 from django.db import models
 from datetime import date
+import uuid
 
-# Next: Auto Increment pk to UUID
+
 
 class ServiceQueryset(models.QuerySet):
 	"""docstring for ServiceQueryset."""
@@ -9,6 +10,10 @@ class ServiceQueryset(models.QuerySet):
 		pass
 
 class Service(models.Model):
+	id=models.UUIDField(
+		primary_key=True, 
+		default=uuid.uuid4, 
+		editable=False)
 	name=models.CharField(max_length = 200)
 	desc=models.CharField(max_length = 200)
 	date_created=models.DateTimeField(auto_now_add=True)
@@ -27,6 +32,10 @@ class Queue(models.Model):
 		Service, 
 		on_delete=models.CASCADE,
 		related_name='queues')
+	id=models.UUIDField(
+		primary_key=True, 
+		default=uuid.uuid4, 
+		editable=False)
 	number=models.IntegerField()
 	date_created=models.DateTimeField(auto_now_add=True)
 	date_modified=models.DateTimeField(auto_now=True)

@@ -48,11 +48,19 @@ $('body').on('submit', '.call_queue', function(event){
 	event.preventDefault();
 	var id = $(this).attr('id');
 	var csrftoken = getCookies('csrftoken');
+	$.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
 });
+
 $('body').on('click', '.update_button', function(event){
-	var last_queue_id = $(this).attr('id');
 	var csrftoken = getCookie('csrftoken');
-	var parent_elem = $(this).parent().parent().attr('id');
+	var accordion_container = $(this).parent().parent();
+	var last_queue_id = 
 	$.ajaxSetup({
         beforeSend: function(xhr, settings) {
             if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
@@ -76,7 +84,7 @@ $('body').on('click', '.update_button', function(event){
     });
 });
 </script>
-{% endblock %}
+{% endblock %}{# script #}
 
 {% block content %}
 <div class="container">
@@ -97,14 +105,14 @@ $('body').on('click', '.update_button', function(event){
 				</h4>
 			</div>
 			<div id="collapse_{{ Service.id }}" class="collapse panel-collapse in" role="tabpanel" aria-labelledby="heading_{{ Service.id }}">
-				<div class="panel-header d-flex justify-content-center" id="collapseall_{{ Service.id }}">
-					<button class="update_button" id="{{Service.queues.first.id}}">UPDATE</button>
+				<div class="panel-header d-flex justify-content-center">
+					<button class="update_button" >UPDATE</button>
 				</div>
 			{% for Queue in Service.queues.all %}
 				<div class="panel-body d-flex  bd-highlight ">
 					<div class="number_cell p-2 bd-highlight ">{{ Queue.number }}</div>
 					<div class="mr-auto p-2 bd-highlight">{{ Queue.date_created }}</div>
-					<div class="action_button">
+					<div class="action_button p-2 bd-highlight">
 						<button class="call_button" id="{{Queue.id}}">Call</button>
 					</div>
 				</div>
