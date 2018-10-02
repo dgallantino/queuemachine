@@ -12,18 +12,24 @@ class CustomException(exceptions.APIException):
 			self.detail = {field: force_text(detail)}
 		else: self.detail = {'detail': force_text(self.default_detail)}
 
-class NestedServiceSerializer(serializers.ModelSerializer):
+class N_ServiceSerializer(serializers.ModelSerializer):
 	class Meta:
 		model= Service
 		fields = ('id','name', 'desc')
-	def create(self, validated_data):
-		return Service.objects.get(pk=2)
 
+class N_CounterBoothSerializer(serializers.ModelSerializer):
+	class Meta:
+		model= Service
+		fields = ('id','name', 'desc')
+	
+	
 class QueueSerializer(serializers.ModelSerializer):
-	service = NestedServiceSerializer(
+	service = N_ServiceSerializer(
 		required=False,
-		read_only=True
-		)
+		read_only=True)
+	counter_booth = N_CounterBoothSerializer(
+		required=False,
+		read_only=True)
 	class Meta:
 		model= Queue
 		fields = ('id', 'number', 'call_flag', 'date_created', 'date_modified','service')

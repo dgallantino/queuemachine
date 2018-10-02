@@ -1,6 +1,7 @@
 from queue_app.models import Service, Queue
-from queue_app import serializers
+from queue_app import serializers,forms
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.edit import CreateView
 from django.views.generic import ListView, DetailView, TemplateView
 from django.http import JsonResponse
 
@@ -11,21 +12,43 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.permissions import IsAdminUser
 from rest_framework.exceptions import NotFound, ParseError
 
-
-
 class IndexView(TemplateView):
 	template_name = 'queue_app/index.html'
 	def get(self, request, *args, **kwargs):
 		return TemplateView.get(self, request, *args, **kwargs)
 	
-
+'''
+Machine Display
+as in display that ticket booth uses
+component
+- MachineDisplay (page)
+	-> context: list of services
+- PrintTicketView (API): 
+	-> POST : Receive service data, send a new queue data
+'''
 class MachineDisplay(LoginRequiredMixin, ListView):
 	login_url = '/accounts/login/'
 	template_name ='queue_app/machine.html'
 	model = Service
 
+class AddQueueFormView(LoginRequiredMixin, CreateView):
+	login_url = '/accounts/login/'
+	template_name ='queue_app/machine_test.html'
+	model = Queue
+	form_class=forms.QueueModelForms
+	def get_context_data(self, **kwargs):
+		kwargs['services'] = Service.objects.all()
+		return super().get_context_data(**kwargs)
+	def form_valid(self, form):
+		y = super().form_valid(form)
+		print("aoe")
+		return y
+	def form_invalid(self, form):
+		y = super().form_invalid(form)
+		return y
+
+
 '''
-decomissioned
 API implementation without django rest framework
 '''
 class PrintTicketView(LoginRequiredMixin, DetailView):
@@ -75,7 +98,14 @@ class PrintTicketApi(APIView):
 		raise ParseError(detail="Bad request", code=400)
 	
 '''
-Manager page Views
+Manager
+to manage queue like calling it and shit
+componen:
+- Manager Display
+	-> Context: list of services(with its related queues)
+- QueueRetriveUpdateAPI
+	-> GET : Receive queue id, sends the queue newer than it receive
+	-> POST : Receive queue id and queue data, send updated queue 
 '''
 class ManagerDisplay(LoginRequiredMixin, ListView):
 	login_url = '/accounts/login/'

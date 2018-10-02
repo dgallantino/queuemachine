@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('machine/',views.MachineDisplay.as_view(), name='machine_url'),
+    path('machine-test/',views.AddQueueFormView.as_view(), name='machine_url_test'),
     path('print-ticket/', views.PrintTicketApi.as_view(), name='print_ticket_url'),
     path('manager/',views.ManagerDisplay.as_view(), name='manager_url'),
     path('queue-retrive-update/<uuid:pk>/', views.QueueRetriveUpdateAPI.as_view(), name='queue_retrive_update_url'),

@@ -8,6 +8,69 @@
 {% block javascript %}
 <script src="{% static 'queue_app/js/cookies_manager.js' %}"></script>
 <script type="text/javascript">
+
+
+function renderQueues(json_data){
+	var html_data = '<div class="panel-body d-flex  bd-highlight ">';
+	html_data += '<div class="number_cell p-2 bd-highlight ">'+json_data.number+'</div>';
+	html_data += '<div class="mr-auto p-2 bd-highlight">'+json_data.date_created+'</div>';
+	html_data += '<div class="action_button">';
+	html_data += '<button class="call_button" id="'+json_data.id+'">Call</button>';
+	html_data += '</div></div>';
+	return html_data;
+}
+
+function loadNewQueues(request_url){
+	var csrftoken = getCookie('csrftoken');
+	$.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+    $.ajax({
+    	url : request_url,
+		type : "GET",
+		dataType: 'json',
+		contentType: 'application/json',
+		error : function(xhr){console.log(xhr.status);}
+    })
+    .done(function(response){
+    	$.each(response, function(idx, val){
+    		addQueueEntries(parent_elem, val);
+	    	console.log(parent_elem);
+    	});
+    });
+}
+
+function updateQueues(request_url,number,call_flag){
+	var csrftoken = getCookies('csrftoken');
+
+	$.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+    $.ajax({
+    	url : request_url,
+		type : "POST",
+		dataType: 'json',
+		contentType: 'application/json',
+		error : function(xhr){console.log(xhr.status);}
+    })
+    .done(function(response){
+    	$.each(response, function(idx, val){
+    		addQueueEntries(parent_elem, val);
+	    	console.log(parent_elem);
+    	});
+    });
+
+}
+
+
 //.in = muncul
 $(document).ready(function() {
 	$(".toggle-accordion").on("click", function() {
@@ -33,55 +96,17 @@ $(document).ready(function() {
      
 });
 
-function addQueueEntries(parent_id, json_data){
-	var html_data = '<div class="panel-body d-flex  bd-highlight ">';
-	html_data += '<div class="number_cell p-2 bd-highlight ">'+json_data.number+'</div>';
-	html_data += '<div class="mr-auto p-2 bd-highlight">'+json_data.date_created+'</div>';
-	html_data += '<div class="action_button">';
-	html_data += '<button class="call_button" id="'+json_data.id+'">Call</button>';
-	html_data += '</div></div>';
-	
-	$('#'+parent_id).append(html_data);
-}
-
 $('body').on('submit', '.call_queue', function(event){
 	event.preventDefault();
 	var id = $(this).attr('id');
-	var csrftoken = getCookies('csrftoken');
-	$.ajaxSetup({
-        beforeSend: function(xhr, settings) {
-            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                xhr.setRequestHeader("X-CSRFToken", csrftoken);
-            }
-        }
-    });
+	
 });
 
 $('body').on('click', '.update_button', function(event){
-	var csrftoken = getCookie('csrftoken');
 	var accordion_container = $(this).parent().parent();
-	var last_queue_id = 
-	$.ajaxSetup({
-        beforeSend: function(xhr, settings) {
-            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                xhr.setRequestHeader("X-CSRFToken", csrftoken);
-            }
-        }
-    });
-    $.ajax({
-    	url : "{% url "queue_retrive_update_url"  999%}".replace(/999/,last_queue_id.toString()),
-		type : "GET",
-		dataType: 'json',
-		contentType: 'application/json',
-		data:JSON.stringify($(this).serializeFormJSON()),
-		error : function(xhr){console.log(xhr.status);}
-    })
-    .done(function(response){
-    	$.each(response, function(idx, val){
-    		addQueueEntries(parent_elem, val);
-	    	console.log(parent_elem);
-    	});
-    });
+	var last_queue_id = 1;
+	var update_url = {% url "queue_retrive_update_url"  "placeholder"%}".replace(/placeholder/,last_queue_id);
+	
 });
 </script>
 {% endblock %}{# script #}
