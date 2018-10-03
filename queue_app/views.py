@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView
 from django.views.generic import ListView, DetailView, TemplateView
 from django.http import JsonResponse
+from django.core.exceptions import FieldError, ObjectDoesNotExist
 
 from rest_framework import status, generics
 from rest_framework.views import APIView
@@ -31,21 +32,16 @@ class MachineDisplay(LoginRequiredMixin, ListView):
 	template_name ='queue_app/machine.html'
 	model = Service
 
-class AddQueueFormView(LoginRequiredMixin, CreateView):
+class AddQueueFormView( CreateView):
 	login_url = '/accounts/login/'
 	template_name ='queue_app/machine_test.html'
 	model = Queue
 	form_class=forms.QueueModelForms
+	success_url = "/queuemachine/machine-test/"
 	def get_context_data(self, **kwargs):
 		kwargs['services'] = Service.objects.all()
 		return super().get_context_data(**kwargs)
-	def form_valid(self, form):
-		y = super().form_valid(form)
-		print("aoe")
-		return y
-	def form_invalid(self, form):
-		y = super().form_invalid(form)
-		return y
+
 
 
 '''

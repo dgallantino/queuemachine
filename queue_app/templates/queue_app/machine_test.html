@@ -26,6 +26,9 @@ $('body').on('submit','.add_queue_form', function(event){
 		contentType: 'application/x-www-form-urlencoded',
 		data:$(this).serialize(),
 	})
+	.fail(function(xhr){
+		window.alert(xhr.status.toString());
+	})
 	.done(function(data){
 		console.log(data);
 	});
@@ -52,7 +55,7 @@ function print_ticket(json){
 		<form class="add_queue_form" id="{{ service.id }}">
 			<tr class="content_tr">
 				<td class="content_tr">
-					{% csrf_token %}
+{#					{% csrf_token %}#}
 					<input type="hidden" name="service" class="service_name" value="{{ service.id }}"/>
 					<input type="submit" class="content_button" value="{{ service }}" />
 				</td>

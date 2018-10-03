@@ -32,8 +32,6 @@ class CounterBooth(models.Model):
 		return self.name
 
 class QueueQueryset(models.QuerySet):
-	def get_last_queue(self):
-		return self.last()
 	def get_today_list(self):
 		return self.filter(date_created__date=date.today())
 
