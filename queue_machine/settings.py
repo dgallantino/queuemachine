@@ -25,7 +25,7 @@ SECRET_KEY = '8jyisx^9c%bist-q7zxuos)@ab@^p#24%z&)a!b=k$#p48dv4e'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 #repair this or make implementation of root URL
 LOGIN_REDIRECT_URL = '/queuemachine/'
@@ -33,7 +33,6 @@ LOGIN_REDIRECT_URL = '/queuemachine/'
 # Application definition
 
 INSTALLED_APPS = [
-	'rest_framework',
 	'queue_app.apps.QueueAppConfig',
 	'django.contrib.admin',
 	'django.contrib.auth',
@@ -72,7 +71,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'queue_machine.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
@@ -128,3 +126,10 @@ STATICFILES_FINDERS = (
 'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 'django.contrib.staticfiles.finders.FileSystemFinder',
 )
+
+# rest framework settings
+# REST_FRAMEWORK = {
+#     'DEFAULT_RENDERER_CLASSES': (
+#         'rest_framework.renderers.JSONRenderer',
+#     )
+# }

@@ -1,0 +1,150 @@
+{% extends "queue_app/base.html" %}
+{% load static %}
+{% block title %}Manager{% endblock %}
+{% block stylesheet %}
+	<link href="{% static 'queue_app/css/manager.css'%}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'queue_app/js/cookies_manager.js' %}"></script>
+<script type="text/javascript">
+
+
+function renderQueues(json_data){
+	var html_data = '<div class="panel-body d-flex  bd-highlight ">';
+	html_data += '<div class="number_cell p-2 bd-highlight ">'+json_data.number+'</div>';
+	html_data += '<div class="mr-auto p-2 bd-highlight">'+json_data.date_created+'</div>';
+	html_data += '<div class="action_button">';
+	html_data += '<button class="call_button" id="'+json_data.id+'">Call</button>';
+	html_data += '</div></div>';
+	return html_data;
+}
+
+function loadNewQueues(request_url){
+	var csrftoken = getCookie('csrftoken');
+	$.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+    $.ajax({
+    	url : request_url,
+		type : "GET",
+		dataType: 'json',
+		contentType: 'application/json',
+		error : function(xhr){console.log(xhr.status);}
+    })
+    .done(function(response){
+    	$.each(response, function(idx, val){
+    		addQueueEntries(parent_elem, val);
+	    	console.log(parent_elem);
+    	});
+    });
+}
+
+function updateQueues(request_url,number,call_flag){
+	var csrftoken = getCookies('csrftoken');
+
+	$.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+    $.ajax({
+    	url : request_url,
+		type : "POST",
+		dataType: 'json',
+		contentType: 'application/json',
+		error : function(xhr){console.log(xhr.status);}
+    })
+    .done(function(response){
+    	$.each(response, function(idx, val){
+    		addQueueEntries(parent_elem, val);
+	    	console.log(parent_elem);
+    	});
+    });
+
+}
+
+
+//.in = muncul
+$(document).ready(function() {
+	$(".toggle-accordion").on("click", function() {
+		var accordionId = $(this).attr("accordion-id"),
+		numPanelOpen = $(accordionId + ' .collapse.show').length;
+		numPanel = $(accordionId + ' .collapse').length;
+      
+		/* $(this).toggleClass("active"); */
+
+		if (numPanelOpen == 0) {
+      		openAllPanels(accordionId);
+    	} else {
+      		closeAllPanels(accordionId);
+    	}
+  	})
+
+	openAllPanels = function(aId) {
+		$(aId + ' .panel-collapse:not(".show")').collapse('show');
+	}
+	closeAllPanels = function(aId) {
+		$(aId + ' .panel-collapse.show').collapse('hide');
+	}
+     
+});
+
+$('body').on('submit', '.call_queue', function(event){
+	event.preventDefault();
+	var id = $(this).attr('id');
+	
+});
+
+$('body').on('click', '.update_button', function(event){
+	var accordion_container = $(this).parent().parent();
+	var last_queue_id = 1;
+	var update_url = {% url "queue_retrive_update_url"  "placeholder"%}".replace(/placeholder/,last_queue_id);
+	
+});
+</script>
+{% endblock %}{# script #}
+
+{% block content %}
+<div class="container">
+	<div class="accordion-option">
+		<h3 class="title">Manager</h3>
+		<!-- <a href="javascript:void(0)" class="toggle-accordion" accordion-id="#accordion"></a> -->
+	</div>
+	<div class="clearfix">
+	</div> 
+	<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+		{% for Service in Services %}
+		<div class="panel panel-default">
+			<div class="panel-heading" role="tab" id="heading_{{ Service.id }}">
+				<h4 class="panel-title" id="headingsoso_{{ Service.id }}">
+					<a role="button" data-toggle="collapse" data-parent="#accordion" data-target="#collapse_{{ Service.id }}" aria-expanded="false" aria-controls="collapse_{{ Service.id }}">
+						{{ Service }}
+					</a>
+				</h4>
+			</div>
+			<div id="collapse_{{ Service.id }}" class="collapse panel-collapse in" role="tabpanel" aria-labelledby="heading_{{ Service.id }}">
+				<div class="panel-header d-flex justify-content-center">
+					<button class="update_button" >UPDATE</button>
+				</div>
+			{% for Queue in Service.queues.all %}
+				<div class="panel-body d-flex  bd-highlight ">
+					<div class="number_cell p-2 bd-highlight ">{{ Queue.number }}</div>
+					<div class="mr-auto p-2 bd-highlight">{{ Queue.date_created }}</div>
+					<div class="action_button p-2 bd-highlight">
+						<button class="call_button" id="{{Queue.id}}">Call</button>
+					</div>
+				</div>
+			{% endfor %}
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+{% endblock %}
