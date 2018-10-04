@@ -4,7 +4,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView
 from django.views.generic import ListView, DetailView, TemplateView
 from django.http import JsonResponse
-from django.core.exceptions import FieldError, ObjectDoesNotExist
 
 from rest_framework import status, generics
 from rest_framework.views import APIView
@@ -12,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication 
 from rest_framework.permissions import IsAdminUser
 from rest_framework.exceptions import NotFound, ParseError
+from django.urls.base import reverse_lazy
 
 class IndexView(TemplateView):
 	template_name = 'queue_app/index.html'
@@ -26,27 +26,16 @@ component
 	-> context: list of services
 - PrintTicketView (API): 
 	-> POST : Receive service data, send a new queue data
+- AddQueueFormView
+- QueueObjectDetail
 '''
-class MachineDisplay(LoginRequiredMixin, ListView):
+#Implementation using API (not doin dis any mo)
+class MachineDisplay(ListView, LoginRequiredMixin):
 	login_url = '/accounts/login/'
 	template_name ='queue_app/machine.html'
 	model = Service
 
-class AddQueueFormView( CreateView):
-	login_url = '/accounts/login/'
-	template_name ='queue_app/machine_test.html'
-	model = Queue
-	form_class=forms.QueueModelForms
-	success_url = "/queuemachine/machine-test/"
-	def get_context_data(self, **kwargs):
-		kwargs['services'] = Service.objects.all()
-		return super().get_context_data(**kwargs)
-
-
-
-'''
-API implementation without django rest framework
-'''
+#API implementation without django rest framework
 class PrintTicketView(LoginRequiredMixin, DetailView):
 	template_name ='queue_app/test.html'
 	model = Service
@@ -92,10 +81,30 @@ class PrintTicketApi(APIView):
 					status=status.HTTP_201_CREATED
 				)
 		raise ParseError(detail="Bad request", code=400)
+
+#Implpmptation using form and normal html request
+class AddQueueFormView(CreateView, LoginRequiredMixin):
+	login_url = '/accounts/login/'
+	template_name ='queue_app/machine.html'
+	model = Queue
+	form_class=forms.QueueModelForms
+	def get_context_data(self, **kwargs):
+		kwargs['services'] = Service.objects.all()
+		return super().get_context_data(**kwargs)
+	def get_success_url(self):
+		return reverse_lazy('queue:print_ticket_url', kwargs={'pk':self.object.id})
+
+class PrintTicket(DetailView, LoginRequiredMixin):
+	login_url = '/accounts/login/'
+	template_name ='queue_app/print_placeholder.html'
+	object_name = 'queue'
+	def get_queryset(self):
+		return Queue.objects.get_today_list()
+	
 	
 '''
-Manager
-to manage queue like calling it and shit
+Manager...
+...to manage queue like calling delete and shit
 componen:
 - Manager Display
 	-> Context: list of services(with its related queues)

@@ -41,7 +41,7 @@
 
 
 /* making printed section invisibel */
-.section_to_print{
+#section_to_print{
 	visibility: hidden;
 }
 
@@ -49,7 +49,7 @@
   body * {
     visibility: hidden;
   }
-  .section_to_print, .section_to_print * {
+  #section_to_print, #section_to_print * {
     visibility: visible;
   }
 }
