@@ -9,18 +9,7 @@
 <script src="{% static 'queue_app/js/cookies_manager.js' %}"></script>
 <script type="text/javascript">
 
-
-function renderQueues(json_data){
-	var html_data = '<div class="panel-body d-flex  bd-highlight ">';
-	html_data += '<div class="number_cell p-2 bd-highlight ">'+json_data.number+'</div>';
-	html_data += '<div class="mr-auto p-2 bd-highlight">'+json_data.date_created+'</div>';
-	html_data += '<div class="action_button">';
-	html_data += '<button class="call_button" id="'+json_data.id+'">Call</button>';
-	html_data += '</div></div>';
-	return html_data;
-}
-
-function loadNewQueues(request_url){
+function loadNewQueues(service_id){
 	var csrftoken = getCookie('csrftoken');
 	$.ajaxSetup({
         beforeSend: function(xhr, settings) {
@@ -96,20 +85,30 @@ $(document).ready(function() {
      
 });
 
-$('body').on('submit', '.call_queue', function(event){
-	event.preventDefault();
-	var id = $(this).attr('id');
-	
+$(document).ready(function(){
+	$('.collapse').each(function(){
+		var dom_id = $(this).attr('id')
+		var service_id = dom_id.replace('collapse_', '');
+		var url = "{% url "queue:queue_per_service_url" Services.last.id %}".replace(/{{Services.last.id}}/,service_id);
+		$.ajax({
+	    	url : url,
+			type : "GET",
+			dataType: 'html',
+			contentType: 'application/x-www-form-urlencoded',
+	    })
+	    .fail(function(xhr){
+			window.alert(xhr.status.toString());
+		})
+	    .done(function(response){
+			$("#"+dom_id).append(response)
+	    });
+	});
 });
 
-$('body').on('click', '.update_button', function(event){
-	var accordion_container = $(this).parent().parent();
-	var last_queue_id = 1;
-	var update_url = {% url "queue_retrive_update_url"  "placeholder"%}".replace(/placeholder/,last_queue_id);
-	
-});
+
+
 </script>
-{% endblock %}{# script #}
+{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -122,26 +121,14 @@ $('body').on('click', '.update_button', function(event){
 	<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 		{% for Service in Services %}
 		<div class="panel panel-default">
-			<div class="panel-heading" role="tab" id="heading_{{ Service.id }}">
-				<h4 class="panel-title" id="headingsoso_{{ Service.id }}">
+			<div class="panel-heading" id="heading_{{ Service.id }}" role="tab" >
+				<h4 class="panel-title">
 					<a role="button" data-toggle="collapse" data-parent="#accordion" data-target="#collapse_{{ Service.id }}" aria-expanded="false" aria-controls="collapse_{{ Service.id }}">
 						{{ Service }}
 					</a>
 				</h4>
 			</div>
 			<div id="collapse_{{ Service.id }}" class="collapse panel-collapse in" role="tabpanel" aria-labelledby="heading_{{ Service.id }}">
-				<div class="panel-header d-flex justify-content-center">
-					<button class="update_button" >UPDATE</button>
-				</div>
-			{% for Queue in Service.queues.all %}
-				<div class="panel-body d-flex  bd-highlight ">
-					<div class="number_cell p-2 bd-highlight ">{{ Queue.number }}</div>
-					<div class="mr-auto p-2 bd-highlight">{{ Queue.date_created }}</div>
-					<div class="action_button p-2 bd-highlight">
-						<button class="call_button" id="{{Queue.id}}">Call</button>
-					</div>
-				</div>
-			{% endfor %}
 			</div>
 		</div>
 		{% endfor %}

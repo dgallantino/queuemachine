@@ -30,7 +30,7 @@ component
 - QueueObjectDetail
 '''
 #Implementation using API (not doin dis any mo)
-class MachineDisplay(ListView, LoginRequiredMixin):
+class MachineDisplayApi(ListView, LoginRequiredMixin):
 	login_url = '/accounts/login/'
 	template_name ='queue_app/machine.html'
 	model = Service
@@ -83,7 +83,7 @@ class PrintTicketApi(APIView):
 		raise ParseError(detail="Bad request", code=400)
 
 #Implpmptation using form and normal html request
-class AddQueueFormView(CreateView, LoginRequiredMixin):
+class MachineDisplay(LoginRequiredMixin, CreateView):
 	login_url = '/accounts/login/'
 	template_name ='queue_app/machine.html'
 	model = Queue
@@ -94,9 +94,9 @@ class AddQueueFormView(CreateView, LoginRequiredMixin):
 	def get_success_url(self):
 		return reverse_lazy('queue:print_ticket_url', kwargs={'pk':self.object.id})
 
-class PrintTicket(DetailView, LoginRequiredMixin):
+class PrintTicket(LoginRequiredMixin, DetailView):
 	login_url = '/accounts/login/'
-	template_name ='queue_app/print_placeholder.html'
+	template_name ='queue_app/placeholder_ticket.html'
 	object_name = 'queue'
 	def get_queryset(self):
 		return Queue.objects.get_today_list()
@@ -118,6 +118,14 @@ class ManagerDisplay(LoginRequiredMixin, ListView):
 	model = Service
 	context_object_name = 'Services'
 	
+class QueuePerService(LoginRequiredMixin, DetailView):
+	login_url = '/accounts/login/'
+	template_name='queue_app/placeholder_queues.html'
+	model = Service
+	def get_context_data(self, **kwargs):
+		context= super().get_context_data(**kwargs)
+		context['Queues'] = self.object.queues.get_today_list()
+		return context
 '''
 API: Update Queue in manager list
 using retrive instead of list becouse you need the data of the last listed queue

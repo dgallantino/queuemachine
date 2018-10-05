@@ -58,7 +58,7 @@ body {
   transform: rotate(90deg);
 }
 
-.panel-default>.panel-collapse>.panel-body {
+.panel-body {
 	background: Green;
 	border-bottom:2px solid black;
 }
