@@ -1,13 +1,13 @@
-{% for Queue in Queues %}
+{% for queue in queues %}
 <form class="update_form">
 	{% csrf_token %}
-	<input type="hidden" name="number" value="{{ Queue.number }}"/>
-	<input type="hidden" name="id" value="{{ Queue.id }}"/>
+	<input type="hidden" name="number" value="{{ queue.number }}"/>
+	<input type="hidden" name="id" value="{{ queue.id }}"/>
 	<div class="panel-body d-flex  bd-highlight ">
 		<div class="number_cell p-2 bd-highlight ">
-			<p>{{ Queue.number }}</p>
+			<p>{{ queue.number }}</p>
 		</div>
-		<div class="mr-auto p-2 bd-highlight">{{ Queue.date_created }}</div>
+		<div class="mr-auto p-2 bd-highlight">{{ queue.date_created }}</div>
 		<div class="action_button p-2 bd-highlight">
 			<input type="submit" class="call_button">Call</input>
 			<input type="submit" class="call_button">Call</input>

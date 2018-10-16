@@ -6,23 +6,31 @@ Created on Oct 1, 2018
 from django import forms
 from queue_app import models
 
-
+#repair booking_time field
+#use splitDateTimeWidget
 class QueueModelForms(forms.ModelForm):
+    booking_time=forms.SplitDateTimeField();
     class Meta:
         model=models.Queue
         fields='__all__'
+
     def save(self, commit=True):
-        recent_queue = models.Queue.objects.get_today_list().filter(service=self.cleaned_data.get('service')).last()
+        is_booking = self.cleaned_data.get('booking_flag', False)
+        
+        #get latest queue
+        if is_booking:
+            recent_queue = models.Queue.objects.get_booking().filter(service=self.cleaned_data.get('service')).last()
+        else:
+            recent_queue = models.Queue.objects.get_nonbooking().filter(service=self.cleaned_data.get('service')).last()
+        #create new queue obj
+        new_queue = models.Queue(**self.cleaned_data)
+
         if recent_queue:
-            new_queue = models.Queue(
-                number=recent_queue.number+1,
-                service=self.cleaned_data.get('service')
-            )
+            new_queue.number = recent_queue.number+1
         else :
-            new_queue = models.Queue(
-                number=1,
-                service=self.cleaned_data.pop('service')
-            )
+            new_queue.number = 1
+            
+        #save when commited
         if commit:
             new_queue.save()
         return new_queue

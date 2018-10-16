@@ -4,7 +4,9 @@
 	<meta charset="utf-8">
 	<title>{% block title %}HOME{% endblock %}</title>
 	<link href="{% static 'queue_app/css/base.css'%}" rel="stylesheet" type="text/css">
-	<link href="{% static 'queue_app/css/bootstrap.min.css'%}" rel="stylesheet" type="text/css">
+	<link href="{% static 'queue_app/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet" type="text/css">
+	<link href="{% static 'queue_app/font-awesome/css/font-awesome.min.css'%}" rel="stylesheet" type="text/css">
+	<link href="{% static 'queue_app/font-awesome/css/font-awesome-animation.min.css'%}" rel="stylesheet" type="text/css">
 	{% block stylesheet %}{% endblock %}
 </head>
 
@@ -17,7 +19,7 @@
 	<footer>
 	</footer>
 	<script src="{% static 'queue_app/js/jquery.js' %}"></script>
-	<script src="{% static 'queue_app/js/bootstrap.min.js' %}"></script>
+	<script src="{% static 'queue_app/bootstrap/js/bootstrap.min.js' %}"></script>	
 	{% block javascript %}{% endblock %}
 
 </body>

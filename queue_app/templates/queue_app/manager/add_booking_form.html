@@ -1,0 +1,10 @@
+{% load static %}
+
+<form id="add-booking-form" action="{% url "queue:add_booking_url" %}" method="POST">
+	{% csrf_token %}
+	{{ form.service }}
+	{{ form.customer }}
+	{{ form.booking_time }}
+	{{ form.booking_time.errors }}	
+	<button type="submit">aoe</button>
+</form>

@@ -4,6 +4,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView
 from django.views.generic import ListView, DetailView, TemplateView
 from django.http import JsonResponse
+from django.urls.base import reverse_lazy
+
 
 from rest_framework import status, generics
 from rest_framework.views import APIView
@@ -11,7 +13,6 @@ from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication 
 from rest_framework.permissions import IsAdminUser
 from rest_framework.exceptions import NotFound, ParseError
-from django.urls.base import reverse_lazy
 
 class IndexView(TemplateView):
 	template_name = 'queue_app/index.html'
@@ -85,7 +86,7 @@ class PrintTicketApi(APIView):
 #Implpmptation using form and normal html request
 class MachineDisplay(LoginRequiredMixin, CreateView):
 	login_url = '/accounts/login/'
-	template_name ='queue_app/machine.html'
+	template_name ='queue_app/machine/machine.html'
 	model = Queue
 	form_class=forms.QueueModelForms
 	def get_context_data(self, **kwargs):
@@ -93,14 +94,32 @@ class MachineDisplay(LoginRequiredMixin, CreateView):
 		return super().get_context_data(**kwargs)
 	def get_success_url(self):
 		return reverse_lazy('queue:print_ticket_url', kwargs={'pk':self.object.id})
-
+	
 class PrintTicket(LoginRequiredMixin, DetailView):
 	login_url = '/accounts/login/'
-	template_name ='queue_app/placeholder_ticket.html'
+	template_name ='queue_app/machine/placeholder_ticket.html'
 	object_name = 'queue'
 	def get_queryset(self):
 		return Queue.objects.get_today_list()
+
+class BookingList(LoginRequiredMixin, ListView):
+	login_url = '/accounts/login/'
+	template_name ='queue_app/machine/placeholder_queues.html'
+	context_object_name = 'queues'
+	def get_queryset(self):
+		return Queue.objects.get_nonbooking()
 	
+class BookingListUpdate(LoginRequiredMixin, DetailView):
+	login_url = '/accounts/login/'
+	template_name ='queue_app/machine/placeholder_queues.html'
+	context_object_name = 'queues'
+	def get_queryset(self):
+		return Queue.objects.get_nonbooking()
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['queues']=self.get_queryset().filter(
+			date_created__gt=self.object.date_created)
+		return context
 	
 '''
 Manager...
@@ -114,17 +133,34 @@ componen:
 '''
 class ManagerDisplay(LoginRequiredMixin, ListView):
 	login_url = '/accounts/login/'
-	template_name='queue_app/manager.html'
+	template_name='queue_app/manager/manager.html'
 	model = Service
 	context_object_name = 'Services'
 	
+class AddBookingQueue(LoginRequiredMixin, CreateView):
+	login_url = '/accounts/login/'
+	template_name = 'queue_app/manager/add_booking_form.html'
+	model = Queue
+	form_class=forms.QueueModelForms
+	def get_success_url(self):
+		return reverse_lazy('queue:manager_url')
+	#debug
+	def post(self, request, *args, **kwargs):
+		return super().post(request, *args, **kwargs)
+	def get_context_data(self, **kwargs):
+		j=super().get_context_data( **kwargs)
+		return j
+	def get(self, request, *args, **kwargs):
+		j= super().get(request, *args, **kwargs)
+		return j
+	
 class QueuePerService(LoginRequiredMixin, DetailView):
 	login_url = '/accounts/login/'
-	template_name='queue_app/placeholder_queues.html'
+	template_name='queue_app/manager/placeholder_queues.html'
 	model = Service
 	def get_context_data(self, **kwargs):
 		context= super().get_context_data(**kwargs)
-		context['Queues'] = self.object.queues.get_today_list()
+		context['queues'] = self.object.queues.get_today_list()
 		return context
 '''
 API: Update Queue in manager list

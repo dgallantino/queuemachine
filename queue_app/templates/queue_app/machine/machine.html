@@ -1,0 +1,127 @@
+{% extends "queue_app/base.html" %}
+{% load static %}
+{% block title %}Machine{% endblock %}
+{% block stylesheet %}
+	<link href="{% static 'queue_app/css/machine.css'%}" rel="stylesheet" type="text/css">
+	<link href="{% static 'queue_app/css/simple-sidebar.css'%}" rel="stylesheet" type="text/css">	
+	<link href="{% static 'queue_app/css/placeholder_ticket.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'queue_app/js/cookies_manager.js' %}"></script>
+<script type="text/javascript">
+
+$("#menu-toggle").click(function(e) {
+    e.preventDefault();
+    $(".wrapper").toggleClass("toggled");
+    $("#button-icon").toggleClass("flip")    
+});
+
+
+$('body').on('submit','.add_queue_form', function(event){
+	event.preventDefault();	
+	$.ajax({
+		url : "{% url "queue:machine_url"  %}",
+		type : "POST",
+		dataType: 'html',
+		contentType: 'application/x-www-form-urlencoded',
+		data:$(this).serialize(),
+	})
+	.fail(function(xhr){
+		window.alert(xhr.status.toString());
+	})
+	.done(function(data){
+		console.log(data);
+		$('#section_to_print').html(data);
+	});
+});
+
+function get_queues(last_queue_id){
+	var url="";
+	if(last_queue_id){
+		url="{% url "queue:booking_list_update_url" services.last.id %}".replace(/{{ services.last.id }}/,last_queue_id);
+	}else{
+		url="{% url "queue:booking_list_url" %}";
+	}
+	$.ajax({
+		url : url,
+		type : "GET",
+		dataType: 'html'
+	})
+	.fail(function(xhr){
+		window.alert(xhr.status.toString());
+	})
+	.done(function(data){
+		$('#booking-list-body').append(data)
+	});
+}
+
+$('body').on('click','.booking-list-link',function(event){
+	event.preventDefault();
+	var print_queue_id = $(this).attr('id');
+	console.log(print_queue_id);
+	$.ajax({
+		url : "{% url "queue:print_ticket_url" services.last.id %}".replace(/{{ services.last.id }}/,print_queue_id),
+		type : "GET",
+		dataType: 'html',
+		contentType: 'application/x-www-form-urlencoded',
+	})
+	.fail(function(xhr){
+		window.alert(xhr.status.toString());
+	})
+	.done(function(data){
+		console.log(data);
+		$('#section_to_print').html(data);
+	});
+});
+
+$(document).ready(function(){
+	get_queues();
+});
+this.last_queue_id='';
+setInterval(function(){
+	var last_queue_id = $('#booking-list-body .list:last-child').children().attr('id');
+	this.last_queue_id = last_queue_id;
+	get_queues(last_queue_id);
+},10*1000);
+
+</script>
+{% endblock %}
+
+
+{% block content %}
+<div class="wrapper">
+    <div class="sidebar-wrapper text-white">
+    	<div class="sidebar-panel">
+	    	<div class="sidebar-brand">
+    			logo CAHAYA
+    		</div>
+    		<div class="list-header text-right" id="list-header">
+    			Booking List
+    			<hr class="white">
+    		</div>
+    		<div id="booking-list-body" class="list-body" >
+    		</div>
+    	</div>
+    </div>
+	<a href="#menu-toggle" class="btn btn-secondary sharp tetep" id="menu-toggle">
+		<i id="button-icon"class="fa fa-angle-double-right rotate"></i>
+	</a>
+    <div class="menu page-content-wrapper">
+		<table class="content_table">
+			{% for service in services %}
+			<form class="add_queue_form" id="{{ service.id }}">
+				<tr class="content_tr">
+					<td class="content_tr">
+						{% csrf_token %}
+						<input type="hidden" name="service" class="service_name" value="{{ service.id }}"/>
+						<input type="submit" class="content_button" value="{{ service }}" />
+					</td>
+				</tr>
+			</form>
+			{% endfor %}
+		</table>
+		<div id="section_to_print"></div>
+	</div>
+</div>
+{% endblock %}

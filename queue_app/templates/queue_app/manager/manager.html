@@ -10,14 +10,6 @@
 <script type="text/javascript">
 
 function loadNewQueues(service_id){
-	var csrftoken = getCookie('csrftoken');
-	$.ajaxSetup({
-        beforeSend: function(xhr, settings) {
-            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                xhr.setRequestHeader("X-CSRFToken", csrftoken);
-            }
-        }
-    });
     $.ajax({
     	url : request_url,
 		type : "GET",
@@ -89,7 +81,8 @@ $(document).ready(function(){
 	$('.collapse').each(function(){
 		var dom_id = $(this).attr('id')
 		var service_id = dom_id.replace('collapse_', '');
-		var url = "{% url "queue:queue_per_service_url" Services.last.id %}".replace(/{{Services.last.id}}/,service_id);
+		var url = "{% url "queue:queue_per_service_url" Services.last.id %}".replace(/service_id/,service_id);
+		//getting all the queues
 		$.ajax({
 	    	url : url,
 			type : "GET",

@@ -1,3 +1,4 @@
+
 .menu {
 	position: fixed;
 	width: 500px;
@@ -6,39 +7,47 @@
 	top: 20%;
 	transform: translate(-50%, 0);
 }
-.content_table{
+.menu .content_table{
 	width:100%;
 }
-.content_tr{
+.menu .content_tr{
 	padding:20px;
 }
-.content_td{
+.menu .content_td{
 }
 
 
-.content_button{
-	background-color: #b5ffca;
+.menu .content_button{
+	background-color: rgba(0,0,0,0);
 	border: none;
 	padding: 20px 32px;
-	text-align: bottom;
+	font-weight: 900;
+	text-align: top;
 	text-decoration: none;
+    text-transform: uppercase;
 	display: block;
-	font-size: 16px;
+	font-size: 30px;
+	line-height: 30px;
 	margin: auto;
 	cursor: pointer;
-	width:200px;
-	height:100px;
-    outline:none;
+	width: 80%;
+	height:70px;
+	color: rgb(197,36,48);
+    outline-color: rgb(197,36,48);
+    outline-style: solid;
+    outline-width: 2px;
+    -webkit-transition: all .5s ease;
+    -moz-transition: all .5s ease;
+	transition: all .5s ease;
+    
 }
 
-.content_button:active{
-    display:block;
-    background-color:gray;
-    color:white;
-    border: none;
-    outline:none;
+.menu .content_button:active, .menu .content_button:hover{
+    background-color: rgba(39,163,78,1);
+    color: rgba(0255,255,255,.8);
+    line-height: 30px;
+   	font-size: 40px;
 }
-
 
 /* making printed section invisibel */
 #section_to_print{

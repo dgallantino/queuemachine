@@ -1,0 +1,9 @@
+{% for queue in queues %}
+	<div class="list" id="list_{{ queue.id }}">
+		<a id="{{ queue.id }}" href="#menu-toggle" class="booking-list-link">
+			{{ queue.customer }}
+			<div>		{{ queue.booking_time|date:"H:i" }}
+			</div>
+		</a>
+	</div>
+{% endfor %}

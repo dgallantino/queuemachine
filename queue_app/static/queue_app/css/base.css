@@ -1,13 +1,13 @@
 .base_bg {
-	background-color: #EAD4F5;
+	background-color: #ffffff;
 }
-.overlay {
+/* .overlay {
 	background-color: rgba(0,0,0,0.80);
 	width: 100%;
 	height: 100%;
-}
+} */
 .corner_image {
-	background-image: url("../images/corner_flower.png");
+	/* background-image: url("../images/corner_flower.png"); */
 	background-position: right top;
 	background-repeat: no-repeat;
 }
