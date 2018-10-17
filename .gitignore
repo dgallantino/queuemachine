@@ -148,3 +148,4 @@ pip-selfcheck.json
 
 # End of https://www.gitignore.io/api/linux,python,django
 /.DS_Store
+/db.sqlite3.backup

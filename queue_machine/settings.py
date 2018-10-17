@@ -33,13 +33,13 @@ LOGIN_REDIRECT_URL = '/queuemachine/'
 # Application definition
 
 INSTALLED_APPS = [
-	'queue_app.apps.QueueAppConfig',
 	'django.contrib.admin',
 	'django.contrib.auth',
 	'django.contrib.contenttypes',
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
+	'queue_app',
 ]
 
 MIDDLEWARE = [
@@ -128,7 +128,7 @@ STATICFILES_FINDERS = (
 )
 
 #custom user model
-#AUTH_USER_MODEL = 'queue_app.User'
+AUTH_USER_MODEL = 'queue_app.User'
 
 # rest framework settings
 # REST_FRAMEWORK = {

@@ -24,7 +24,5 @@ urlpatterns = [
     path('', RedirectView.as_view(url='queuemachine/')),
     path('favicon.ico',RedirectView.as_view(url=settings.STATIC_URL+'queue_app/images/favicon.png')),
     path('admin/', admin.site.urls),
-    path('queuemachine/', include('queue_app.queue_urls')),
-    path('accounts/', include('django.contrib.auth.urls')),
-    
+    path('queuemachine/', include('queue_app.queue_urls')),    
 ]

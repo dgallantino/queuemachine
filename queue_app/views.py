@@ -10,7 +10,12 @@ class IndexView(TemplateView):
 	
 	def get(self, request, *args, **kwargs):
 		return TemplateView.get(self, request, *args, **kwargs)
-	
+
+class SignUp(CreateView):
+	form_class = forms.CustomUserCreationForm
+	success_url = reverse_lazy('queue:print_ticket_url')
+	template_name = 'registration/signup.html'
+
 '''
 Machine Display
 as in display that ticket booth uses
@@ -24,7 +29,7 @@ component
 
 #Implpmptation using form and normal html request
 class MachineDisplay(LoginRequiredMixin, CreateView):
-	login_url = '/accounts/login/'
+	login_url = '/queuemachine/login/'
 	template_name ='queue_app/machine/machine.html'
 	model = models.Queue
 	form_class=forms.QueueModelForms
@@ -35,21 +40,21 @@ class MachineDisplay(LoginRequiredMixin, CreateView):
 		return reverse_lazy('queue:print_ticket_url', kwargs={'pk':self.object.id})
 	
 class PrintTicket(LoginRequiredMixin, DetailView):
-	login_url = '/accounts/login/'
+	login_url = '/queuemachine/login/'
 	template_name ='queue_app/machine/placeholder_ticket.html'
 	object_name = 'queue'
 	def get_queryset(self):
 		return models.Queue.objects.get_today_list()
 
 class BookingList(LoginRequiredMixin, ListView):
-	login_url = '/accounts/login/'
+	login_url = '/queuemachine/login/'
 	template_name ='queue_app/machine/placeholder_queues.html'
 	context_object_name = 'queues'
 	def get_queryset(self):
 		return models.Queue.objects.get_nonbooking()
 	
 class BookingListUpdate(LoginRequiredMixin, DetailView):
-	login_url = '/accounts/login/'
+	login_url = '/queuemachine/login/'
 	template_name ='queue_app/machine/placeholder_queues.html'
 	context_object_name = 'queues'
 	def get_queryset(self):
@@ -71,13 +76,13 @@ componen:
 	-> POST: booking submition
 '''
 class ManagerDisplay(LoginRequiredMixin, ListView):
-	login_url = '/accounts/login/'
+	login_url = '/queuemachine/login/'
 	template_name='queue_app/manager/manager.html'
 	model = models.Service
 	context_object_name = 'Services'
 	
 class AddBookingQueue(LoginRequiredMixin, SuccessMessageMixin, CreateView):
-	login_url = '/accounts/login/'
+	login_url = '/queuemachine/login/'
 	template_name = 'queue_app/manager/add_booking_form.html'
 	model = models.Queue
 	form_class=forms.QueueModelForms
@@ -97,7 +102,7 @@ class AddBookingQueue(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 	#end-debug_code
 	
 class QueuePerService(LoginRequiredMixin, DetailView):
-	login_url = '/accounts/login/'
+	login_url = '/queuemachine/login/'
 	template_name='queue_app/manager/placeholder_queues.html'
 	model = models.Service
 	def get_context_data(self, **kwargs):

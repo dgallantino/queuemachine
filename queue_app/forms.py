@@ -4,9 +4,21 @@ Created on Oct 1, 2018
 @author: gallantino
 '''
 from django import forms
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from queue_app import models
 import datetime
 
+class CustomUserCreationForm(UserCreationForm):
+     
+    class Meta(UserCreationForm.Meta):
+        model = models.User
+        fields ='__all__'
+ 
+class CustomUserChangeForm(UserChangeForm):
+ 
+    class Meta:
+        model = models.User
+        fields = ('username', 'email')
 
 #repair booking_time field
 #use splitDateTimeWidget
@@ -34,6 +46,7 @@ class QueueModelForms(forms.ModelForm):
                 }
             )
         }
+        
     def save(self, commit=True):
         is_booking = self.cleaned_data.get('booking_flag', False)
     

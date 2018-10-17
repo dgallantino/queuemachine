@@ -1,0 +1,22 @@
+<!-- templates/registration/login.html -->
+{% extends 'queue_app/base.html' %}
+
+{% load static %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block stylesheet %}
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}
+
+{% block content %}
+<div class="login_menu">
+	<form id="login-form" method="post">
+	    {% csrf_token %}
+	    {{ form.as_p }}
+	    <button type="submit">Sign up</button>
+	</form>
+</div>
+{% endblock %}

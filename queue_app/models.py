@@ -1,19 +1,62 @@
 from django.db import models
 from datetime import date
+from django.contrib.auth.models import AbstractUser
 import uuid
-from django.contrib.auth.models import User
+	
 
-class ServiceQueryset(models.QuerySet):
-	"""docstring for ServiceQueryset."""
-	def get_last_queue(self):
-		return self.queues.last()
-
-class Service(models.Model):
+class Organization(models.Model):
+	id=models.UUIDField(
+		primary_key=True,
+		default=uuid.uuid4,
+		editable=False,
+	)
+	
+	name=models.CharField(max_length = 200)
+	
+	desc=models.CharField(max_length = 200)
+	
+	date_created=models.DateTimeField(auto_now_add=True)
+	
+	date_modified=models.DateTimeField(auto_now=True)
+	
+	
+	def __str__(self):
+		return self.name
+	
+class CounterBooth(models.Model):
 	
 	id=models.UUIDField(
-		primary_key=True, 
-		default=uuid.uuid4, 
-		editable=False)
+		primary_key=True,
+		default=uuid.uuid4,
+		editable=False,
+	)
+	
+	name=models.CharField(max_length = 200)
+	
+	desc=models.CharField(max_length = 200)
+	
+	date_created=models.DateTimeField(auto_now_add=True)
+	
+	date_modified=models.DateTimeField(auto_now=True)
+	
+	organization=models.ForeignKey(
+		Organization,
+		on_delete=models.CASCADE,
+		related_name='counter_booth',
+		null=True,
+		blank=False,
+	)
+	
+	def __str__(self):
+		return self.name
+	
+class Role(models.Model):
+	
+	id=models.UUIDField(
+		primary_key=True,
+		default=uuid.uuid4,
+		editable=False,
+	)
 	
 	name=models.CharField(max_length = 200)
 	
@@ -26,11 +69,31 @@ class Service(models.Model):
 	def __str__(self):
 		return self.name
 	
-class CounterBooth(models.Model):
-	
+class User(AbstractUser):
 	id=models.UUIDField(
 		primary_key=True,
 		default=uuid.uuid4,
+		editable=False)
+	
+	organization=models.ForeignKey(
+		Organization,
+		on_delete=models.CASCADE,
+		related_name='users'
+	)
+	
+	def __str__(self):
+		return self.email
+
+class ServiceQueryset(models.QuerySet):
+	"""docstring for ServiceQueryset."""
+	def get_last_queue(self):
+		return self.queues.last()
+
+class Service(models.Model):
+	
+	id=models.UUIDField(
+		primary_key=True, 
+		default=uuid.uuid4, 
 		editable=False)
 	
 	name=models.CharField(max_length = 200)
@@ -100,3 +163,4 @@ class Queue(models.Model):
 	
 	class Meta:
 		ordering=['date_created']
+		
