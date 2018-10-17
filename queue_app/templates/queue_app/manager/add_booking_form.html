@@ -1,10 +1,35 @@
 {% load static %}
-
-<form id="add-booking-form" action="{% url "queue:add_booking_url" %}" method="POST">
-	{% csrf_token %}
-	{{ form.service }}
-	{{ form.customer }}
-	{{ form.booking_time }}
-	{{ form.booking_time.errors }}	
-	<button type="submit">aoe</button>
-</form>
+<head>
+{{ form.media }}
+</head>
+<body>
+	{% if messages %}
+	<div id="form-success">
+		<ul class="messages">
+		    {% for message in messages %}
+		    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+		    {% endfor %}
+		</ul>
+	</div>
+	{% endif %}
+	
+	<form id="add-booking-form" action="{% url "queue:add_booking_url" %}" method="POST">
+		{% csrf_token %}
+		<div>{{ form.service }}</div>
+		<div>{{ form.customer }}</div>
+		<div>{{ form.booking_time }}</div>
+		<div>{{ form.booking_date }}</div>
+		<button type="submit">aoe</button>
+	</form>
+	
+	{% if form.errors %}
+	<div id="form-error">
+		<p>The operation could not be performed because one or more error(s) occurred.<br />Please resubmit the form after making the following changes:</p>
+		<ul>
+		{% for field in form %}
+			{% if field.errors %}<li>{{ field.errors|striptags }}</li>{% endif %}
+		{% endfor %}
+		</ul>
+	</div>
+	{% endif %}
+</body>

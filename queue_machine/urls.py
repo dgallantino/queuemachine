@@ -26,4 +26,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('queuemachine/', include('queue_app.queue_urls')),
     path('accounts/', include('django.contrib.auth.urls')),
+    
 ]

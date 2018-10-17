@@ -127,6 +127,9 @@ STATICFILES_FINDERS = (
 'django.contrib.staticfiles.finders.FileSystemFinder',
 )
 
+#custom user model
+#AUTH_USER_MODEL = 'queue_app.User'
+
 # rest framework settings
 # REST_FRAMEWORK = {
 #     'DEFAULT_RENDERER_CLASSES': (

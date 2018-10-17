@@ -10,6 +10,7 @@ urlpatterns = [
     path('machine/booking-list/<uuid:pk>/',views.BookingListUpdate.as_view(), name='booking_list_update_url'),
     path('machine/print-ticket/<uuid:pk>/', views.PrintTicket.as_view(), name='print_ticket_url'),
     path('manager/',views.ManagerDisplay.as_view(), name='manager_url'),
+    path('manager/javascript_catalog', views.i18n_javascript, name='javascript_catalog_url'),
     path('manager/queues/service/<uuid:pk>/', views.QueuePerService.as_view(), name='queue_per_service_url'),
     path('manager/queues/add-booking/', views.AddBookingQueue.as_view(), name='add_booking_url'),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
