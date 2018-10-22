@@ -5,11 +5,11 @@ Created on Oct 1, 2018
 '''
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from queue_app import models
+from queue_app import models, widgets
 import datetime
 
 class CustomUserCreationForm(UserCreationForm):
-     
+    
     class Meta(UserCreationForm.Meta):
         model = models.User
         fields ='__all__'
@@ -20,32 +20,20 @@ class CustomUserChangeForm(UserChangeForm):
         model = models.User
         fields = ('username', 'email')
 
-#repair booking_time field
-#use splitDateTimeWidget
 class QueueModelForms(forms.ModelForm):
-    booking_time=forms.TimeField(initial= datetime.datetime.now())
-    booking_date=forms.DateField(initial= datetime.datetime.now())
-
-    def __init__(self, *args, **kwargs):
-        super(QueueModelForms, self).__init__(*args, **kwargs)
-        # Making customer required
-        self.fields['customer'].required = True
+    booking_time=forms.TimeField(
+        required=False,
+        widget=widgets.TimePicker(format='%H:%M',)
+    )
+    booking_date=forms.DateField(
+        initial= datetime.datetime.now(),
+        required=False,
+        widget=widgets.DatePicker(format='%d %b %Y',)
+    )
 
     class Meta:
         model=models.Queue
         fields='__all__'
-        widgets={
-            'booking_time':forms.TimeInput(
-                attrs={
-                    'class':'time_field',
-                }
-            ),
-            'booking_date':forms.DateInput(
-                attrs={
-                    'class':'date_field',
-                }
-            )
-        }
         
     def save(self, commit=True):
         is_booking = self.cleaned_data.get('booking_flag', False)
@@ -57,17 +45,21 @@ class QueueModelForms(forms.ModelForm):
             recent_queue = models.Queue.objects.get_nonbooking().filter(service=self.cleaned_data.get('service')).last()
             
         #create new queue obj
-        self.cleaned_data['booking_datetime'] = datetime.datetime.combine(
-            self.cleaned_data.pop('booking_date'),
-            self.cleaned_data.pop('booking_time')
-        )
-        new_queue = models.Queue(**self.cleaned_data)
+        try:
+            #get booking data
+            self.cleaned_data['booking_datetime'] = datetime.datetime.combine(
+                self.cleaned_data.pop('booking_date'),
+                self.cleaned_data.pop('booking_time')
+            )   
+        except Exception:
+            #when booking date and time not found
+            self.cleaned_data['booking_datetime'] = None
+
+        new_queue = super().save(commit=False)
         
         #define queue number automaticly
-        if recent_queue:
-            new_queue.number = recent_queue.number+1
-        else :
-            new_queue.number = 1
+        if self.cleaned_data.pop('booking_flag'):
+            new_queue.number = recent_queue.number+1 if recent_queue else 1 
             
         #save when commited
         if commit:

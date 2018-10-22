@@ -1,7 +1,7 @@
 from queue_app import forms, models
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import ListView, DetailView, TemplateView
 from django.urls.base import reverse_lazy
 
@@ -38,11 +38,14 @@ class MachineDisplay(LoginRequiredMixin, CreateView):
 		return super().get_context_data(**kwargs)
 	def get_success_url(self):
 		return reverse_lazy('queue:print_ticket_url', kwargs={'pk':self.object.id})
+	def form_invalid(self, form):
+		return CreateView.form_invalid(self, form)
 	
-class PrintTicket(LoginRequiredMixin, DetailView):
+class PrintTicket(LoginRequiredMixin, UpdateView):
 	login_url = '/queuemachine/login/'
 	template_name ='queue_app/machine/placeholder_ticket.html'
 	object_name = 'queue'
+	form_class=forms.QueueModelForms
 	def get_queryset(self):
 		return models.Queue.objects.get_today_list()
 

@@ -1,11 +1,10 @@
-from django.urls import path, include
+from django.urls import path
 from queue_app import views
 from django.conf import settings
 from django.conf.urls.static import static
 
 app_name='queue'
 urlpatterns = [
-    path('', include('django.contrib.auth.urls')),
     path('signup/', views.SignUp.as_view()),
     path('machine/',views.MachineDisplay.as_view(), name='machine_url'),
     path('machine/booking-list/',views.BookingList.as_view(), name='booking_list_url'),

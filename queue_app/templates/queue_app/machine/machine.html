@@ -2,14 +2,39 @@
 {% load static %}
 {% block title %}Machine{% endblock %}
 {% block stylesheet %}
-	<link href="{% static 'queue_app/css/machine.css'%}" rel="stylesheet" type="text/css">
-	<link href="{% static 'queue_app/css/simple-sidebar.css'%}" rel="stylesheet" type="text/css">	
-	<link href="{% static 'queue_app/css/placeholder_ticket.css' %}" rel="stylesheet" type="text/css">
+	<link href="{% static 'queue_app/core/css/machine.css'%}" rel="stylesheet" type="text/css">
+	<link href="{% static 'queue_app/core/css/simple-sidebar.css'%}" rel="stylesheet" type="text/css">
 {% endblock %}
-
-{% block javascript %}
-<script src="{% static 'queue_app/js/cookies_manager.js' %}"></script>
+{% block head_script %}
 <script type="text/javascript">
+
+</script>
+{% endblock %}
+{% block javascript %}
+<script src="{% static 'queue_app/core/js/cookies_manager.js' %}"></script>
+<script type="text/javascript">
+//separatable
+function PrintTicket(data) {//nice
+    var contents = data;
+    var frame1 = document.createElement('iframe');
+    frame1.name = "frame1";
+    frame1.style.position = "absolute";
+    frame1.style.top = "-1000000px";
+    document.body.appendChild(frame1);
+    var frameDoc = frame1.contentWindow ? frame1.contentWindow : frame1.contentDocument.document ? frame1.contentDocument.document : frame1.contentDocument;
+    frameDoc.document.open();
+    frameDoc.document.write('<html><head><title>DIV Contents</title>');
+    frameDoc.document.write('</head><body>');
+    frameDoc.document.write(contents);
+    frameDoc.document.write('</body></html>');
+    frameDoc.document.close();
+    setTimeout(function () {
+        window.frames["frame1"].focus();
+        window.frames["frame1"].print();
+        document.body.removeChild(frame1);
+    }, 500);
+    return false;
+}
 
 $("#menu-toggle").click(function(e) {
     e.preventDefault();
@@ -28,11 +53,13 @@ $('body').on('submit','.add_queue_form', function(event){
 		data:$(this).serialize(),
 	})
 	.fail(function(xhr){
-		window.alert(xhr.status.toString());
+		var error_message = "AJAX Err:\n";
+		error_message += "["+xhr.status.toString()+"] : ";
+		error_message += xhr.statusText;
+		window.alert(error_message);
 	})
 	.done(function(data){
-		console.log(data);
-		$('#section_to_print').html(data);
+	    PrintTicket(data);	    
 	});
 });
 
@@ -49,7 +76,10 @@ function get_queues(last_queue_id){
 		dataType: 'html'
 	})
 	.fail(function(xhr){
-		window.alert(xhr.status.toString());
+		var error_message = "AJAX Err:\n";
+		error_message += "["+xhr.status.toString()+"] : ";
+		error_message += xhr.statusText;
+		window.alert(error_message);
 	})
 	.done(function(data){
 		$('#booking-list-body').append(data)
@@ -67,11 +97,13 @@ $('body').on('click','.booking-list-link',function(event){
 		contentType: 'application/x-www-form-urlencoded',
 	})
 	.fail(function(xhr){
-		window.alert(xhr.status.toString());
+		var error_message = "AJAX Err:\n";
+		error_message += "["+xhr.status.toString()+"] : ";
+		error_message += xhr.statusText;
+		window.alert(error_message);	
 	})
 	.done(function(data){
-		console.log(data);
-		$('#section_to_print').html(data);
+	    PrintTicket(data);	    
 	});
 });
 
@@ -79,11 +111,11 @@ $(document).ready(function(){
 	get_queues();
 });
 this.last_queue_id='';
-setInterval(function(){
-	var last_queue_id = $('#booking-list-body .list:last-child').children().attr('id');
-	this.last_queue_id = last_queue_id;
-	get_queues(last_queue_id);
-},10*1000);
+{#setInterval(function(){#}
+{#	var last_queue_id = $('#booking-list-body .list:last-child').children().attr('id');#}
+{#	this.last_queue_id = last_queue_id;#}
+{#	get_queues(last_queue_id);#}
+{#},50*1000);#}
 
 </script>
 {% endblock %}

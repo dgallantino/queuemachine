@@ -1,5 +1,6 @@
 {% load static %}
 <head>
+<script src="{% static 'queue_app/js/jquery.js' %}"></script>
 {{ form.media }}
 </head>
 <body>
@@ -32,4 +33,17 @@
 		</ul>
 	</div>
 	{% endif %}
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#id_booking_time').timepicker({
+    	timeFormat: 'HH:mm',
+    	dropdown: false,
+    });
+    $( "#id_booking_date" ).datepicker({
+    	showOn: "button",
+		buttonText: "Select date",
+		dateFormat:"d M, y",
+    });
+});
+</script>
 </body>
