@@ -98,6 +98,14 @@ class Service(models.Model):
 		default=uuid.uuid4, 
 		editable=False)
 	
+	organization=models.ForeignKey(
+		Organization,
+		on_delete=models.CASCADE,
+		related_name='service',
+		null=True,
+		blank=False,
+		)
+	
 	name=models.CharField(max_length = 200)
 	
 	desc=models.CharField(max_length = 200)

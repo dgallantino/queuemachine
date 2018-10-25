@@ -130,6 +130,11 @@ STATICFILES_FINDERS = (
 #custom user model
 AUTH_USER_MODEL = 'queue_app.User'
 
+USE_L10N = False
+DATE_INPUT_FORMATS = ('%d-%m-%Y','%Y-%m-%d')
+
+
+
 # rest framework settings
 # REST_FRAMEWORK = {
 #     'DEFAULT_RENDERER_CLASSES': (

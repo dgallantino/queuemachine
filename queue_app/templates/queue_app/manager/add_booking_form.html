@@ -1,6 +1,6 @@
 {% load static %}
 <head>
-<script src="{% static 'queue_app/js/jquery.js' %}"></script>
+<script src="{% static 'queue_app/jquery/jquery.js' %}"></script>
 {{ form.media }}
 </head>
 <body>
@@ -15,7 +15,8 @@
 	{% endif %}
 	
 	<form id="add-booking-form" action="{% url "queue:add_booking_url" %}" method="POST">
-		{% csrf_token %}
+		{% csrf_token %}		
+		<input type="hidden" name="booking_flag" value="on"/>
 		<div>{{ form.service }}</div>
 		<div>{{ form.customer }}</div>
 		<div>{{ form.booking_time }}</div>
@@ -42,7 +43,7 @@ $(document).ready(function(){
     $( "#id_booking_date" ).datepicker({
     	showOn: "button",
 		buttonText: "Select date",
-		dateFormat:"d M, y",
+		dateFormat:"d-m-yy",
     });
 });
 </script>

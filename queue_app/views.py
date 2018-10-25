@@ -5,6 +5,8 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import ListView, DetailView, TemplateView
 from django.urls.base import reverse_lazy
 
+
+#todos: add number on print not on creation
 class IndexView(TemplateView):
 	template_name = 'queue_app/index.html'
 	
@@ -34,18 +36,28 @@ class MachineDisplay(LoginRequiredMixin, CreateView):
 	model = models.Queue
 	form_class=forms.QueueModelForms
 	def get_context_data(self, **kwargs):
-		kwargs['services'] = models.Service.objects.all()
+		org = self.request.user.organization
+		kwargs['services'] = org.service.all()
 		return super().get_context_data(**kwargs)
 	def get_success_url(self):
 		return reverse_lazy('queue:print_ticket_url', kwargs={'pk':self.object.id})
 	def form_invalid(self, form):
 		return CreateView.form_invalid(self, form)
 	
-class PrintTicket(LoginRequiredMixin, UpdateView):
+class PrintBookingTicket(LoginRequiredMixin, UpdateView):
 	login_url = '/queuemachine/login/'
 	template_name ='queue_app/machine/placeholder_ticket.html'
 	object_name = 'queue'
 	form_class=forms.QueueModelForms
+	def get_queryset(self):
+		return models.Queue.objects.get_today_list()
+	def get_success_url(self):
+		return reverse_lazy('queue:print_ticket_url', kwargs={'pk':self.object.id})
+	
+class PrintTicket(LoginRequiredMixin, DetailView):
+	login_url = '/queuemachine/login/'
+	template_name ='queue_app/machine/placeholder_ticket.html'
+	object_name = 'queue'
 	def get_queryset(self):
 		return models.Queue.objects.get_today_list()
 
@@ -70,7 +82,7 @@ class BookingListUpdate(LoginRequiredMixin, DetailView):
 	
 '''
 Manager...
-...to manage queue like calling delete and shit
+...to manage queue like calling, delete and shit
 componen:
 - Manager Display
 	-> Context: list of services(with its related queues)
@@ -102,6 +114,12 @@ class AddBookingQueue(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 	def get(self, request, *args, **kwargs):
 		debug= super().get(request, *args, **kwargs)
 		return debug
+	def form_valid(self, form):
+		print(form.has_changed())
+		return SuccessMessageMixin.form_valid(self, form)
+	def form_invalid(self, form):
+		print(form.has_changed())
+		return CreateView.form_invalid(self, form)
 	#end-debug_code
 	
 class QueuePerService(LoginRequiredMixin, DetailView):

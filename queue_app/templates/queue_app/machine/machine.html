@@ -11,10 +11,16 @@
 </script>
 {% endblock %}
 {% block javascript %}
-<script src="{% static 'queue_app/core/js/cookies_manager.js' %}"></script>
+{#<script src="{% static 'queue_app/core/js/cookies_manager.js' %}"></script>#}
 <script type="text/javascript">
-//separatable
-function PrintTicket(data) {//nice
+
+$("#menu-toggle").click(function(e) {
+    e.preventDefault();
+    $(".wrapper").toggleClass("toggled");
+    $("#button-icon").toggleClass("flip")    
+});
+
+function PrintTicket(data) {
     var contents = data;
     var frame1 = document.createElement('iframe');
     frame1.name = "frame1";
@@ -35,13 +41,6 @@ function PrintTicket(data) {//nice
     }, 500);
     return false;
 }
-
-$("#menu-toggle").click(function(e) {
-    e.preventDefault();
-    $(".wrapper").toggleClass("toggled");
-    $("#button-icon").toggleClass("flip")    
-});
-
 
 $('body').on('submit','.add_queue_form', function(event){
 	event.preventDefault();	
@@ -86,15 +85,16 @@ function get_queues(last_queue_id){
 	});
 }
 
-$('body').on('click','.booking-list-link',function(event){
+$('body').on('submit','.print-booking-form',function(event){
 	event.preventDefault();
 	var print_queue_id = $(this).attr('id');
 	console.log(print_queue_id);
 	$.ajax({
-		url : "{% url "queue:print_ticket_url" services.last.id %}".replace(/{{ services.last.id }}/,print_queue_id),
-		type : "GET",
+		url : "{% url "queue:booking_print_url" services.last.id %}".replace(/{{ services.last.id }}/,print_queue_id),
+		type : "POST",
 		dataType: 'html',
 		contentType: 'application/x-www-form-urlencoded',
+		data:$(this).serialize(),
 	})
 	.fail(function(xhr){
 		var error_message = "AJAX Err:\n";
@@ -103,19 +103,21 @@ $('body').on('click','.booking-list-link',function(event){
 		window.alert(error_message);	
 	})
 	.done(function(data){
+		console.log(data);
 	    PrintTicket(data);	    
 	});
 });
+
 
 $(document).ready(function(){
 	get_queues();
 });
 this.last_queue_id='';
-{#setInterval(function(){#}
-{#	var last_queue_id = $('#booking-list-body .list:last-child').children().attr('id');#}
-{#	this.last_queue_id = last_queue_id;#}
-{#	get_queues(last_queue_id);#}
-{#},50*1000);#}
+setInterval(function(){
+	var last_queue_id = $('#booking-list-body .list:last-child').children().attr('id');
+	this.last_queue_id = last_queue_id;
+	get_queues(last_queue_id);
+},60*5*1000);
 
 </script>
 {% endblock %}
@@ -147,6 +149,7 @@ this.last_queue_id='';
 					<td class="content_tr">
 						{% csrf_token %}
 						<input type="hidden" name="service" class="service_name" value="{{ service.id }}"/>
+						<input type="hidden" name="print_flag" class="service_name" value="on"/>
 						<input type="submit" class="content_button" value="{{ service }}" />
 					</td>
 				</tr>

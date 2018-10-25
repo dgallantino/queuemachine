@@ -1,9 +1,15 @@
 {% for queue in queues %}
 	<div class="list" id="list_{{ queue.id }}">
-		<a id="{{ queue.id }}" href="#menu-toggle" class="booking-list-link">
-			{{ queue.customer }}
-			<div>		{{ queue.booking_time|date:"H:i" }}
-			</div>
-		</a>
+		<form id="{{ queue.id }}"class="print-booking-form">
+			{% csrf_token %}
+			<input type="hidden" name="service" value="{{ queue.service.id }}"/>
+			<input type="hidden" name="customer" value="{{ queue.customer.id|default:"" }}"/>
+			<input type="hidden" name="booking_time" value="{{ queue.booking_time|default:"" }}"/>
+			<input type="hidden" name="print_flag" value="on"/>
+			<input type="hidden" name="booking_flag" value="on"/>
+			<input type="submit"/>
+			<div><p>{{ queue.customer }}</p></div>
+			<div>{{ queue.booking_time|date:"H:i" }}</div>
+		</form>
 	</div>
 {% endfor %}
