@@ -3,6 +3,7 @@ from datetime import date
 from django.contrib.auth.models import AbstractUser
 import uuid
 	
+#todos:
 
 class Organization(models.Model):
 	id=models.UUIDField(
@@ -73,7 +74,8 @@ class User(AbstractUser):
 	id=models.UUIDField(
 		primary_key=True,
 		default=uuid.uuid4,
-		editable=False)
+		editable=False
+	)
 	
 	organization=models.ForeignKey(
 		Organization,
@@ -96,15 +98,16 @@ class Service(models.Model):
 	id=models.UUIDField(
 		primary_key=True, 
 		default=uuid.uuid4, 
-		editable=False)
+		editable=False
+	)
 	
 	organization=models.ForeignKey(
 		Organization,
 		on_delete=models.CASCADE,
-		related_name='service',
+		related_name='services',
 		null=True,
 		blank=False,
-		)
+	)
 	
 	name=models.CharField(max_length = 200)
 	
@@ -117,15 +120,25 @@ class Service(models.Model):
 	def __str__(self):
 		return self.name
 
+
 class QueueQueryset(models.QuerySet):
-	def get_today_list(self):
+	def printed(self):
+		return self.filter(print_flag=True)
+	
+	def not_printed(self):
+		return self.filter(print_flag=False)
+	
+	def get_today(self):
 		return self.filter(date_created__date=date.today())
 	
-	def get_nonbooking(self):
-		return self.get_today_list().filter(booking_flag=False)
+	def nonbooking(self):
+		return self.get_today().filter(booking_flag=False)
 	
-	def get_booking(self):
-		return self.get_today_list().filter(booking_flag=True)
+	def booking(self):
+		return self.get_today().filter(booking_flag=True)
+	
+	def services_filter(self, iterable):
+		return self.filter(service__in=iterable)
 
 class Queue(models.Model):
 	service=models.ForeignKey(
@@ -179,5 +192,5 @@ class Queue(models.Model):
 		return self.service.name+'/'+str(self.number)+'/'+str(self.pk)
 	
 	class Meta:
-		ordering=['date_created']
+		ordering=['date_modified']
 		

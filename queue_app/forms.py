@@ -6,8 +6,7 @@ Created on Oct 1, 2018
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from queue_app import models, widgets
-import datetime
-
+from datetime import datetime
 class CustomUserCreationForm(UserCreationForm):
     
     class Meta(UserCreationForm.Meta):
@@ -21,45 +20,74 @@ class CustomUserChangeForm(UserChangeForm):
         fields = '__all__'
 
 class QueueModelForms(forms.ModelForm):
+    
     booking_time=forms.TimeField(
+        label="Booking Time",
+        initial= datetime.now(),
         required=False,
-        widget=widgets.TimePicker(format='%H:%M',)
+        widget=widgets.TimePicker(
+            format='%H:%M',
+            attrs={
+                'id':'booking-time',
+                'class':'input-field',
+            },
+        ),
     )
+    
     booking_date=forms.DateField(
-        initial= datetime.datetime.now(),
+        label="Booking Date",
+        initial= datetime.now(),
         required=False,
-        widget=widgets.DatePicker(format='%d-%m-%Y',)
+        widget=widgets.DatePicker(
+            format='%d-%m-%Y',
+            attrs={
+                'id':'booking-date',
+                'class':'input-field',
+            },
+        ),
     )
 
     class Meta:
         model=models.Queue
+        
         fields='__all__'
         
-    def save(self, commit=True):    
+        widgets={
+            'service':forms.Select(
+                attrs={
+                    'id':'service',
+                    'class':'select-input',
+                },
+            ),
+        }
+        
+    def save(self, commit=True):
+        #get models.Queue isntance to create or update
+        new_queue = super(QueueModelForms,self).save(commit=False)  
+        
         #get latest queue
+        recent_queue_queryset=models.Queue.objects.filter(service=self.cleaned_data.get('service')).printed()
         if self.cleaned_data.get('booking_flag', False):
-            recent_queue = models.Queue.objects.get_booking().filter(service=self.cleaned_data.get('service')).last()
+            recent_queue = recent_queue_queryset.booking().last()
         else:
-            recent_queue = models.Queue.objects.get_nonbooking().filter(service=self.cleaned_data.get('service')).last()
+            recent_queue = recent_queue_queryset.nonbooking().last()
             
         #create new queue obj
         try:
             #get booking data
             if not self.cleaned_data.get('booking_datetime'):
-                self.cleaned_data['booking_datetime'] = datetime.datetime.combine(
+                new_queue.booking_datetime = datetime.combine(
                     self.cleaned_data.pop('booking_date'),
                     self.cleaned_data.pop('booking_time')
-                )   
+                )                
         except Exception:
             #when booking date and time input not found
-            self.cleaned_data['booking_datetime'] = None
-
-        new_queue = super().save(commit=False)
-        
+            new_queue.booking_datetime = None
+                
         #define queue number automaticly
         if self.cleaned_data.pop('print_flag'):
-            new_queue.number = recent_queue.number+1 if recent_queue.number else 1 
-            
+            new_queue.number= (getattr(recent_queue, 'number', 0) or 0)+1
+        
         #save when commited
         if commit:
             new_queue.save()

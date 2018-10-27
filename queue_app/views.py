@@ -6,7 +6,9 @@ from django.views.generic import ListView, DetailView, TemplateView
 from django.urls.base import reverse_lazy
 
 
-#todos: add number on print not on creation
+#todos: 
+#filter everything based on user.organization
+
 class IndexView(TemplateView):
 	template_name = 'queue_app/index.html'
 	
@@ -19,7 +21,7 @@ class SignUp(CreateView):
 	template_name = 'registration/signup.html'
 
 '''
-Machine Display
+Machine Display view
 as in display that ticket booth uses
 component
 - MachineDisplay (page)
@@ -35,49 +37,55 @@ class MachineDisplay(LoginRequiredMixin, CreateView):
 	template_name ='queue_app/machine/machine.html'
 	model = models.Queue
 	form_class=forms.QueueModelForms
-	def get_context_data(self, **kwargs):
-		org = self.request.user.organization
-		kwargs['services'] = org.service.all()
-		return super().get_context_data(**kwargs)
 	def get_success_url(self):
 		return reverse_lazy('queue:print_ticket_url', kwargs={'pk':self.object.id})
 	def form_invalid(self, form):
 		return CreateView.form_invalid(self, form)
 	
+#booking entry is updated right before printing
+#so the number is sorted based on time it was printed
 class PrintBookingTicket(LoginRequiredMixin, UpdateView):
 	login_url = '/queuemachine/login/'
 	template_name ='queue_app/machine/placeholder_ticket.html'
 	object_name = 'queue'
 	form_class=forms.QueueModelForms
 	def get_queryset(self):
-		return models.Queue.objects.get_today_list()
+		services = self.request.user.organization.services.all()
+		return models.Queue.objects.services_filter(services).booking()
 	def get_success_url(self):
 		return reverse_lazy('queue:print_ticket_url', kwargs={'pk':self.object.id})
+	def form_invalid(self, form):
+		return UpdateView.form_invalid(self, form)
 	
 class PrintTicket(LoginRequiredMixin, DetailView):
 	login_url = '/queuemachine/login/'
 	template_name ='queue_app/machine/placeholder_ticket.html'
 	object_name = 'queue'
-	def get_queryset(self):
-		return models.Queue.objects.get_today_list()
+	model=models.Queue
+# 	def get_queryset(self):
+# 		services = self.request.user.organization.services.all()
+# 		return models.Queue.objects.services_filter(iterable=services).printed()
 
 class BookingList(LoginRequiredMixin, ListView):
 	login_url = '/queuemachine/login/'
 	template_name ='queue_app/machine/placeholder_queues.html'
 	context_object_name = 'queues'
 	def get_queryset(self):
-		return models.Queue.objects.get_nonbooking()
+		services = self.request.user.organization.services.all()
+		return models.Queue.objects.services_filter(services).booking().not_printed()
 	
 class BookingListUpdate(LoginRequiredMixin, DetailView):
 	login_url = '/queuemachine/login/'
 	template_name ='queue_app/machine/placeholder_queues.html'
 	context_object_name = 'queues'
 	def get_queryset(self):
-		return models.Queue.objects.get_nonbooking()
+		services = self.request.user.organization.services.all()
+		return models.Queue.objects.services_filter(services).booking().not_printed()
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		context['queues']=self.get_queryset().filter(
-			date_created__gt=self.object.date_created)
+			date_created__gt=self.object.date_created
+			).get_not_printed()
 		return context
 	
 '''
@@ -115,10 +123,8 @@ class AddBookingQueue(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 		debug= super().get(request, *args, **kwargs)
 		return debug
 	def form_valid(self, form):
-		print(form.has_changed())
 		return SuccessMessageMixin.form_valid(self, form)
 	def form_invalid(self, form):
-		print(form.has_changed())
 		return CreateView.form_invalid(self, form)
 	#end-debug_code
 	

@@ -3,12 +3,12 @@
       /* paper size */
       width: 70mm;
       margin: 5mm;
-      height: auto;
+      height: 70mm;
       border: solid;
     }
     body{
       width: 70mm;
-      height: auto;
+      height: 70mm;
       border: solid;
     }
     div{
