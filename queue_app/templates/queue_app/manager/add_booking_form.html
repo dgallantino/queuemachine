@@ -17,10 +17,13 @@
 	<form id="add-booking-form" action="{% url "queue:add_booking_url" %}" method="POST">
 		{% csrf_token %}		
 		<input type="hidden" name="booking_flag" value="on"/>
-		<label for="your_name">{{ form.service.label }} </label>
+		<label for="service">{{ form.service.label }} </label>
 		<div>{{ form.service }}</div>
+		<label for="id_customer">{{ form.customer.label }} </label>
 		<div>{{ form.customer }}</div>
+		<label for="booking-time">{{ form.booking_time.label }} </label>
 		<div>{{ form.booking_time }}</div>
+		<label for="booking-date">{{ form.booking_date.label }} </label>
 		<div>{{ form.booking_date }}</div>
 		<button type="submit">aoe</button>
 	</form>
