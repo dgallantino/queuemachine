@@ -186,6 +186,8 @@ class Queue(models.Model):
 	
 	print_flag=models.BooleanField(default=False)
 	
+	print_datetime=models.DateTimeField(null=True, blank=True)
+	
 	objects=QueueQueryset.as_manager()
 	
 	def __str__(self):
