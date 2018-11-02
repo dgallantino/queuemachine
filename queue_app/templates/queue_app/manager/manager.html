@@ -81,7 +81,7 @@ $(document).ready(function(){
 	$('.collapse').each(function(){
 		var dom_id = $(this).attr('id')
 		var service_id = dom_id.replace('collapse_', '');
-		var url = "{% url "queue:queue_per_service_url" Services.last.id %}".replace(/service_id/,service_id);
+		var url = "{% url "queue:queue_per_service_url" services.last.id %}".replace(/{{ services.last.id }}/,service_id);
 		//getting all the queues
 		$.ajax({
 	    	url : url,
@@ -112,16 +112,16 @@ $(document).ready(function(){
 	<div class="clearfix">
 	</div> 
 	<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-		{% for Service in Services %}
+		{% for service in services %}
 		<div class="panel panel-default">
-			<div class="panel-heading" id="heading_{{ Service.id }}" role="tab" >
+			<div class="panel-heading" id="heading_{{ service.id }}" role="tab" >
 				<h4 class="panel-title">
-					<a role="button" data-toggle="collapse" data-parent="#accordion" data-target="#collapse_{{ Service.id }}" aria-expanded="false" aria-controls="collapse_{{ Service.id }}">
-						{{ Service }}
+					<a role="button" data-toggle="collapse" data-parent="#accordion" data-target="#collapse_{{ service.id }}" aria-expanded="false" aria-controls="collapse_{{ service.id }}">
+						{{ service }}
 					</a>
 				</h4>
 			</div>
-			<div id="collapse_{{ Service.id }}" class="collapse panel-collapse in" role="tabpanel" aria-labelledby="heading_{{ Service.id }}">
+			<div id="collapse_{{ service.id }}" class="collapse panel-collapse in" role="tabpanel" aria-labelledby="heading_{{ service.id }}">
 			</div>
 		</div>
 		{% endfor %}

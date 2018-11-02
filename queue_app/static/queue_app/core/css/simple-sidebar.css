@@ -64,19 +64,19 @@ body {
 }
 
 
-.sidebar-panel p {
+.sidebar-panel a {
   display: block;
   text-decoration: none;
   color: #fff;
 }
 
-.sidebar-panel p:hover {
+.sidebar-panel a:hover {
   text-decoration: none;
   color: #fff;
   background: rgba(255, 255, 255, 0.2);
 }
 
-.sidebar-panel p:active, .sidebar-panel  p:focus {
+.sidebar-panel a:active, .sidebar-panel  a:focus {
   text-decoration: none;
 }
 

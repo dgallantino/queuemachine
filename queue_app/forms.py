@@ -60,6 +60,11 @@ class QueueModelForms(forms.ModelForm):
                 },
             ),
         }
+    
+    class Media:
+        css={
+            'all':('queue_app/core/css/add_booking_form.css',),
+        }
         
     def save(self, commit=True):
         #get models.Queue isntance to create or update

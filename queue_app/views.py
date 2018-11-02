@@ -101,15 +101,22 @@ componen:
 class ManagerDisplay(LoginRequiredMixin, ListView):
 	login_url = '/queuemachine/login/'
 	template_name='queue_app/manager/manager.html'
-	model = models.Service
-	context_object_name = 'Services'
+	context_object_name = 'services'
+	def get_queryset(self):
+		return self.request.user.organization.services.all()
+	
+class UserLookupView(LoginRequiredMixin, ListView):
+	lodin_url = '/queuemachine/login/'
+	template_name = 'queue_app/manager/user_lookup.html'
+	context_object_name= 'users'
+	
 	
 class AddBookingQueue(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 	login_url = '/queuemachine/login/'
 	template_name = 'queue_app/manager/add_booking_form.html'
 	model = models.Queue
 	form_class=forms.QueueModelForms
-	success_message = "%(customer)s booking was created"
+	success_message = "booking was created"
 	def get_success_url(self):
 		return reverse_lazy('queue:add_booking_url')
 	#debug_code
