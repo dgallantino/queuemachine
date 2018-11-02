@@ -5,7 +5,6 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import ListView, DetailView, TemplateView
 from django.urls.base import reverse_lazy
 from dal import autocomplete
-from dal_select2.views import Select2QuerySetView
 
 
 
@@ -108,7 +107,7 @@ class ManagerDisplay(LoginRequiredMixin, ListView):
 	def get_queryset(self):
 		return self.request.user.organization.services.all()
 	
-class UserLookupView(LoginRequiredMixin, Select2QuerySetView):
+class UserLookupView(LoginRequiredMixin, autocomplete.Select2QuerySetView):
 	lodin_url = '/queuemachine/login/'
 	template_name = 'queue_app/manager/user_lookup.html'
 	context_object_name= 'users'

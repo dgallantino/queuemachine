@@ -6,6 +6,7 @@ Created on Oct 1, 2018
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from queue_app import models, widgets
+from dal import autocomplete
 from datetime import datetime
 class CustomUserCreationForm(UserCreationForm):
     
@@ -62,6 +63,9 @@ class QueueModelForms(forms.ModelForm):
                     'id':'service',
                     'class':'select-input',
                 },
+            ),
+            'customer':autocomplete.ModelSelect2(
+                url = 'queue:user_lookup_url',
             ),
         }
     
