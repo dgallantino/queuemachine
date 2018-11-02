@@ -41,6 +41,8 @@ INSTALLED_APPS = [
 	'django.contrib.staticfiles',
 	'queue_app',
 	'widget_tweaks',
+	'dal',
+	'dal_select2',
 ]
 
 MIDDLEWARE = [

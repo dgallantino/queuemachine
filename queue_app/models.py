@@ -194,5 +194,5 @@ class Queue(models.Model):
 		return self.service.name+'/'+str(self.number)+'/'+str(self.pk)
 	
 	class Meta:
-		ordering=['date_modified']
+		ordering=['date_created']
 		
