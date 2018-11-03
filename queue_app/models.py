@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser
 import uuid
 	
 #todos:
+#separate employee and costomer
 
 class Organization(models.Model):
 	id=models.UUIDField(

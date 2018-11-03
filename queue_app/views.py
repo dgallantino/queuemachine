@@ -9,7 +9,8 @@ from dal import autocomplete
 
 
 #todos: 
-#filter everything based on user.organization
+#test with user from diffrent orgs
+
 
 class IndexView(TemplateView):
 	template_name = 'queue_app/index.html'
