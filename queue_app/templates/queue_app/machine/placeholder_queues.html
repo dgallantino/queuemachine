@@ -4,7 +4,6 @@
 		{% csrf_token %}
 		<input type="hidden" name="service" value="{{ queue.service.id }}"/>
 		<input type="hidden" name="customer" value="{{ queue.customer.id }}"/>
-		<input type="hidden" name="booking_datetime" value="{{ queue.booking_datetime|date:"Y-m-d H:i:s" }}"/>
 		<input type="hidden" name="print_flag" value="on"/>
 		<input type="hidden" name="booking_flag" value="on"/>
 		<a onClick="$('#{{ queue.id }}').submit()">

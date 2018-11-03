@@ -40,6 +40,10 @@ class MachineDisplay(LoginRequiredMixin, CreateView):
 	template_name ='queue_app/machine/machine.html'
 	model = models.Queue
 	form_class=forms.QueueModelForms
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['services'] = models.Service.objects.group_filter(self.request.user.groups.all())
+		return context
 	def get_success_url(self):
 		return reverse_lazy('queue:print_ticket_url', kwargs={'pk':self.object.id})
 	def form_invalid(self, form):
@@ -52,43 +56,69 @@ class PrintBookingTicket(LoginRequiredMixin, UpdateView):
 	template_name ='queue_app/machine/placeholder_ticket.html'
 	object_name = 'queue'
 	form_class=forms.QueueModelForms
+	#models = models.Queue would sufice
+	#probably
 	def get_queryset(self):
-		services = self.request.user.organization.services.all()
-		return models.Queue.objects.services_filter(services).booking()
+		services =( 
+			models.Service.objects
+			.group_filter(self.request.user.groups.all())
+		)
+		return (
+			models.Queue.objects
+			.services_filter(services)
+			.is_booking(True)
+		)
+		
 	def get_success_url(self):
 		return reverse_lazy('queue:print_ticket_url', kwargs={'pk':self.object.id})
-	def form_invalid(self, form):
-		return UpdateView.form_invalid(self, form)
 	
 class PrintTicket(LoginRequiredMixin, DetailView):
 	login_url = '/queuemachine/login/'
 	template_name ='queue_app/machine/placeholder_ticket.html'
 	object_name = 'queue'
 	model=models.Queue
-# 	def get_queryset(self):
-# 		services = self.request.user.organization.services.all()
-# 		return models.Queue.objects.services_filter(iterable=services).printed()
 
 class BookingList(LoginRequiredMixin, ListView):
 	login_url = '/queuemachine/login/'
 	template_name ='queue_app/machine/placeholder_queues.html'
 	context_object_name = 'queues'
+	
 	def get_queryset(self):
-		services = self.request.user.organization.services.all()
-		return models.Queue.objects.services_filter(services).booking().not_printed()
+		services = (
+			models.Service.objects
+			.group_filter(self.request.user.groups.all())
+		)
+		return (
+			models.Queue.objects
+			.services_filter(services)
+			.is_booking(True)
+			.is_printed(False)
+		)
 	
 class BookingListUpdate(LoginRequiredMixin, DetailView):
 	login_url = '/queuemachine/login/'
 	template_name ='queue_app/machine/placeholder_queues.html'
 	context_object_name = 'queues'
+	
 	def get_queryset(self):
-		services = self.request.user.organization.services.all()
-		return models.Queue.objects.services_filter(services).booking().not_printed()
+		services = (
+			models.Service.objects
+			.group_filter(self.request.user.groups.all())
+		)
+		return (
+			models.Queue.objects
+			.services_filter(services)
+			.is_booking(True)
+			.is_printed(False)
+		)	
+	
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['queues']=self.get_queryset().filter(
-			date_created__gt=self.object.date_created
-			).get_not_printed()
+		context['queues']=(
+			self.get_queryset()
+			.filter(date_created__gt=self.object.date_created)
+			.is_printed(False)
+		)
 		return context
 	
 '''
@@ -106,7 +136,7 @@ class ManagerDisplay(LoginRequiredMixin, ListView):
 	template_name='queue_app/manager/manager.html'
 	context_object_name = 'services'
 	def get_queryset(self):
-		return self.request.user.organization.services.all()
+		return models.Service.objects.group_filter(self.request.user.groups.all())
 	
 class UserLookupView(LoginRequiredMixin, autocomplete.Select2QuerySetView):
 	lodin_url = '/queuemachine/login/'

@@ -18,11 +18,8 @@ class CustomUserChangeForm(UserChangeForm):
  
     class Meta:
         model = models.User
-        #fields = '__all__'
-        exclude = [
-            'print_datetime',
-            'number',
-        ]
+        fields = '__all__'
+        
 
 class QueueModelForms(forms.ModelForm):
     
@@ -55,7 +52,11 @@ class QueueModelForms(forms.ModelForm):
     class Meta:
         model=models.Queue
         
-        fields='__all__'
+        exclude = [
+            'booking_datetime',
+            'print_datetime',
+            'number',
+        ]
         
         widgets={
             'service':forms.Select(
@@ -74,32 +75,29 @@ class QueueModelForms(forms.ModelForm):
             'all':('queue_app/core/css/add_booking_form.css',),
         }
         
-    def clean(self):
-        cleaned_data=super().clean()
-        return cleaned_data
+    
     def save(self, commit=True):
         #get models.Queue isntance to create or edit
         new_queue = super(QueueModelForms,self).save(commit=False)  
         
         #get latest queue
-        recent_queue_queryset=models.Queue.objects.filter(service=self.cleaned_data.get('service')).printed()
-        if self.cleaned_data.get('booking_flag', False):
-            recent_queue = recent_queue_queryset.booking().order_by('print_datetime').last()
-            
-            try:
-            #get booking data
-                if not self.cleaned_data.get('booking_datetime'):
-                    new_queue.booking_datetime = datetime.combine(
-                        self.cleaned_data.pop('booking_date'),
-                        self.cleaned_data.pop('booking_time')
-                    )                
-            except Exception:
-                #when booking date and time input not found
-                raise forms.ValidationError("Fuck")
-            
-        else:
-            recent_queue = recent_queue_queryset.nonbooking().last()
-            
+        recent_queue = (
+            models.Queue.objects.filter(service=self.cleaned_data.get('service'))
+            .is_booking(self.cleaned_data.get('booking_flag', False))
+            .is_printed(True)
+            .order_by('print_datetime')
+            .last()
+        )
+        
+        try:
+        #get booking data
+            new_queue.booking_datetime = datetime.combine(
+                self.cleaned_data.pop('booking_date'),
+                self.cleaned_data.pop('booking_time')
+            )      
+        except Exception:
+            pass
+   
         
                 
         #define queue number automaticly

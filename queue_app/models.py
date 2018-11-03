@@ -83,6 +83,8 @@ class ServiceQueryset(models.QuerySet):
 	"""docstring for ServiceQueryset."""
 	def get_last_queue(self):
 		return self.queues.last()
+	def group_filter(self, iterable):
+		return self.filter(groups__in=iterable)
 
 class Service(models.Model):
 	
@@ -114,25 +116,22 @@ class Service(models.Model):
 	
 	date_modified=models.DateTimeField(auto_now=True)
 	
+	objects=ServiceQueryset.as_manager()
+	
 	def __str__(self):
 		return self.name
 
 
 class QueueQueryset(models.QuerySet):
-	def printed(self):
-		return self.filter(print_flag=True)
 	
-	def not_printed(self):
-		return self.filter(print_flag=False)
+	def is_printed(self, flag=False):
+		return self.filter(print_flag=flag)
 	
 	def get_today(self):
 		return self.filter(date_created__date=date.today())
 	
-	def nonbooking(self):
-		return self.get_today().filter(booking_flag=False)
-	
-	def booking(self):
-		return self.get_today().filter(booking_flag=True)
+	def is_booking(self, flag=False):
+		return self.get_today().filter(booking_flag=flag)
 	
 	def services_filter(self, iterable):
 		return self.filter(service__in=iterable)
@@ -142,7 +141,7 @@ class Queue(models.Model):
 		Service,
 		on_delete=models.CASCADE,
 		related_name='queues'
-	)
+	)#
 	
 	counter_booth=models.ForeignKey(
 		CounterBooth,
@@ -150,7 +149,7 @@ class Queue(models.Model):
 		null=True,
 		blank=True,
 		related_name='queues'
-	)
+	)#
 	
 	customer=models.ForeignKey(
 		User,
@@ -158,7 +157,7 @@ class Queue(models.Model):
 		null=True,
 		blank=True,
 		related_name='queues'
-	)
+	)#
 	
 	id=models.UUIDField(
 		primary_key=True,
@@ -175,13 +174,13 @@ class Queue(models.Model):
 	
 	date_modified=models.DateTimeField(auto_now=True)
 	
-	booking_flag=models.BooleanField(default=False)
+	booking_flag=models.BooleanField(default=False)#
 	
 	booking_datetime=models.DateTimeField(null=True,blank=True,)
 	
-	call_flag=models.BooleanField(default=False)
+	call_flag=models.BooleanField(default=False)#
 	
-	print_flag=models.BooleanField(default=False)
+	print_flag=models.BooleanField(default=False)#
 	
 	print_datetime=models.DateTimeField(null=True, blank=True)
 	
