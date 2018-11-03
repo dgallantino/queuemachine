@@ -143,11 +143,19 @@ class UserLookupView(LoginRequiredMixin, autocomplete.Select2QuerySetView):
 	template_name = 'queue_app/manager/user_lookup.html'
 	context_object_name= 'users'
 	def get_queryset(self):
-		query_set = models.User.objects.filter(organization=self.request.user.organization)
-		if self.request.GET.get('q'):
-			query_set = query_set.filter(username__startswith=self.request.GET.get('q'))
-		
+		query_set = models.User.objects.filter(groups__in=self.request.user.groups.all())
+		q = self.request.GET.get('q')
+		if q:
+			qs1 = query_set.filter(username__startswith=q)
+			qs2 = query_set.filter(first_name__startswith=q)
+			qs3 = query_set.filter(last_name__startswith=q)
+			query_set = qs1.union(qs2,qs3)
 		return query_set
+	
+	def get_result_label(self, result):
+		return result.get_full_name()
+	def get_selected_result_label(self, result):
+		return result.get_full_name()
 	
 class AddBookingQueue(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 	login_url = '/queuemachine/login/'

@@ -55,6 +55,7 @@ class QueueModelForms(forms.ModelForm):
         exclude = [
             'booking_datetime',
             'print_datetime',
+            'character',
             'number',
         ]
         
@@ -67,6 +68,10 @@ class QueueModelForms(forms.ModelForm):
             ),
             'customer':autocomplete.ModelSelect2(
                 url = 'queue:user_lookup_url',
+                attrs={
+                    'data-placeholder': 'Customer ...',
+                    'data-minimum-input-length': 3,
+                },
             ),
         }
     

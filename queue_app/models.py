@@ -14,14 +14,13 @@ class Organization(models.Model):
 		default=uuid.uuid4,
 		editable=False,
 	)
+	date_created=models.DateTimeField(auto_now_add=True)
+	
+	date_modified=models.DateTimeField(auto_now=True)
 	
 	name=models.CharField(max_length = 200)
 	
 	desc=models.CharField(max_length = 200)
-	
-	date_created=models.DateTimeField(auto_now_add=True)
-	
-	date_modified=models.DateTimeField(auto_now=True)
 	
 	
 	def __str__(self):
@@ -94,6 +93,10 @@ class Service(models.Model):
 		editable=False,
 	)
 	
+	date_created=models.DateTimeField(auto_now_add=True)
+	
+	date_modified=models.DateTimeField(auto_now=True)
+	
 	organization=models.ForeignKey(
 		Organization,
 		on_delete=models.CASCADE,
@@ -112,9 +115,11 @@ class Service(models.Model):
 	
 	desc=models.CharField(max_length = 200)
 	
-	date_created=models.DateTimeField(auto_now_add=True)
-	
-	date_modified=models.DateTimeField(auto_now=True)
+	queue_char=models.CharField(
+		null=True,
+		blank=True,
+		max_length=1,
+	)
 	
 	objects=ServiceQueryset.as_manager()
 	
@@ -137,9 +142,38 @@ class QueueQueryset(models.QuerySet):
 		return self.filter(service__in=iterable)
 
 class Queue(models.Model):
+	id=models.UUIDField(
+		primary_key=True,
+		default=uuid.uuid4, 
+		editable=False
+	)
+	
+	date_created=models.DateTimeField(auto_now_add=True)
+	
+	date_modified=models.DateTimeField(auto_now=True)
+	
 	service=models.ForeignKey(
 		Service,
 		on_delete=models.CASCADE,
+		related_name='queues'
+	)#
+	
+	character=models.CharField(
+		null=True,
+		blank=True,
+		max_length=1,
+	)#
+	
+	number=models.IntegerField(
+		null=True,
+		blank=True
+	)
+	
+	customer=models.ForeignKey(
+		User,
+		on_delete=models.CASCADE,
+		null=True,
+		blank=True,
 		related_name='queues'
 	)#
 	
@@ -151,36 +185,13 @@ class Queue(models.Model):
 		related_name='queues'
 	)#
 	
-	customer=models.ForeignKey(
-		User,
-		on_delete=models.CASCADE,
-		null=True,
-		blank=True,
-		related_name='queues'
-	)#
-	
-	id=models.UUIDField(
-		primary_key=True,
-		default=uuid.uuid4, 
-		editable=False
-	)
-	
-	number=models.IntegerField(
-		null=True,
-		blank=True
-	)
-	
-	date_created=models.DateTimeField(auto_now_add=True)
-	
-	date_modified=models.DateTimeField(auto_now=True)
-	
 	booking_flag=models.BooleanField(default=False)#
-	
-	booking_datetime=models.DateTimeField(null=True,blank=True,)
-	
+		
 	call_flag=models.BooleanField(default=False)#
 	
 	print_flag=models.BooleanField(default=False)#
+	
+	booking_datetime=models.DateTimeField(null=True,blank=True,)
 	
 	print_datetime=models.DateTimeField(null=True, blank=True)
 	
@@ -188,6 +199,10 @@ class Queue(models.Model):
 	
 	def __str__(self):
 		return self.service.name+'/'+str(self.number)+'/'+str(self.pk)
+	
+	def save(self, *args, **kwargs):
+		self.character = self.character or self.service.queue_char
+		super().save(*args, **kwargs)
 	
 	class Meta:
 		ordering=['date_created']
