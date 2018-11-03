@@ -1,11 +1,13 @@
 from django.db import models
 from datetime import date
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Group
 import uuid
 	
 #todos:
-#separate employee and costomer
+#separate employee and costomer : using staf flag
 
+# Organization will be deprocated
+# Using Group instead
 class Organization(models.Model):
 	id=models.UUIDField(
 		primary_key=True,
@@ -33,6 +35,12 @@ class CounterBooth(models.Model):
 		editable=False,
 	)
 	
+	groups=models.ManyToManyField(
+		Group,
+		blank=True,
+		related_name='booths',
+	)
+	
 	name=models.CharField(max_length = 200)
 	
 	desc=models.CharField(max_length = 200)
@@ -52,25 +60,6 @@ class CounterBooth(models.Model):
 	def __str__(self):
 		return self.name
 	
-class Role(models.Model):
-	
-	id=models.UUIDField(
-		primary_key=True,
-		default=uuid.uuid4,
-		editable=False,
-	)
-	
-	name=models.CharField(max_length = 200)
-	
-	desc=models.CharField(max_length = 200)
-	
-	date_created=models.DateTimeField(auto_now_add=True)
-	
-	date_modified=models.DateTimeField(auto_now=True)
-	
-	def __str__(self):
-		return self.name
-	
 class User(AbstractUser):
 	id=models.UUIDField(
 		primary_key=True,
@@ -86,6 +75,7 @@ class User(AbstractUser):
 		blank=True,
 	)
 	
+	
 	def __str__(self):
 		return self.username
 
@@ -99,7 +89,7 @@ class Service(models.Model):
 	id=models.UUIDField(
 		primary_key=True, 
 		default=uuid.uuid4, 
-		editable=False
+		editable=False,
 	)
 	
 	organization=models.ForeignKey(
@@ -108,6 +98,12 @@ class Service(models.Model):
 		related_name='services',
 		null=True,
 		blank=False,
+	)
+	
+	groups=models.ManyToManyField(
+		Group,
+		blank=True,
+		related_name='services',
 	)
 	
 	name=models.CharField(max_length = 200)
