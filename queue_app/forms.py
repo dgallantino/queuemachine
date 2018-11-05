@@ -102,7 +102,7 @@ class QueueModelForms(forms.ModelForm):
             #get latest queue
             recent_queue = (
                 models.Queue.objects.filter(service=self.cleaned_data.get('service'))
-                .is_booking(self.cleaned_data.get('booking_flag', False))
+                #.is_booking(self.cleaned_data.get('booking_flag', False))
                 .is_printed(True)
                 .order_by('print_datetime')
                 .last()
