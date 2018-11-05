@@ -74,6 +74,11 @@ class User(AbstractUser):
 		blank=True,
 	)
 	
+	phone=models.CharField(
+		null=True,
+		blank=True,
+		max_length = 12,
+	)
 	
 	def __str__(self):
 		return self.username
