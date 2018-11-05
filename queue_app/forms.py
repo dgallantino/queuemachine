@@ -60,15 +60,18 @@ class QueueModelForms(forms.ModelForm):
         ]
         
         widgets={
-            'service':forms.Select(
+            'service':autocomplete.ModelSelect2(
+                url = 'queue:service_lookup_url',
                 attrs={
                     'id':'service',
-                    'class':'select-input',
+                    'data-placeholder': 'Service ...',
+                    'data-minimum-input-length': 1,
                 },
             ),
             'customer':autocomplete.ModelSelect2(
                 url = 'queue:user_lookup_url',
                 attrs={
+                    'id':'service',
                     'data-placeholder': 'Customer ...',
                     'data-minimum-input-length': 3,
                 },
@@ -85,15 +88,6 @@ class QueueModelForms(forms.ModelForm):
         #get models.Queue isntance to create or edit
         new_queue = super(QueueModelForms,self).save(commit=False)  
         
-        #get latest queue
-        recent_queue = (
-            models.Queue.objects.filter(service=self.cleaned_data.get('service'))
-            .is_booking(self.cleaned_data.get('booking_flag', False))
-            .is_printed(True)
-            .order_by('print_datetime')
-            .last()
-        )
-        
         try:
         #get booking data
             new_queue.booking_datetime = datetime.combine(
@@ -103,10 +97,16 @@ class QueueModelForms(forms.ModelForm):
         except Exception:
             pass
    
-        
-                
         #define queue number automaticly
         if self.cleaned_data.pop('print_flag'):
+            #get latest queue
+            recent_queue = (
+                models.Queue.objects.filter(service=self.cleaned_data.get('service'))
+                .is_booking(self.cleaned_data.get('booking_flag', False))
+                .is_printed(True)
+                .order_by('print_datetime')
+                .last()
+            )
             new_queue.number= (getattr(recent_queue, 'number', None) or 0)+1
             new_queue.print_datetime=datetime.now()
         #save when commited

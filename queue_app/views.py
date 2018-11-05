@@ -139,16 +139,13 @@ class ManagerDisplay(LoginRequiredMixin, ListView):
 		return models.Service.objects.group_filter(self.request.user.groups.all())
 	
 class UserLookupView(LoginRequiredMixin, autocomplete.Select2QuerySetView):
-	lodin_url = '/queuemachine/login/'
-	template_name = 'queue_app/manager/user_lookup.html'
-	context_object_name= 'users'
+	login_url = '/queuemachine/login/'
 	def get_queryset(self):
 		query_set = models.User.objects.filter(groups__in=self.request.user.groups.all())
-		q = self.request.GET.get('q')
-		if q:
-			qs1 = query_set.filter(username__startswith=q)
-			qs2 = query_set.filter(first_name__startswith=q)
-			qs3 = query_set.filter(last_name__startswith=q)
+		if self.q:
+			qs1 = query_set.filter(username__startswith=self.q)
+			qs2 = query_set.filter(first_name__startswith=self.q)
+			qs3 = query_set.filter(last_name__startswith=self.q)
 			query_set = qs1.union(qs2,qs3)
 		return query_set
 	
@@ -156,6 +153,16 @@ class UserLookupView(LoginRequiredMixin, autocomplete.Select2QuerySetView):
 		return result.get_full_name()
 	def get_selected_result_label(self, result):
 		return result.get_full_name()
+	
+class ServiceLookupView(LoginRequiredMixin, autocomplete.Select2QuerySetView):
+	logi_url = '/queuemachine/login/'
+	def get_queryset(self):
+		query_set= models.Service.objects.filter(groups__in=self.request.user.groups.all())
+		if self.q:
+			qs1 = query_set.filter(name__startswith=self.q)
+			qs2 = query_set.filter(desc__startswith=self.q)
+			query_set = qs1.union(qs2)
+		return query_set
 	
 class AddBookingQueue(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 	login_url = '/queuemachine/login/'

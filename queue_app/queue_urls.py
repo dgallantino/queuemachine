@@ -15,4 +15,5 @@ urlpatterns = [
     path('manager/queues/service/<uuid:pk>/', views.QueuePerService.as_view(), name='queue_per_service_url'),
     path('manager/queues/add-booking/', views.AddBookingQueue.as_view(), name='add_booking_url'),
     path('manager/users/',views.UserLookupView.as_view(),name='user_lookup_url'),
+    path('manager/services/',views.ServiceLookupView.as_view(),name='service_lookup_url'),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

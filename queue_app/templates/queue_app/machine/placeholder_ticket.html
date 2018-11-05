@@ -14,7 +14,7 @@
 	<div class="ticket_div" id="queue_time">{{ queue.date_created }}</div>
 	<div class="ticket_div big_number" id="qeueu_number">{{ queue.character|default:'' }} {{ queue.number }}</div>
 	{% if queue.customer or queue.booking_datetime %}
-	<div class="ticket_div" >{{ queue.customer }}</div>
+	<div class="ticket_div" >{{ queue.customer.get_full_name|default:queue.customer }}</div>
 	<div class="ticket_div" >your booking time is</div>
 	<div class="ticket_div" >{{ queue.booking_datetime|date:"H:i" }}</div>
 	{% endif %}

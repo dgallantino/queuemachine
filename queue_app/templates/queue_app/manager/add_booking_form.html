@@ -11,19 +11,12 @@
 </head>
 <body>
 	<div class="container form-container">
-		{% if messages %}
-		<div id="form-success" class="alert alert-success fade show" role="alert">
-			    {% for message in messages %}
-			    {{ message }}</br>
-			    {% endfor %}
-		</div>
-		{% endif %}
 		<form id="add-booking-form" action="{% url "queue:add_booking_url" %}" method="POST">
 			{% csrf_token %}		
 			<input type="hidden" name="booking_flag" value="on"/>
 			<div class ="form-group">
 				<label for="service">{{ form.service.label }} </label>
-				<div>{{ form.service|add_class:"form-control" }}</div>
+				<div>{{ form.service }}</div>
 			</div>
 			<div class ="form-group">
 				<label for="id_customer">{{ form.customer.label }} </label>
@@ -39,6 +32,13 @@
 			</div>
 			<button type="submit">SUBMIT</button>
 		</form>
+		{% if messages %}
+		<div id="form-success" class="alert alert-success fade show" role="alert">
+	    {% for message in messages %}
+	    	{{ message }}</br>
+	    {% endfor %}
+		</div>
+		{% endif %}
 		
 		{% if form.errors %}
 		<div id="form-error" class="alert alert-warning alert-dismissible fade show" role="alert">

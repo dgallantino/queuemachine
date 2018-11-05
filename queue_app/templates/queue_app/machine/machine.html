@@ -3,7 +3,7 @@
 {% block title %}Machine{% endblock %}
 {% block stylesheet %}
 	<link href="{% static 'queue_app/core/css/machine.css'%}" rel="stylesheet" type="text/css">
-	<link href="{% static 'queue_app/core/css/simple-sidebar.css'%}" rel="stylesheet" type="text/css">
+	<link href="{% static 'queue_app/core/css/machine-sidebar.css'%}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block head_script %}
 <script type="text/javascript">
@@ -12,34 +12,16 @@
 {% endblock %}
 {% block javascript %}
 {#<script src="{% static 'queue_app/core/js/cookies_manager.js' %}"></script>#}
-<script type="text/javascript">
+<script src="{% static 'queue_app/core/js/machine.js' %}"></script>
 
+
+<script type="text/javascript">
 $("#menu-toggle").click(function(e) {
     e.preventDefault();
     $(".wrapper").toggleClass("toggled");
     $("#button-icon").toggleClass("flip")    
 });
 
-function PrintTicket(data) {
-    var contents = data;
-    var frame1 = document.createElement('iframe');
-    frame1.name = "frame1";
-    frame1.style.position = "absolute";
-    frame1.style.top = "-1000000px";
-    document.body.appendChild(frame1);
-    var frameDoc = frame1.contentWindow ? frame1.contentWindow : frame1.contentDocument.document ? frame1.contentDocument.document : frame1.contentDocument;
-    frameDoc.document.open();
-    frameDoc.document.write('<html>');
-    frameDoc.document.write(contents);
-    frameDoc.document.write('</html>');
-    frameDoc.document.close();
-    setTimeout(function () {
-        window.frames["frame1"].focus();
-        window.frames["frame1"].print();
-        document.body.removeChild(frame1);
-    }, 500);
-    return false;
-}
 
 $('body').on('submit','.add_queue_form', function(event){
 	event.preventDefault();	
@@ -61,28 +43,7 @@ $('body').on('submit','.add_queue_form', function(event){
 	});
 });
 
-function get_queues(last_queue_id){
-	var url="";
-	if(last_queue_id){
-		url="{% url "queue:booking_list_update_url" user.id %}".replace(/{{ user.id }}/,last_queue_id);
-	}else{
-		url="{% url "queue:booking_list_url" %}";
-	}
-	$.ajax({
-		url : url,
-		type : "GET",
-		dataType: 'html'
-	})
-	.fail(function(xhr){
-		var error_message = "AJAX Err:\n";
-		error_message += "["+xhr.status.toString()+"] : ";
-		error_message += xhr.statusText;
-		window.alert(error_message);
-	})
-	.done(function(data){
-		$('#booking-list-body').append(data)
-	});
-}
+
 
 $('body').on('submit','.print-booking-form',function(event){
 	event.preventDefault();
@@ -104,7 +65,6 @@ $('body').on('submit','.print-booking-form',function(event){
 		window.alert(error_message);	
 	})
 	.done(function(data){
-		//console.log(data.redirect);
 	    PrintTicket(data);
 	    $('#list_'+print_queue_id).remove();	    
 	});
@@ -112,13 +72,15 @@ $('body').on('submit','.print-booking-form',function(event){
 
 
 $(document).ready(function(){
-	get_queues();
+	$('#booking-list-body').get_queues();
 });
+
+
 this.last_queue_id='';
 setInterval(function(){
 	var last_queue_id = $('#booking-list-body .list:last-child').children('form').attr('id');
 	this.last_queue_id = last_queue_id;
-	get_queues(last_queue_id);
+	$('#booking-list-body').get_queues(last_queue_id);
 },60*5*1000);
 
 </script>
