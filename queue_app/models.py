@@ -133,15 +133,14 @@ class Service(models.Model):
 
 
 class QueueQueryset(models.QuerySet):
+	def today_filter(self):
+		return self.filter(date_created__date=date.today())
 	
 	def is_printed(self, flag=False):
 		return self.filter(print_flag=flag)
 	
-	def get_today(self):
-		return self.filter(date_created__date=date.today())
-	
 	def is_booking(self, flag=False):
-		return self.get_today().filter(booking_flag=flag)
+		return self.filter(booking_flag=flag)
 	
 	def services_filter(self, iterable):
 		return self.filter(service__in=iterable)
@@ -167,7 +166,7 @@ class Queue(models.Model):
 		null=True,
 		blank=True,
 		max_length=1,
-	)#
+	)
 	
 	number=models.IntegerField(
 		null=True,

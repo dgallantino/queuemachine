@@ -14,9 +14,6 @@ from dal import autocomplete
 
 class IndexView(TemplateView):
 	template_name = 'queue_app/index.html'
-	
-	def get(self, request, *args, **kwargs):
-		return TemplateView.get(self, request, *args, **kwargs)
 
 class SignUp(CreateView):
 	form_class = forms.CustomUserCreationForm
@@ -39,7 +36,7 @@ class MachineDisplay(LoginRequiredMixin, CreateView):
 	login_url = '/queuemachine/login/'
 	template_name ='queue_app/machine/machine.html'
 	model = models.Queue
-	form_class=forms.QueueModelForms
+	form_class=forms.AddQueueModelForms
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		context['services'] = models.Service.objects.group_filter(self.request.user.groups.all())
@@ -55,7 +52,7 @@ class PrintBookingTicket(LoginRequiredMixin, UpdateView):
 	login_url = '/queuemachine/login/'
 	template_name ='queue_app/machine/placeholder_ticket.html'
 	object_name = 'queue'
-	form_class=forms.QueueModelForms
+	form_class=forms.BookingQueueForms
 	#models = models.Queue would sufice
 	#probably
 	def get_queryset(self):
@@ -65,6 +62,7 @@ class PrintBookingTicket(LoginRequiredMixin, UpdateView):
 		)
 		return (
 			models.Queue.objects
+			.today_filter()
 			.services_filter(services)
 			.is_booking(True)
 		)
@@ -90,6 +88,7 @@ class BookingList(LoginRequiredMixin, ListView):
 		)
 		return (
 			models.Queue.objects
+			.today_filter()
 			.services_filter(services)
 			.is_booking(True)
 			.is_printed(False)
@@ -107,6 +106,7 @@ class BookingListUpdate(LoginRequiredMixin, DetailView):
 		)
 		return (
 			models.Queue.objects
+			.today_filter()
 			.services_filter(services)
 			.is_booking(True)
 			.is_printed(False)
@@ -164,11 +164,20 @@ class ServiceLookupView(LoginRequiredMixin, autocomplete.Select2QuerySetView):
 			query_set = qs1.union(qs2)
 		return query_set
 	
-class AddBookingQueue(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+class AddCustomerView(LoginRequiredMixin,SuccessMessageMixin, CreateView):
+	login_url = '/queuemachine/login/'
+	template_name = 'queue_app/manager/add_customer_form.html'
+	model = models.User
+	form_class=forms.CustomUserCreationForm
+	success_message = "Customer data creation was successfull"
+	def get_success_url(self):
+		return reverse_lazy('queue:add_customer_url')
+	
+class AddBookingQueueView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 	login_url = '/queuemachine/login/'
 	template_name = 'queue_app/manager/add_booking_form.html'
 	model = models.Queue
-	form_class=forms.QueueModelForms
+	form_class=forms.BookingQueueForms
 	success_message = "booking was created"
 	def get_success_url(self):
 		return reverse_lazy('queue:add_booking_url')

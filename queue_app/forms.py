@@ -4,30 +4,30 @@ Created on Oct 1, 2018
 @author: gallantino
 '''
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from queue_app import models, widgets
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm 
+from queue_app import models
 from dal import autocomplete
 from datetime import datetime
+
 class CustomUserCreationForm(UserCreationForm):
     
     class Meta(UserCreationForm.Meta):
         model = models.User
-        fields ='__all__'
- 
+        fields = ('username','password1','password2',)
+         
 class CustomUserChangeForm(UserChangeForm):
  
-    class Meta:
+    class Meta(UserChangeForm.Meta):
         model = models.User
-        fields = '__all__'
         
-
-class QueueModelForms(forms.ModelForm):
+#its okay to split this into multiple forms
+class QueueModelBaseForms(forms.ModelForm):
     
     booking_time=forms.TimeField(
         label="Booking Time",
         initial= datetime.now(),
         required=False,
-        widget=widgets.TimePicker(
+        widget=forms.TimeInput(
             format='%H:%M',
             attrs={
                 'id':'booking-time',
@@ -40,7 +40,7 @@ class QueueModelForms(forms.ModelForm):
         label="Booking Date",
         initial= datetime.now(),
         required=False,
-        widget=widgets.DatePicker(
+        widget=forms.DateInput(
             format='%d-%m-%Y',
             attrs={
                 'id':'booking-date',
@@ -51,13 +51,8 @@ class QueueModelForms(forms.ModelForm):
 
     class Meta:
         model=models.Queue
-        
-        exclude = [
-            'booking_datetime',
-            'print_datetime',
-            'character',
-            'number',
-        ]
+        fields= '__all__'
+
         
         widgets={
             'service':autocomplete.ModelSelect2(
@@ -80,13 +75,27 @@ class QueueModelForms(forms.ModelForm):
     
     class Media:
         css={
-            'all':('queue_app/core/css/add_booking_form.css',),
+            'all':(
+                'queue_app/bootstrap/css/bootstrap.min.css',
+                'queue_app/font-awesome/css/font-awesome.min.css',
+                'queue_app/font-awesome/css/font-awesome-animation.min.css',
+                'queue_app/font-awesome/css/font-awesome-animation.min.css',
+                'queue_app/core/css/add_booking_form.css',
+                'queue_app/jquery-ui/jquery-ui.min.css',
+                'queue_app/jquery-timepicker/jquery.timepicker.min.css',
+            ),
         }
+        js=(
+            'queue_app/jquery/jquery.js', 
+            'queue_app/jquery-ui/jquery-ui.min.js',
+            'queue_app/jquery-timepicker/jquery.timepicker.min.js',               
+        )
+        
         
     
     def save(self, commit=True):
         #get models.Queue isntance to create or edit
-        new_queue = super(QueueModelForms,self).save(commit=False)  
+        new_queue = super(QueueModelBaseForms,self).save(commit=False)  
         
         try:
         #get booking data
@@ -103,6 +112,7 @@ class QueueModelForms(forms.ModelForm):
             recent_queue = (
                 models.Queue.objects.filter(service=self.cleaned_data.get('service'))
                 #.is_booking(self.cleaned_data.get('booking_flag', False))
+                .today_filter()
                 .is_printed(True)
                 .order_by('print_datetime')
                 .last()
@@ -113,3 +123,13 @@ class QueueModelForms(forms.ModelForm):
         if commit:
             new_queue.save()
         return new_queue
+    
+#todos finish this one
+#then add one for booking
+class AddQueueModelForms(QueueModelBaseForms):
+    class Meta(QueueModelBaseForms.Meta):
+        fields=('service','print_flag',)
+class BookingQueueForms(QueueModelBaseForms):
+    class Meta(QueueModelBaseForms.Meta):
+        fields = ('service','customer','print_flag','booking_flag')
+            
