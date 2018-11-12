@@ -1,8 +1,14 @@
+
 .form-container{
 	max-width:400px;
-	margin-top:20px;
 }
 
 .select2-container{
 	width:100% !important;
 }
+.form-container button{
+    text-transform: uppercase;
+	cursor: pointer;
+	width: 100%;
+}
+

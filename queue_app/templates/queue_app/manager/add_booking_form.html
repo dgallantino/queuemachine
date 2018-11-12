@@ -1,11 +1,11 @@
 {% load static %}
 {% load widget_tweaks %}
 <head>
-
+	<link href="{% static 'queue_app/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet" type="text/css">
 {{ form.media }}
 </head>
 <body>
-	<div class="container form-container">
+	<div class="container-fluid form-container" id="form-container">
 		<form id="add-booking-form" action="{% url "queue:add_booking_url" %}" method="POST">
 			{% csrf_token %}		
 			<input type="hidden" name="booking_flag" value="on"/>
@@ -22,8 +22,8 @@
 				<div>{{ form.booking_time|attr:"required"|add_class:"form-control" }}</div>
 			</div>
 			<div class ="form-group">
-			<label for="booking-date">{{ form.booking_date.label }} </label>
-			<div>{{ form.booking_date|attr:"required readonly"|add_class:"form-control" }}</div>
+				<label for="booking-date">{{ form.booking_date.label }} </label>
+				<div>{{ form.booking_date|attr:"required "|add_class:"form-control" }}</div>
 			</div>
 			<button type="submit">SUBMIT</button>
 		</form>
@@ -63,6 +63,12 @@ $(document).ready(function(){
 
 $("#form-success").fadeTo(2000, 500).slideUp(500, function(){
     $("#form-success").slideUp(500);
+});
+
+$(document).ready(function(){
+	console.log($('#form-container').outerWidth()+" "+$('#form-container').height());
+	window.resizeTo($('#form-container').outerWidth(),$('#form-container').height()+60);
+
 });
 </script>
 </body>

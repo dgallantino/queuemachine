@@ -142,6 +142,9 @@ class QueueQueryset(models.QuerySet):
 	def is_booking(self, flag=False):
 		return self.filter(booking_flag=flag)
 	
+	def is_called(self, flag=False):
+		return self.filter(call_flag=flag)
+	
 	def services_filter(self, iterable):
 		return self.filter(service__in=iterable)
 

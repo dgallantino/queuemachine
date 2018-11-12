@@ -65,4 +65,14 @@ urlpatterns = [
         views.ServiceLookupView.as_view(),
         name='service_lookup_url'
     ),
+    path(
+        'manager/booths/',                       
+        views.BoothListView.as_view(),
+        name='booth_list_url'
+    ),
+    path(
+        'manager/booths/<uuid:pk>/',                       
+        views.BoothToSession.as_view(),
+        name='booth_detail_url'
+    ),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

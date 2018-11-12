@@ -1,0 +1,5 @@
+.navbar .dropdown-menu .dropdown-item.disabled{
+	pointer-events: none;
+	cursor:default;
+}
+

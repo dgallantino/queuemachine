@@ -5,12 +5,13 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import ListView, DetailView, TemplateView
 from django.urls.base import reverse_lazy
 from dal import autocomplete
+from django.views.generic.base import RedirectView
+from django.views.generic.detail import SingleObjectMixin
 
 
 
 #todos: 
-#test with user from diffrent orgs
-
+#work on the manager
 
 class IndexView(TemplateView):
 	template_name = 'queue_app/index.html'
@@ -164,6 +165,32 @@ class ServiceLookupView(LoginRequiredMixin, autocomplete.Select2QuerySetView):
 			query_set = qs1.union(qs2)
 		return query_set
 	
+class BoothListView(LoginRequiredMixin,ListView):
+	login_url = reverse_lazy('login')
+	template_name = 'queue_app/manager/booth_list.html'
+	context_object_name = 'booths'
+	def get_queryset(self):
+		return (
+			models.CounterBooth.objects
+			.filter(groups__in=self.request.user.groups.all())
+		)
+
+class BoothToSession(LoginRequiredMixin,SingleObjectMixin, RedirectView):
+	login_url = reverse_lazy('login')
+	http_method_names = ['get',]
+	url = reverse_lazy("queue:manager_url")
+	def get_queryset(self):
+		return (
+			models.CounterBooth.objects
+			.filter(groups__in=self.request.user.groups.all())
+		)
+	def get_redirect_url(self, *args, **kwargs):
+		CounterBooth_object=self.get_object()
+		if CounterBooth_object:
+			CounterBooth_dict = {'name':CounterBooth_object.name,'id':str(CounterBooth_object.id)}
+			self.request.session['CounterBooth'] = CounterBooth_dict
+		return super().get_redirect_url(*args,**kwargs)
+	
 class AddCustomerView(LoginRequiredMixin,SuccessMessageMixin, CreateView):
 	login_url = '/queuemachine/login/'
 	template_name = 'queue_app/manager/add_customer_form.html'
@@ -195,7 +222,7 @@ class AddBookingQueueView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 		return SuccessMessageMixin.form_valid(self, form)
 	def form_invalid(self, form):
 		return CreateView.form_invalid(self, form)
-	#end-debug_code
+	#end-debug_code		
 	
 class QueuePerService(LoginRequiredMixin, DetailView):
 	login_url = '/queuemachine/login/'

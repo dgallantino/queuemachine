@@ -1,11 +1,11 @@
-{% extends "queue_app/base.html" %}
+{% extends "queue_app/manager/manager_base.html" %}
 {% load static %}
 {% block title %}Manager{% endblock %}
-{% block stylesheet %}
+{% block stylesheet-content %}
 	<link href="{% static 'queue_app/core/css/manager.css'%}" rel="stylesheet" type="text/css">
 {% endblock %}
 
-{% block javascript %}
+{% block javascript-content %}
 <script src="{% static 'queue_app/core/js/cookies_manager.js' %}"></script>
 <script type="text/javascript">
 
@@ -103,7 +103,8 @@ $(document).ready(function(){
 </script>
 {% endblock %}
 
-{% block content %}
+{% block content-main %}
+
 <div class="container">
 	<div class="accordion-option">
 		<h3 class="title">Manager</h3>

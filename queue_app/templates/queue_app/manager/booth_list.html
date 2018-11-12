@@ -1,0 +1,7 @@
+{% for booth in booths %}
+	{% if  request.session.CounterBooth.id  == booth.id|stringformat:"s" %}
+		<a class="dropdown-item disabled" href="{% url "queue:booth_detail_url" booth.id %}?next={{ request.get_full_path|urlencode }}">{{ booth.name }}</a>
+	{% else %}
+		<a class="dropdown-item" href="{% url "queue:booth_detail_url" booth.id %}?next={{ request.get_full_path|urlencode }}">{{ booth.name }}</a>
+	{% endif %}
+{% endfor %}

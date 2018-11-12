@@ -46,6 +46,12 @@ class CustomUserAdmin(UserAdmin):
     form = forms.CustomUserChangeForm
     model = models.User
     list_display = [ 'username', 'first_name','last_name',]
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', ('first_name','last_name',),'password1', 'password2'),
+        }),
+    )
     fieldsets = UserAdmin.fieldsets + (
             ('Profile', {
                 'fields': (
@@ -62,3 +68,4 @@ admin.site.register(models.User, CustomUserAdmin)
 admin.site.register(models.Service)
 admin.site.register(models.Queue,QueueAdmin)
 admin.site.register(models.Organization)
+admin.site.register(models.CounterBooth)

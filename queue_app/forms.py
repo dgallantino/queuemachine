@@ -76,10 +76,10 @@ class QueueModelBaseForms(forms.ModelForm):
     class Media:
         css={
             'all':(
-                'queue_app/bootstrap/css/bootstrap.min.css',
-                'queue_app/font-awesome/css/font-awesome.min.css',
-                'queue_app/font-awesome/css/font-awesome-animation.min.css',
-                'queue_app/font-awesome/css/font-awesome-animation.min.css',
+#                 'queue_app/bootstrap/css/bootstrap.min.css',
+#                 'queue_app/font-awesome/css/font-awesome.min.css',
+#                 'queue_app/font-awesome/css/font-awesome-animation.min.css',
+#                 'queue_app/font-awesome/css/font-awesome-animation.min.css',
                 'queue_app/core/css/add_booking_form.css',
                 'queue_app/jquery-ui/jquery-ui.min.css',
                 'queue_app/jquery-timepicker/jquery.timepicker.min.css',
@@ -96,15 +96,15 @@ class QueueModelBaseForms(forms.ModelForm):
     def save(self, commit=True):
         #get models.Queue isntance to create or edit
         new_queue = super(QueueModelBaseForms,self).save(commit=False)  
-        
-        try:
-        #get booking data
-            new_queue.booking_datetime = datetime.combine(
-                self.cleaned_data.pop('booking_date'),
-                self.cleaned_data.pop('booking_time')
-            )      
-        except Exception:
-            pass
+        if self.cleaned_data.get('booking_flag', False):
+            try:
+            #get booking data
+                new_queue.booking_datetime = datetime.combine(
+                    self.cleaned_data.pop('booking_date'),
+                    self.cleaned_data.pop('booking_time')
+                )      
+            except Exception:
+                pass
    
         #define queue number automaticly
         if self.cleaned_data.pop('print_flag'):
@@ -132,4 +132,7 @@ class AddQueueModelForms(QueueModelBaseForms):
 class BookingQueueForms(QueueModelBaseForms):
     class Meta(QueueModelBaseForms.Meta):
         fields = ('service','customer','print_flag','booking_flag')
+class CallQueueModelForms(QueueModelBaseForms):
+    class Meta(QueueModelBaseForms.Meta):
+        fields=('call_flag','counter_booth',)
             
