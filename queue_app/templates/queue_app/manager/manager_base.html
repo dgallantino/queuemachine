@@ -71,11 +71,7 @@
 <script src="{% static 'queue_app/core/js/manager.js' %}"></script>
 <script type="text/javascript">
 $('#booth-menu').list_booth("{% url "queue:booth_list_url" %}");
-//$('#booking-form-link').booking_form_popup();
-$('.modal').on('shown.bs.modal', function (e) {
-	$(this).modal('handleUpdate');
-	//$(this).find('iframe').attr('src','{% url "queue:add_booking_url" %}')
-});
+
 </script>
 	{% block javascript-content %}
 	{% endblock %}
