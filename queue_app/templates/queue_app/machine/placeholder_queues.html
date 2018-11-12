@@ -2,10 +2,10 @@
 <div class="container list" id="list_{{ queue.id }}">
 	<form id="{{ queue.id }}" class="print-booking-form">
 		{% csrf_token %}
-		<input type="hidden" name="service" value="{{ queue.service.id }}"/>
-		<input type="hidden" name="customer" value="{{ queue.customer.id }}"/>
+{#		<input type="hidden" name="service" value="{{ queue.service.id }}"/>#}
+{#		<input type="hidden" name="customer" value="{{ queue.customer.id }}"/>#}
 		<input type="hidden" name="print_flag" value="on"/>
-		<input type="hidden" name="booking_flag" value="on"/>
+{#		<input type="hidden" name="booking_flag" value="on"/>#}
 		<a onClick="$('#{{ queue.id }}').submit()">
 			<div>{{ queue.customer.get_full_name|default:queue.customer|default:"-" }}</div>
 			<div>{{ queue.booking_datetime|date:"H:i"|default:"-" }}</div>

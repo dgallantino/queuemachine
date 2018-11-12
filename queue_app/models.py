@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import date
+from datetime import date, datetime
 from django.contrib.auth.models import AbstractUser, Group
 import uuid
 	
@@ -34,10 +34,12 @@ class CounterBooth(models.Model):
 		editable=False,
 	)
 	
-	groups=models.ManyToManyField(
+	groups=models.ForeignKey(
 		Group,
 		blank=True,
 		related_name='booths',
+		on_delete=models.CASCADE,
+		null=True,
 	)
 	
 	name=models.CharField(max_length = 200)

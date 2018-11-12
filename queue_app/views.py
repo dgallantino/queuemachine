@@ -34,7 +34,7 @@ component
 
 #Implpmptation using form and normal html request
 class MachineDisplay(LoginRequiredMixin, CreateView):
-	login_url = '/queuemachine/login/'
+	login_url = reverse_lazy('login')
 	template_name ='queue_app/machine/machine.html'
 	model = models.Queue
 	form_class=forms.AddQueueModelForms
@@ -50,10 +50,10 @@ class MachineDisplay(LoginRequiredMixin, CreateView):
 #booking entry is updated right before printing
 #so the number is sorted based on time it was printed
 class PrintBookingTicket(LoginRequiredMixin, UpdateView):
-	login_url = '/queuemachine/login/'
+	login_url = reverse_lazy('login')
 	template_name ='queue_app/machine/placeholder_ticket.html'
 	object_name = 'queue'
-	form_class=forms.BookingQueueForms
+	form_class=forms.PrintBookingQueuemodelForms
 	#models = models.Queue would sufice
 	#probably
 	def get_queryset(self):
@@ -72,13 +72,13 @@ class PrintBookingTicket(LoginRequiredMixin, UpdateView):
 		return reverse_lazy('queue:print_ticket_url', kwargs={'pk':self.object.id})
 	
 class PrintTicket(LoginRequiredMixin, DetailView):
-	login_url = '/queuemachine/login/'
+	login_url = reverse_lazy('login')
 	template_name ='queue_app/machine/placeholder_ticket.html'
 	object_name = 'queue'
 	model=models.Queue
 
 class BookingList(LoginRequiredMixin, ListView):
-	login_url = '/queuemachine/login/'
+	login_url = reverse_lazy('login')
 	template_name ='queue_app/machine/placeholder_queues.html'
 	context_object_name = 'queues'
 	
@@ -96,7 +96,7 @@ class BookingList(LoginRequiredMixin, ListView):
 		)
 	
 class BookingListUpdate(LoginRequiredMixin, DetailView):
-	login_url = '/queuemachine/login/'
+	login_url = reverse_lazy('login')
 	template_name ='queue_app/machine/placeholder_queues.html'
 	context_object_name = 'queues'
 	
@@ -133,14 +133,14 @@ componen:
 	-> POST: booking submition
 '''
 class ManagerDisplay(LoginRequiredMixin, ListView):
-	login_url = '/queuemachine/login/'
+	login_url = reverse_lazy('login')
 	template_name='queue_app/manager/manager.html'
 	context_object_name = 'services'
 	def get_queryset(self):
 		return models.Service.objects.group_filter(self.request.user.groups.all())
 	
 class UserLookupView(LoginRequiredMixin, autocomplete.Select2QuerySetView):
-	login_url = '/queuemachine/login/'
+	login_url = reverse_lazy('login')
 	def get_queryset(self):
 		query_set = models.User.objects.filter(groups__in=self.request.user.groups.all())
 		if self.q:
@@ -156,7 +156,7 @@ class UserLookupView(LoginRequiredMixin, autocomplete.Select2QuerySetView):
 		return result.get_full_name()
 	
 class ServiceLookupView(LoginRequiredMixin, autocomplete.Select2QuerySetView):
-	logi_url = '/queuemachine/login/'
+	login_url = reverse_lazy('login')
 	def get_queryset(self):
 		query_set= models.Service.objects.filter(groups__in=self.request.user.groups.all())
 		if self.q:
@@ -192,7 +192,7 @@ class BoothToSession(LoginRequiredMixin,SingleObjectMixin, RedirectView):
 		return super().get_redirect_url(*args,**kwargs)
 	
 class AddCustomerView(LoginRequiredMixin,SuccessMessageMixin, CreateView):
-	login_url = '/queuemachine/login/'
+	login_url = reverse_lazy('login')
 	template_name = 'queue_app/manager/add_customer_form.html'
 	model = models.User
 	form_class=forms.CustomUserCreationForm
@@ -201,10 +201,10 @@ class AddCustomerView(LoginRequiredMixin,SuccessMessageMixin, CreateView):
 		return reverse_lazy('queue:add_customer_url')
 	
 class AddBookingQueueView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
-	login_url = '/queuemachine/login/'
+	login_url = reverse_lazy('login')
 	template_name = 'queue_app/manager/add_booking_form.html'
 	model = models.Queue
-	form_class=forms.BookingQueueForms
+	form_class=forms.AddBookingQueuemodelForms
 	success_message = "booking was created"
 	def get_success_url(self):
 		return reverse_lazy('queue:add_booking_url')
@@ -225,7 +225,7 @@ class AddBookingQueueView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 	#end-debug_code		
 	
 class QueuePerService(LoginRequiredMixin, DetailView):
-	login_url = '/queuemachine/login/'
+	login_url = reverse_lazy('login')
 	template_name='queue_app/manager/placeholder_queues.html'
 	model = models.Service
 	def get_context_data(self, **kwargs):

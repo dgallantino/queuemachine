@@ -110,15 +110,15 @@ class QueueModelBaseForms(forms.ModelForm):
         if self.cleaned_data.pop('print_flag'):
             #get latest queue
             recent_queue = (
-                models.Queue.objects.filter(service=self.cleaned_data.get('service'))
+                models.Queue.objects.filter(service=new_queue.service)
                 #.is_booking(self.cleaned_data.get('booking_flag', False))
                 .today_filter()
                 .is_printed(True)
                 .order_by('print_datetime')
                 .last()
             )
-            new_queue.number= (getattr(recent_queue, 'number', None) or 0)+1
-            new_queue.print_datetime=datetime.now()
+            new_queue.number= new_queue.number or (getattr(recent_queue, 'number', None) or 0)+1
+            new_queue.print_datetime= new_queue.print_datetime or datetime.now()
         #save when commited
         if commit:
             new_queue.save()
@@ -129,9 +129,12 @@ class QueueModelBaseForms(forms.ModelForm):
 class AddQueueModelForms(QueueModelBaseForms):
     class Meta(QueueModelBaseForms.Meta):
         fields=('service','print_flag',)
-class BookingQueueForms(QueueModelBaseForms):
+class AddBookingQueuemodelForms(QueueModelBaseForms):
     class Meta(QueueModelBaseForms.Meta):
         fields = ('service','customer','print_flag','booking_flag')
+class PrintBookingQueuemodelForms(QueueModelBaseForms):
+    class Meta(QueueModelBaseForms.Meta):
+        fields = ('print_flag',)
 class CallQueueModelForms(QueueModelBaseForms):
     class Meta(QueueModelBaseForms.Meta):
         fields=('call_flag','counter_booth',)
