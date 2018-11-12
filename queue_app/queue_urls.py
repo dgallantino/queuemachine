@@ -6,6 +6,11 @@ from django.conf.urls.static import static
 app_name='queue'
 urlpatterns = [
     path(
+        '',                                 
+        views.IndexView.as_view(), 
+        name='index_url'
+    ),
+    path(
         'signup/',                                 
         views.SignUp.as_view(), 
         name='sign_up'

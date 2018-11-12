@@ -10,7 +10,6 @@ from dal import autocomplete
 from datetime import datetime
 
 class CustomUserCreationForm(UserCreationForm):
-    
     class Meta(UserCreationForm.Meta):
         model = models.User
         fields = ('username','password1','password2',)

@@ -1,0 +1,25 @@
+{% extends 'queue_app/base.html' %}
+{% load static %}
+{% block title %}
+Queue Manager App
+{% endblock %}
+{% block stylesheet %}
+	<link href="{% static 'queue_app/core/css/index.css'%}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block content %}
+<div class="position-absolute sticky-top float-right">
+	<a id="admin-link" href="/admin/">
+		<i class="fa fa-user-circle-o"></i>
+	</a>
+</div>
+<div class="container vertical-center">
+	<div class="container">
+		<div class="container  btn-container text-center">
+			<a href="{% url 'queue:machine_url' %}" >Machine</a>
+		</div>
+		<div class="container btn btn-container text-center">
+			<a  href="{% url 'queue:manager_url' %}">Manager</a>
+		</div>
+	</div>
+</div>
+{% endblock %}

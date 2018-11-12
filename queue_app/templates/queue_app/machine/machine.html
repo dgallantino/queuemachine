@@ -112,8 +112,8 @@ setInterval(function(){
 				<tr class="content_tr">
 					<td class="content_tr">
 						{% csrf_token %}
-						<input type="hidden" name="service" class="service_name" value="{{ service.id }}"/>
-						<input type="hidden" name="print_flag" class="service_name" value="on"/>
+						<input type="hidden" name="service"  value="{{ service.id }}"/>
+						<input type="hidden" name="print_flag"  value="on"/>
 						<input type="submit" class="content_button" value="{{ service }}" />
 					</td>
 				</tr>

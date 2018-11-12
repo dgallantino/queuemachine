@@ -30,11 +30,15 @@
       </li>
     </ul>
     <span class="navbar-text">
+        <i class="fas fa-user-cog"></i>
+    </span>
+    <span class="navbar-text">
+    
       {{ request.user.get_full_name }}
     </span>
 	{% if request.session.CounterBooth %}
     <span class="navbar-text">
-		<i id="button-icon"class="fa fa-angle-double-right rotate" style="margin:0px 5px"></i>
+		<i class="fa fa-angle-double-right " style="margin:0px 5px"></i>
     </span>
     <span class="navbar-text">
       {{ request.session.CounterBooth.name }} 
