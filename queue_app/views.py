@@ -77,24 +77,49 @@ class PrintTicketView(LoginRequiredMixin, DetailView):
 	object_name = 'queue'
 	model=models.Queue
 
-class BookingQueueListInitialView(LoginRequiredMixin, ListView):
+class BookingQueueListView(LoginRequiredMixin, SingleObjectMixin, ListView):
 	login_url = reverse_lazy('login')
 	template_name ='queue_app/machine/placeholder_queues.html'
-	context_object_name = 'queues'
-	
+	def get_object(self, queryset=None):
+		if self.kwargs.get(self.pk_url_kwarg):
+			return super().get_object( queryset=queryset)
+		return None
+	def get(self, request, *args, **kwargs):
+		services =( 
+			models.Service.objects
+			.group_filter(self.request.user.groups.all())
+		)
+		self.object = self.get_object(
+			models.Queue.objects
+			.today_filter()
+			.services_filter(services)
+			.is_printed(False)
+			.is_booking(True)
+		)
+		return super(BookingQueueListView,self).get( request, *args, **kwargs)
 	def get_queryset(self):
 		services = (
 			models.Service.objects
 			.group_filter(self.request.user.groups.all())
 		)
-		return (
+		qs = (
 			models.Queue.objects
 			.today_filter()
 			.services_filter(services)
 			.is_booking(True)
 			.is_printed(False)
 		)
-	
+		if self.kwargs.get(self.pk_url_kwarg):
+			qs = (
+				qs
+				.filter(date_created__gt=self.object.date_created)
+			)
+		return qs
+	def get_context_data(self, **kwargs):
+		context = super(BookingQueueListView, self).get_context_data(**kwargs)
+		context['queues'] = self.object_list
+		return context
+#deprecated
 class BookingQueueListUpdateView(LoginRequiredMixin, DetailView):
 	login_url = reverse_lazy('login')
 	template_name ='queue_app/machine/placeholder_queues.html'
@@ -222,6 +247,7 @@ class QueuePerServiceView(LoginRequiredMixin, SingleObjectMixin, ListView):
 	def get_context_data(self, **kwargs):
 		context= super().get_context_data(**kwargs)
 		context['service'] = self.object
+		context['queues'] = self.object_list
 		return context
 	
 	def get_queryset(self):

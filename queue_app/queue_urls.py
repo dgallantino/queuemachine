@@ -22,12 +22,12 @@ urlpatterns = [
     ),
     path(
         'machine/booking-list/',                   
-        views.BookingQueueListInitialView.as_view(), 
+        views.BookingQueueListView.as_view(), 
         name='booking_list_url'
     ),
     path(
         'machine/booking-list/<uuid:pk>/',         
-        views.BookingQueueListUpdateView.as_view(), 
+        views.BookingQueueListView.as_view(), 
         name='booking_list_update_url'
     ),
     path(

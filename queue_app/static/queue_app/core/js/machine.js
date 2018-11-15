@@ -44,10 +44,11 @@ function PrintTicket(data) {
         return false;
     };
 	 
-    $.fn.get_queues = function()) {
+    $.fn.get_queues = function() {
     	var $this=$(this);
     	var latest_queue_id = $this.find('.list:last-child').attr('queue_id')
-    	var url=$this.attr('queue_url')+(latest_queue_id?latest_queue_id:"");
+    	var url=$this.attr('queues_url')+(latest_queue_id?latest_queue_id:"");
+    	console.log(url);
     	$.ajax({
     		url : url,
     		type : "GET",

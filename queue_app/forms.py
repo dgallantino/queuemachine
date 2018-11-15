@@ -107,7 +107,8 @@ class QueueModelBaseForms(forms.ModelForm):
         if self.cleaned_data.pop('print_flag'):
             #get latest queue
             recent_queue = (
-                models.Queue.objects.filter(service=new_queue.service)
+                models.Queue.objects
+                .filter(service=new_queue.service)
                 #.is_booking(self.cleaned_data.get('booking_flag', False))
                 .today_filter()
                 .is_printed(True)
