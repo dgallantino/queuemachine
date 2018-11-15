@@ -20,10 +20,10 @@ function PrintTicket(data) {
 }
 
 //as jquery plugin
-(function( $ ) {
+$(function( $ ) {
 	
 	//not sure why
-    $.fn.print_ticket = function( data ) {
+	print_ticket = function( data ) {
     	var contents = data;
         var frame1 = document.createElement('iframe');
         frame1.name = "frame1";

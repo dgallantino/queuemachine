@@ -2,7 +2,7 @@
 	
 	$.fn.list_booth = function(){
 		var $this = $(this);
-		$this.attr('booth_url');
+		url = $this.attr('booth_url');
 		$.ajax({
     		url : url,
     		type : "GET",

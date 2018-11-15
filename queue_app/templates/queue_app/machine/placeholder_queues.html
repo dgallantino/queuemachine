@@ -1,6 +1,6 @@
 {% for queue in queues %}
 <div class="container list" queue_id="{{ queue.id }}">
-	<form id="bookingQueueForm_{{ queue.id }}" class="print-booking-form">
+	<form action={% url "queue:booking_print_url" queue.id  %} id="bookingQueueForm_{{ queue.id }}" class="print-booking-form">
 		{% csrf_token %}
 		<input type="hidden" name="print_flag" value="on"/>
 		<a onClick="$('#bookingQueueForm_{{ queue.id }}').submit()">
