@@ -1,7 +1,8 @@
 (function($){
 	
-	$.fn.list_booth = function(url){
+	$.fn.list_booth = function(){
 		var $this = $(this);
+		$this.attr('booth_url');
 		$.ajax({
     		url : url,
     		type : "GET",
@@ -22,6 +23,24 @@
 			event.preventDefault();
 			var popup_window = window.open($(this).attr('href'),"_blank","width=1000,height=1000'");
 			
+		});
+	};
+	
+	$.fn.get_initial_queue_list = function(){
+		$.each(this,function(idx,dom_obj){
+			queue_url = $(dom_obj).attr('queues_url');
+			$.ajax({
+				url:queue_url,
+				type:'GET',
+				dataType:'html',
+				contentType: 'application/x-www-form-urlencoded',				
+			})
+			.fail(function(xhr){
+				window.alert(xhr.status.toString());
+			})
+			.done(function(response){
+				$(dom_obj).append(response);
+			});
 		});
 	};
 }(jQuery));

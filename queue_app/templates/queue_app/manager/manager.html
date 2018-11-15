@@ -3,129 +3,57 @@
 {% block title %}Manager{% endblock %}
 {% block stylesheet-content %}
 	<link href="{% static 'queue_app/core/css/manager.css'%}" rel="stylesheet" type="text/css">
+	<link href="{% static 'queue_app/bootstrap-table/src/bootstrap-table.css'%}" rel="stylesheet" type="text/css">
 {% endblock %}
-
+{% block head_script %}
+<script src="{% static 'queue_app/bootstrap-table/src/bootstrap-table.js' %}"></script>
+{% endblock %}
 {% block javascript-content %}
-<script src="{% static 'queue_app/core/js/cookies_manager.js' %}"></script>
 <script type="text/javascript">
 
-function loadNewQueues(service_id){
-    $.ajax({
-    	url : request_url,
-		type : "GET",
-		dataType: 'json',
-		contentType: 'application/json',
-		error : function(xhr){console.log(xhr.status);}
-    })
-    .done(function(response){
-    	$.each(response, function(idx, val){
-    		addQueueEntries(parent_elem, val);
-	    	console.log(parent_elem);
-    	});
-    });
-}
-
-function updateQueues(request_url,number,call_flag){
-	var csrftoken = getCookies('csrftoken');
-
-	$.ajaxSetup({
-        beforeSend: function(xhr, settings) {
-            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                xhr.setRequestHeader("X-CSRFToken", csrftoken);
-            }
-        }
-    });
-    $.ajax({
-    	url : request_url,
-		type : "POST",
-		dataType: 'json',
-		contentType: 'application/json',
-		error : function(xhr){console.log(xhr.status);}
-    })
-    .done(function(response){
-    	$.each(response, function(idx, val){
-    		addQueueEntries(parent_elem, val);
-	    	console.log(parent_elem);
-    	});
-    });
-
-}
-
-
-//.in = muncul
-$(document).ready(function() {
-	$(".toggle-accordion").on("click", function() {
-		var accordionId = $(this).attr("accordion-id"),
-		numPanelOpen = $(accordionId + ' .collapse.show').length;
-		numPanel = $(accordionId + ' .collapse').length;
-      
-		/* $(this).toggleClass("active"); */
-
-		if (numPanelOpen == 0) {
-      		openAllPanels(accordionId);
-    	} else {
-      		closeAllPanels(accordionId);
-    	}
-  	})
-
-	openAllPanels = function(aId) {
-		$(aId + ' .panel-collapse:not(".show")').collapse('show');
-	}
-	closeAllPanels = function(aId) {
-		$(aId + ' .panel-collapse.show').collapse('hide');
-	}
-     
-});
-
-$(document).ready(function(){
-	$('.collapse').each(function(){
-		var dom_id = $(this).attr('id')
-		var service_id = dom_id.replace('collapse_', '');
-		var url = "{% url "queue:queue_per_service_url" services.last.id %}".replace(/{{ services.last.id }}/,service_id);
-		//getting all the queues
-		$.ajax({
-	    	url : url,
-			type : "GET",
-			dataType: 'html',
-			contentType: 'application/x-www-form-urlencoded',
-	    })
-	    .fail(function(xhr){
-			window.alert(xhr.status.toString());
-		})
-	    .done(function(response){
-			$("#"+dom_id).append(response)
-	    });
-	});
-});
-
-
-
+$('.queue-list-table').get_initial_queue_list();
 </script>
 {% endblock %}
 
 {% block content-main %}
-
-<div class="container">
-	<div class="accordion-option">
-		<h3 class="title">Manager</h3>
-		<!-- <a href="javascript:void(0)" class="toggle-accordion" accordion-id="#accordion"></a> -->
-	</div>
-	<div class="clearfix">
-	</div> 
-	<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+<div class="row">
+	<div class="col-3">				
+		<div class="nav flex-column nav-pills sticky-top" id="v-pills-tab" role="tablist" aria-orientation="vertical" >
 		{% for service in services %}
-		<div class="panel panel-default">
-			<div class="panel-heading" id="heading_{{ service.id }}" role="tab" >
-				<h4 class="panel-title">
-					<a role="button" data-toggle="collapse" data-parent="#accordion" data-target="#collapse_{{ service.id }}" aria-expanded="false" aria-controls="collapse_{{ service.id }}">
-						{{ service }}
-					</a>
-				</h4>
-			</div>
-			<div id="collapse_{{ service.id }}" class="collapse panel-collapse in" role="tabpanel" aria-labelledby="heading_{{ service.id }}">
-			</div>
+			<a class="nav-link text-capitalize {{ forloop.first|yesno:"active,," }}" id="tab_{{ service.id }}" data-toggle="pill" href="#tabContent_{{ service.id }}" role="tab" aria-controls="tabContent_{{ service.id }}" aria-selected="{{ forloop.first }}">{{ service }}</a>
+		{% empty %}
+			<span><i class="fa fa-close"></i>Make atleast one service</span>
+    	{% endfor %}
+    	</div>
+	</div>
+  	<div class="col-9">
+    	<div class="tab-content" id="v-pills-tabContent">
+    	{% for service in services %}
+      		<div class="tab-pane fade {{ forloop.first|yesno:"show active," }}" id="tabContent_{{ service.id }}" role="tabpanel" aria-labelledby="tab_{{ service.id }}" >
+  				<table id="tabTable_{{ service.id }}" class="table table-sm" data-toggle="#tabTable_{{ service.id }}" >
+					<thead>
+  						<tr>
+  							<td>
+  								Queue Number
+  							</td>
+  							<td>
+  								Ticket Number
+  							</td>
+  							<td>
+  								Booking Time
+  							</td>
+  							<td>
+  								Action
+  							</td>
+  						</tr>
+					</thead>
+					<tbody class="queue-list-table" queues_url="{% url 'queue:queue_per_service_url' service.id %}">
+					</tbody>
+  				</table>
+      		</div>
+    	{% endfor %}
 		</div>
-		{% endfor %}
 	</div>
 </div>
+
 {% endblock %}

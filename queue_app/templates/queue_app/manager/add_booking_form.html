@@ -1,11 +1,10 @@
 {% load static %}
 {% load widget_tweaks %}
 <head>
-	<link href="{% static 'queue_app/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet" type="text/css">
 {{ form.media }}
 </head>
-<body>
-	<div class="container-fluid form-container" id="form-container">
+<body style="margin-top:0">
+	<div class="container-fluid form-container" id="form-container" style="margin-top:0">
 		<form id="add-booking-form" action="{% url "queue:add_booking_url" %}" method="POST">
 			{% csrf_token %}		
 			<input type="hidden" name="booking_flag" value="on"/>
@@ -63,12 +62,6 @@ $(document).ready(function(){
 
 $("#form-success").fadeTo(2000, 500).slideUp(500, function(){
     $("#form-success").slideUp(500);
-});
-
-$(document).ready(function(){
-	console.log($('#form-container').outerWidth()+" "+$('#form-container').height());
-	window.resizeTo($('#form-container').outerWidth(),$('#form-container').height()+60);
-
 });
 </script>
 </body>

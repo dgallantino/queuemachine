@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import date, datetime
+from datetime import date
 from django.contrib.auth.models import AbstractUser, Group
 import uuid
 	
@@ -138,14 +138,20 @@ class QueueQueryset(models.QuerySet):
 	def today_filter(self):
 		return self.filter(date_created__date=date.today())
 	
-	def is_printed(self, flag=False):
-		return self.filter(print_flag=flag)
+	def is_printed(self, flag=None):
+		if flag is not None:
+			return self.filter(print_flag=flag)
+		return self
 	
-	def is_booking(self, flag=False):
-		return self.filter(booking_flag=flag)
+	def is_booking(self, flag=None):
+		if flag is not None:
+			return self.filter(booking_flag=flag)
+		return self
 	
-	def is_called(self, flag=False):
-		return self.filter(call_flag=flag)
+	def is_called(self, flag=None):
+		if flag is not None:
+			return self.filter(call_flag=flag)
+		return self
 	
 	def services_filter(self, iterable):
 		return self.filter(service__in=iterable)

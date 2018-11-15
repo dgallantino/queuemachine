@@ -75,11 +75,9 @@ class QueueModelBaseForms(forms.ModelForm):
     class Media:
         css={
             'all':(
-#                 'queue_app/bootstrap/css/bootstrap.min.css',
-#                 'queue_app/font-awesome/css/font-awesome.min.css',
-#                 'queue_app/font-awesome/css/font-awesome-animation.min.css',
-#                 'queue_app/font-awesome/css/font-awesome-animation.min.css',
-                'queue_app/core/css/add_booking_form.css',
+                'queue_app/bootstrap/css/bootstrap.min.css',
+                'queue_app/font-awesome/css/font-awesome.min.css',
+                'queue_app/core/css/manager-add_booking_form.css',
                 'queue_app/jquery-ui/jquery-ui.min.css',
                 'queue_app/jquery-timepicker/jquery.timepicker.min.css',
             ),

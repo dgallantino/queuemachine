@@ -17,43 +17,43 @@ urlpatterns = [
     ),
     path(
         'machine/',                                
-        views.MachineDisplay.as_view(), 
+        views.MachineDisplayView.as_view(), 
         name='machine_url'
     ),
     path(
         'machine/booking-list/',                   
-        views.BookingList.as_view(), 
+        views.BookingQueueListInitialView.as_view(), 
         name='booking_list_url'
     ),
     path(
         'machine/booking-list/<uuid:pk>/',         
-        views.BookingListUpdate.as_view(), 
+        views.BookingQueueListUpdateView.as_view(), 
         name='booking_list_update_url'
     ),
     path(
         'machine/booking-list/<uuid:pk>/print/',   
-        views.PrintBookingTicket.as_view(), 
+        views.PrintBookingTicketView.as_view(), 
         name='booking_print_url'
     ),
     path(
         'machine/print-ticket/<uuid:pk>/',         
-        views.PrintTicket.as_view(), 
+        views.PrintTicketView.as_view(), 
         name='print_ticket_url'
     ),
     path(
         'manager/',                                
-        views.ManagerDisplay.as_view(), 
+        views.ManagerDisplayView.as_view(), 
         name='manager_url'
-    ),
-    path(
-        'manager/queues/service/<uuid:pk>/',       
-        views.QueuePerService.as_view(), 
-        name='queue_per_service_url'
     ),
     path(
         'manager/queues/add-booking/',             
         views.AddBookingQueueView.as_view(), 
         name='add_booking_url'
+    ),
+    path(
+        'manager/queues/service/<uuid:pk>/',       
+        views.QueuePerServiceView.as_view(), 
+        name='queue_per_service_url'
     ),
     path(
         'manager/users/',                          

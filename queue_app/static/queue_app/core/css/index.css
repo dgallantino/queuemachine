@@ -39,9 +39,34 @@ a:active, a:hover{
    	font-size: 40px;
 }
 
-#admin-link:active, #admin-link:hover{
-    background-color: rgba(39,163,78,1);
-    color: rgba(255,255,255,.8) !important;
+a#admin-link{
+	width:100% !important;
+	background-color: rgba(0,0,0,0);
+	border: none;
+	padding: 20px 32px;
+	font-weight: 900;
+	text-align: top;
+	text-decoration: none !important;
+    text-transform: uppercase;
+	display: block;
+	font-size: 30px;
+	line-height: 30px;
+	margin-bottom: 50px;
+	cursor: pointer;
+	width: 80%;
+	height:70px;
+	color: rgb(197,36,48) !important;
+	outline:none;
+    /* outline-color: rgb(197,36,48);
+    outline-style: solid;
+    outline-width: 2px; */
+    -webkit-transition: all .5s ease;
+    -moz-transition: all .5s ease;
+	transition: all .5s ease;
+    
+}
+
+a#admin-link:active, a#admin-link:hover{
     font-size: 30px;
 	line-height: 30px;
 }

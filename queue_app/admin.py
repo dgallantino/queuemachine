@@ -7,7 +7,7 @@ class QueueAdmin(admin.ModelAdmin):
     form = forms.QueueModelBaseForms
     model = models.Queue
     list_display = [ 'id', 'service','booking_flag','number',]
-    list_filter = ('booking_flag', 'print_flag','call_flag')
+    list_filter = ('service','booking_flag', 'print_flag','call_flag')
     readonly_fields = (
                     'date_created',
                     'date_modified',
@@ -29,7 +29,7 @@ class QueueAdmin(admin.ModelAdmin):
             )
         }),
         ('Read only fields',{
-            'classes':('collapse','extrapretty'),
+            'classes':('collapse',),
             'fields':(
                 'date_created',
                 'date_modified',

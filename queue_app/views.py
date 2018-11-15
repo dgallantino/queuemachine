@@ -25,7 +25,7 @@ class SignUp(CreateView):
 Machine Display view
 as in display that ticket booth uses
 component
-- MachineDisplay (page)
+- MachineDisplayView (page)
 	-> GET: list of services
 	-> POST: Create new queue
 - AddQueueFormView
@@ -33,7 +33,7 @@ component
 '''
 
 #Implpmptation using form and normal html request
-class MachineDisplay(LoginRequiredMixin, CreateView):
+class MachineDisplayView(LoginRequiredMixin, CreateView):
 	login_url = reverse_lazy('login')
 	template_name ='queue_app/machine/machine.html'
 	model = models.Queue
@@ -49,7 +49,7 @@ class MachineDisplay(LoginRequiredMixin, CreateView):
 	
 #booking entry is updated right before printing
 #so the number is sorted based on time it was printed
-class PrintBookingTicket(LoginRequiredMixin, UpdateView):
+class PrintBookingTicketView(LoginRequiredMixin, UpdateView):
 	login_url = reverse_lazy('login')
 	template_name ='queue_app/machine/placeholder_ticket.html'
 	object_name = 'queue'
@@ -71,13 +71,13 @@ class PrintBookingTicket(LoginRequiredMixin, UpdateView):
 	def get_success_url(self):
 		return reverse_lazy('queue:print_ticket_url', kwargs={'pk':self.object.id})
 	
-class PrintTicket(LoginRequiredMixin, DetailView):
+class PrintTicketView(LoginRequiredMixin, DetailView):
 	login_url = reverse_lazy('login')
 	template_name ='queue_app/machine/placeholder_ticket.html'
 	object_name = 'queue'
 	model=models.Queue
 
-class BookingList(LoginRequiredMixin, ListView):
+class BookingQueueListInitialView(LoginRequiredMixin, ListView):
 	login_url = reverse_lazy('login')
 	template_name ='queue_app/machine/placeholder_queues.html'
 	context_object_name = 'queues'
@@ -95,7 +95,7 @@ class BookingList(LoginRequiredMixin, ListView):
 			.is_printed(False)
 		)
 	
-class BookingListUpdate(LoginRequiredMixin, DetailView):
+class BookingQueueListUpdateView(LoginRequiredMixin, DetailView):
 	login_url = reverse_lazy('login')
 	template_name ='queue_app/machine/placeholder_queues.html'
 	context_object_name = 'queues'
@@ -132,7 +132,7 @@ componen:
 	-> GET: add booking form
 	-> POST: booking submition
 '''
-class ManagerDisplay(LoginRequiredMixin, ListView):
+class ManagerDisplayView(LoginRequiredMixin, ListView):
 	login_url = reverse_lazy('login')
 	template_name='queue_app/manager/manager.html'
 	context_object_name = 'services'
@@ -158,7 +158,7 @@ class UserLookupView(LoginRequiredMixin, autocomplete.Select2QuerySetView):
 class ServiceLookupView(LoginRequiredMixin, autocomplete.Select2QuerySetView):
 	login_url = reverse_lazy('login')
 	def get_queryset(self):
-		query_set= models.Service.objects.filter(groups__in=self.request.user.groups.all())
+		query_set= models.Service.objects.group_filter(self.request.user.groups.all())
 		if self.q:
 			qs1 = query_set.filter(name__startswith=self.q)
 			qs2 = query_set.filter(desc__startswith=self.q)
@@ -207,28 +207,28 @@ class AddBookingQueueView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 	form_class=forms.AddBookingQueuemodelForms
 	success_message = "booking was created"
 	def get_success_url(self):
-		return reverse_lazy('queue:add_booking_url')
-	#debug_code
-	def post(self, request, *args, **kwargs):
-		debug= super().post(request, *args, **kwargs)
-		return debug
-	def get_context_data(self, **kwargs):
-		debug=super().get_context_data( **kwargs)
-		return debug
-	def get(self, request, *args, **kwargs):
-		debug= super().get(request, *args, **kwargs)
-		return debug
-	def form_valid(self, form):
-		return SuccessMessageMixin.form_valid(self, form)
-	def form_invalid(self, form):
-		return CreateView.form_invalid(self, form)
-	#end-debug_code		
+		return reverse_lazy('queue:add_booking_url')		
 	
-class QueuePerService(LoginRequiredMixin, DetailView):
+class QueuePerServiceView(LoginRequiredMixin, SingleObjectMixin, ListView):
 	login_url = reverse_lazy('login')
 	template_name='queue_app/manager/placeholder_queues.html'
-	model = models.Service
+	def get(self, request, *args, **kwargs):
+		self.object= self.get_object(
+			models.Service.objects
+			.group_filter(self.request.user.groups.all())
+		)
+		return super().get( request, *args, **kwargs)
+	
 	def get_context_data(self, **kwargs):
 		context= super().get_context_data(**kwargs)
-		context['queues'] = self.object.queues.get_today_list()
+		context['service'] = self.object
 		return context
+	
+	def get_queryset(self):
+		qs = (
+			self.object.queues
+			.all()
+			.is_booking(self.request.GET.get('booking'))
+			.order_by('print_datetime')
+		)
+		return qs
