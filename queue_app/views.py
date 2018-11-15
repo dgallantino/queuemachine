@@ -12,7 +12,6 @@ from django.views.generic.detail import SingleObjectMixin
 
 #todos: 
 #work on the manager
-
 class IndexView(TemplateView):
 	template_name = 'queue_app/index.html'
 
@@ -253,8 +252,10 @@ class QueuePerServiceView(LoginRequiredMixin, SingleObjectMixin, ListView):
 	def get_queryset(self):
 		qs = (
 			self.object.queues
-			.all()
+			.today_filter()
 			.is_booking(self.request.GET.get('booking'))
+			.is_printed(True)
+			.is_called(False)
 			.order_by('print_datetime')
 		)
 		return qs

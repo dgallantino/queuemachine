@@ -20,7 +20,9 @@ $('.queue-list-table').get_initial_queue_list();
 	<div class="col-3">				
 		<div class="nav flex-column nav-pills sticky-top" id="v-pills-tab" role="tablist" aria-orientation="vertical" >
 		{% for service in services %}
-			<a class="nav-link text-capitalize {{ forloop.first|yesno:"active,," }}" id="tab_{{ service.id }}" data-toggle="pill" href="#tabContent_{{ service.id }}" role="tab" aria-controls="tabContent_{{ service.id }}" aria-selected="{{ forloop.first }}">{{ service }}</a>
+			<a class="nav-link text-capitalize {{ forloop.first|yesno:"active,," }}" id="tab_{{ service.id }}" data-toggle="pill" href="#tabContent_{{ service.id }}" role="tab" aria-controls="tabContent_{{ service.id }}" aria-selected="{{ forloop.first }}">
+				{{ service.name }}
+			</a>			
 		{% empty %}
 			<span><i class="fa fa-close"></i>Make atleast one service</span>
     	{% endfor %}
