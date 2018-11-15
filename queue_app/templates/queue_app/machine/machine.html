@@ -74,12 +74,13 @@ $('body').on('submit','.print-booking-form',function(event){
 
 $('#booking-list-body').get_queues();
 
-
-this.last_queue_id='';
+this.last_queue_id='asd';
 setInterval(function(){
 	var last_queue_id = $('#booking-list-body .list:last-child').attr('queue_id');
-	this.last_queue_id = last_queue_id;
-	$('#booking-list-body').get_queues();
+	if(this.last_queue_id != last_queue_id){
+		this.last_queue_id = last_queue_id;
+		$('#booking-list-body').get_queues();
+	}
 },60*5*1000);
 
 </script>

@@ -48,7 +48,6 @@ function PrintTicket(data) {
     	var $this=$(this);
     	var latest_queue_id = $this.find('.list:last-child').attr('queue_id')
     	var url=$this.attr('queues_url')+(latest_queue_id?latest_queue_id:"");
-    	console.log(url);
     	$.ajax({
     		url : url,
     		type : "GET",
