@@ -44,9 +44,10 @@ function PrintTicket(data) {
         return false;
     };
 	 
-    $.fn.get_queues = function( queue_id ) {
-    	var url="/queuemachine/machine/booking-list/"+(queue_id?queue_id:"");
+    $.fn.get_queues = function()) {
     	var $this=$(this);
+    	var latest_queue_id = $this.find('.list:last-child').attr('queue_id')
+    	var url=$this.attr('queue_url')+(latest_queue_id?latest_queue_id:"");
     	$.ajax({
     		url : url,
     		type : "GET",

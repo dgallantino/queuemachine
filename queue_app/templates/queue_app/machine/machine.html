@@ -72,16 +72,14 @@ $('body').on('submit','.print-booking-form',function(event){
 });
 
 
-$(document).ready(function(){
-	$('#booking-list-body').get_queues();
-});
+$('#booking-list-body').get_queues();
 
 
 this.last_queue_id='';
 setInterval(function(){
-	var last_queue_id = $('#booking-list-body .list:last-child').children('form').attr('id');
+	var last_queue_id = $('#booking-list-body .list:last-child').attr('queue_id');
 	this.last_queue_id = last_queue_id;
-	$('#booking-list-body').get_queues(last_queue_id);
+	$('#booking-list-body').get_queues();
 },60*5*1000);
 
 </script>
@@ -99,7 +97,7 @@ setInterval(function(){
     			Booking List
     			<hr class="white">
     		</div>
-    		<div id="booking-list-body" class="list-body" >
+    		<div id="booking-list-body" class="list-body" queues_url="{% url 'booking_list_url' %}">
     		</div>
     	</div>
     </div>
