@@ -182,7 +182,11 @@ body {
   color: #ffffff;
 }
 
-.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open > .dropdown-toggle.btn-primary {
+.btn-primary:hover, 
+.btn-primary:focus, 
+.btn-primary:active, 
+.btn-primary.active, 
+.open > .dropdown-toggle.btn-primary {
     background: #33a6cc;
 }
 
@@ -196,19 +200,20 @@ body {
   background: rgb(197,36,48);
 }
 
-.btn.sharp.tetep {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 0;
-}
 
-.fa{
+#menu-toggle{
+  top: 0vh;
+  margin-left: -20px;
+  position: fixed;
+  padding-top: 0px;
+  padding-bottom: 0px;
   font-size : 50px;
+  line-height : 30px;
 }
 
 .rotate{
     -moz-transition: all 0.5s linear;
-    -webkit-transition: all 0.5s linear;
+    -webkit-transition: all 0.5s ease-out;
     transition: all 0.5s linear;
 }
 
