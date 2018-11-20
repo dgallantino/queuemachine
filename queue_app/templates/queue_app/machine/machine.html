@@ -34,7 +34,7 @@ setInterval(function(){
 		this.last_queue_id = last_queue_id;
 		$('#booking-list-body').get_queues();
 	}
-},60*5*1000);
+},5*60*1000);
 
 </script>
 {% endblock %}
@@ -56,9 +56,9 @@ setInterval(function(){
     	</div>
     </div>
     <div class="page-content-wrapper container-fluid">
-    <a href="#menu-toggle" class="btn btn-secondary sharp" id="menu-toggle">
-		<i id="button-icon"class="fa fa-angle-double-right rotate"></i>
-	</a>
+	    <a href="#menu-toggle" class="btn btn-secondary sharp" id="menu-toggle">
+			<i id="button-icon"class="fa fa-angle-double-right rotate"></i>
+		</a>
     	<div class="container-fluid vertical-center">
     		<div class="container-fluid">
 				{% for service in services %}

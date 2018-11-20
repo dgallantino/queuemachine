@@ -136,4 +136,11 @@ class PrintBookingQueuemodelForms(QueueModelBaseForms):
 class CallQueueModelForms(QueueModelBaseForms):
     class Meta(QueueModelBaseForms.Meta):
         fields=('call_flag','counter_booth',)
+    def save(self, commit=True):
+        new_queue = super(CallQueueModelForms,self).save(commit=False)
+        
+        if commit:
+            new_queue.save()
+        return new_queue
+        
             

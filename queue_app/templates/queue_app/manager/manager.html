@@ -11,7 +11,19 @@
 {% block javascript-content %}
 <script type="text/javascript">
 
-$('.queue-list-table').get_initial_queue_list();
+$('.queue-list-table').as_queue_list();
+//setInterval(function(){
+//	$('.queue-list-table').as_queue_list();
+//},5*60*1000);
+$('.btn.btn-refresh').click(function(event){
+	event.preventDefault();
+	$(this).parent().find('.queue-list-table').as_queue_list();
+});
+
+$('body').tooltip({
+    selector: '[data-toggle="tooltip"]'
+});
+
 </script>
 {% endblock %}
 
@@ -21,7 +33,7 @@ $('.queue-list-table').get_initial_queue_list();
 		<div class="nav flex-column nav-pills sticky-top" id="v-pills-tab" role="tablist" aria-orientation="vertical" >
 		{% for service in services %}
 			<a class="nav-link text-capitalize {{ forloop.first|yesno:"active,," }}" id="tab_{{ service.id }}" data-toggle="pill" href="#tabContent_{{ service.id }}" role="tab" aria-controls="tabContent_{{ service.id }}" aria-selected="{{ forloop.first }}">
-				{{ service.name }}
+				{{ service.name }} <span class="badge badge-secondary"></span>
 			</a>
 		{% empty %}
 			<span><i class="fa fa-close"></i>Make atleast one service</span>
@@ -32,12 +44,18 @@ $('.queue-list-table').get_initial_queue_list();
     	<div class="tab-content" id="v-pills-tabContent">
     	{% for service in services %}
       		<div class="tab-pane fade {{ forloop.first|yesno:"show active," }}" id="tabContent_{{ service.id }}" role="tabpanel" aria-labelledby="tab_{{ service.id }}" >
+      			<a class="btn btn-primary btn-refresh" href="#" role="button" style="margin-bottom:10px" data-toggle="tooltip" data-placement="bottom" title="Refresh queue table">Refresh</a>
   				<table id="tabTable_{{ service.id }}" class="table table-sm" data-toggle="#tabTable_{{ service.id }}" >
 					<thead>
   						<tr>
-  							<td>
-  								Number
+  							<td rowspan="2">
+  								#
   							</td>
+  							<td class="text-center" colspan="4">
+  								Queue Detail
+  							</td>
+  						</tr>
+  						<tr>
   							<td>
   								Ticket
   							</td>
@@ -48,7 +66,7 @@ $('.queue-list-table').get_initial_queue_list();
   								Customer
   							</td>
   							<td>
-  								Action
+  								Actions
   							</td>
   						</tr>
 					</thead>

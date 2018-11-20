@@ -1,5 +1,4 @@
 (function($){
-	
 	$.fn.list_booth = function(){
 		var $this = $(this);
 		url = $this.attr('booth_url');
@@ -18,7 +17,8 @@
     		$this.append(data);
     	});
 	};
-	$.fn.booking_form_popup = function(){
+	
+	$.fn.as_booking_form_modal = function(){
 		$(this).on('click',function(event){
 			event.preventDefault();
 			var popup_window = window.open($(this).attr('href'),"_blank","width=1000,height=1000'");
@@ -26,9 +26,15 @@
 		});
 	};
 	
-	$.fn.get_initial_queue_list = function(){
+	//request the most updated queue list
+	$.fn.as_queue_list = function(){
 		$.each(this,function(idx,dom_obj){
-			queue_url = $(dom_obj).attr('queues_url');
+			var queue_url = $(dom_obj).attr('queues_url');
+			var loading_html =	'<tr><td class ="text-center" colspan="5">';
+			loading_html += '<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>';
+			loading_html += '<span class="sr-only">Loading...</span>';
+			loading_html += '</td></tr>';
+			$(dom_obj).html(loading_html);
 			$.ajax({
 				url:queue_url,
 				type:'GET',
@@ -39,8 +45,9 @@
 				window.alert(xhr.status.toString());
 			})
 			.done(function(response){
-				$(dom_obj).append(response);
+				$(dom_obj).html(response);
 			});
 		});
+		return false;
 	};
 }(jQuery));
