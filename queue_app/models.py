@@ -61,6 +61,14 @@ class CounterBooth(models.Model):
 	def __str__(self):
 		return self.name
 	
+	def to_flat_dict(self):
+		return {
+			'id' : str(self.id),
+			'name' : self.name,
+			'desc' : self.desc,
+			'group': str(self.groups.id),
+ 		}
+	
 class User(AbstractUser):
 	id=models.UUIDField(
 		primary_key=True,

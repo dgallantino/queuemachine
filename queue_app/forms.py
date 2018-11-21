@@ -104,7 +104,7 @@ class QueueModelBaseForms(forms.ModelForm):
                 pass
    
         #define queue number automaticly
-        if self.cleaned_data.pop('print_flag'):
+        if self.cleaned_data.pop('print_flag',False):
             #get latest queue
             recent_queue = (
                 models.Queue.objects
@@ -138,7 +138,7 @@ class CallQueueModelForms(QueueModelBaseForms):
         fields=('call_flag','counter_booth',)
     def save(self, commit=True):
         new_queue = super(CallQueueModelForms,self).save(commit=False)
-        
+        new_queue.call_flag = self.cleaned_data.pop('call_flag',new_queue.call_flag)
         if commit:
             new_queue.save()
         return new_queue

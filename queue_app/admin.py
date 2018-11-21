@@ -6,7 +6,7 @@ from django.contrib.auth.admin import UserAdmin
 class QueueAdmin(admin.ModelAdmin):
     form = forms.QueueModelBaseForms
     model = models.Queue
-    list_display = [ 'id', 'service','booking_flag','number',]
+    list_display = [ 'id', 'service','number','booking_flag','call_flag',]
     list_filter = ('service','booking_flag', 'print_flag','call_flag')
     readonly_fields = (
                     'date_created',
@@ -29,7 +29,6 @@ class QueueAdmin(admin.ModelAdmin):
             )
         }),
         ('Read only fields',{
-            'classes':('collapse',),
             'fields':(
                 'date_created',
                 'date_modified',

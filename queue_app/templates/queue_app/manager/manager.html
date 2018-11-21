@@ -9,6 +9,8 @@
 <script src="{% static 'queue_app/bootstrap-table/src/bootstrap-table.js' %}"></script>
 {% endblock %}
 {% block javascript-content %}
+<script src="{% static 'queue_app/core/js/cookies_manager.js' %}"></script>
+
 <script type="text/javascript">
 
 $('.queue-list-table').as_queue_list();
@@ -23,6 +25,8 @@ $('.btn.btn-refresh').click(function(event){
 $('body').tooltip({
     selector: '[data-toggle="tooltip"]'
 });
+
+$('body').as_finish_button('a.btn-check');
 
 </script>
 {% endblock %}

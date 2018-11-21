@@ -5,7 +5,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import ListView, DetailView, TemplateView
 from django.urls.base import reverse_lazy
 from dal import autocomplete
-from django.views.generic.base import RedirectView
+from django.views.generic.base import RedirectView, View
 from django.views.generic.detail import SingleObjectMixin
 
 
@@ -43,8 +43,6 @@ class MachineDisplayView(LoginRequiredMixin, CreateView,):
 		return context
 	def get_success_url(self):
 		return reverse_lazy('queue:print_ticket_url', kwargs={'pk':self.object.id})
-	def form_invalid(self, form):
-		return CreateView.form_invalid(self, form)
 	
 #booking entry is updated right before printing
 #so the number is sorted based on time it was printed
@@ -225,8 +223,7 @@ class BoothToSession(
 	def get_redirect_url(self, *args, **kwargs):
 		CounterBooth_object=self.get_object()
 		if CounterBooth_object:
-			CounterBooth_dict = {'name':CounterBooth_object.name,'id':str(CounterBooth_object.id)}
-			self.request.session['CounterBooth'] = CounterBooth_dict
+			self.request.session['CounterBooth'] = CounterBooth_object.to_flat_dict()
 		return super().get_redirect_url(*args,**kwargs)
 	
 class AddCustomerView(
@@ -235,12 +232,11 @@ class AddCustomerView(
 		CreateView,
 	):
 	login_url = reverse_lazy('login')
+	success_url = reverse_lazy('queue:add_customer_url')		
 	template_name = 'queue_app/manager/add_customer_form.html'
 	model = models.User
 	form_class=forms.CustomUserCreationForm
 	success_message = "Customer data creation was successfull"
-	def get_success_url(self):
-		return reverse_lazy('queue:add_customer_url')
 	
 class AddBookingQueueView(
 		LoginRequiredMixin, 
@@ -248,12 +244,13 @@ class AddBookingQueueView(
 		CreateView,
 	):
 	login_url = reverse_lazy('login')
+	success_url = reverse_lazy('queue:add_booking_url')		
 	template_name = 'queue_app/manager/add_booking_form.html'
 	model = models.Queue
 	form_class=forms.AddBookingQueuemodelForms
 	success_message = "booking was created"
-	def get_success_url(self):
-		return reverse_lazy('queue:add_booking_url')		
+	def post(self, request, *args, **kwargs):
+		return CreateView.post(self, request, *args, **kwargs)
 	
 class QueuePerServiceView(
 		LoginRequiredMixin, 
@@ -287,5 +284,14 @@ class QueuePerServiceView(
 		return qs
 	
 class CallQueueView(LoginRequiredMixin,UpdateView):
-	login_url = reverse_lazy('login')
+	login_url = reverse_lazy('login')	
+	success_url = reverse_lazy('queue:manager_url')
 	form_class = forms.CallQueueModelForms
+	model = models.Queue
+	template_name = 'queue_app/manager/test_form_template.html'
+	
+class CallQueueSoundView(LoginRequiredMixin, View):
+	login_url = reverse_lazy('login')	
+	def get(self, request, *args, **kwargs):
+		pass
+	

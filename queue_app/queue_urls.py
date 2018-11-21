@@ -46,6 +46,11 @@ urlpatterns = [
         name='manager_url'
     ),
     path(
+        'manager/queues/<uuid:pk>/call/',             
+        views.CallQueueView.as_view(), 
+        name='call_queue_url'
+    ),
+    path(
         'manager/queues/add-booking/',             
         views.AddBookingQueueView.as_view(), 
         name='add_booking_url'
