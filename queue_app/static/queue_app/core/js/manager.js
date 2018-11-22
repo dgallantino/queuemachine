@@ -18,14 +18,6 @@
     	});
 	};
 	
-	$.fn.as_booking_form_modal = function(){
-		$(this).on('click',function(event){
-			event.preventDefault();
-			var popup_window = window.open($(this).attr('href'),"_blank","width=1000,height=1000'");
-			
-		});
-	};
-	
 	$.fn.as_finish_button = function(selector){
 		if (selector === undefined){
 			const err = new Error("blody hell mate, selector argument is mandatory, don't let it empty you stupid wanker");
@@ -62,6 +54,20 @@
         	});
 		});
 	};
+	
+	$.fn.as_call_button = function(selector){
+		$(this).on('click',selector,function(event){
+			event.preventDefault();
+			var call_audio = $(this).siblings('.call-audio')[0];
+			if (call_audio.paused){
+				call_audio.currentTime=0;
+				call_audio.play();
+			}else{
+				call_audio.pause();
+			}
+			
+		});
+	}
 	
 	//request the most updated queue list
 	$.fn.as_queue_list = function(){

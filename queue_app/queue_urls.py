@@ -85,4 +85,9 @@ urlpatterns = [
         views.BoothToSession.as_view(),
         name='booth_detail_url'
     ),
+    path(
+        'audiotest/',                       
+        views.playAudioFile,
+        name='test'
+    ),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -7,6 +7,8 @@ from django.urls.base import reverse_lazy
 from dal import autocomplete
 from django.views.generic.base import RedirectView, View
 from django.views.generic.detail import SingleObjectMixin
+from django.http.response import HttpResponse
+import os
 
 
 
@@ -249,8 +251,6 @@ class AddBookingQueueView(
 	model = models.Queue
 	form_class=forms.AddBookingQueuemodelForms
 	success_message = "booking was created"
-	def post(self, request, *args, **kwargs):
-		return CreateView.post(self, request, *args, **kwargs)
 	
 class QueuePerServiceView(
 		LoginRequiredMixin, 
@@ -295,3 +295,11 @@ class CallQueueSoundView(LoginRequiredMixin, View):
 	def get(self, request, *args, **kwargs):
 		pass
 	
+def playAudioFile(request):
+	fname="/Users/gallantino/Desktop/Explosion.mp3"
+	f = open(fname,"rb") 
+	response = HttpResponse()
+	response.write(f.read())
+	response['Content-Type'] ='audio/mp3'
+	response['Content-Length'] =os.path.getsize(fname )
+	return response

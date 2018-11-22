@@ -1,0 +1,84 @@
+{% extends 'queue_app/base.html' %}
+{% load static %}
+{% block title %}Manager Home{% endblock %}
+
+{% block stylesheet %}
+	<link href="{% static 'queue_app/core/css/manager-base.css'%}" rel="stylesheet" type="text/css">
+
+	{% block stylesheet-content %}
+	{% endblock %}
+{% endblock %}
+{% block head_script %}
+{% endblock %}
+
+{% block content-header %}
+<nav class="navbar fixed-top navbar-expand-md navbar-dark bg-dark" >
+  <a class="navbar-brand" href="#">Queue Manager</a>
+  <div class="collapse navbar-collapse">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a id="booking-form-link" class="nav-link" href="{% url "queue:add_booking_url" %}" data-toggle="modal" data-target="#modal-form">
+        Add Booking
+        </a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Counter
+        </a>
+        <div id="booth-menu" class="dropdown-menu" aria-labelledby="navbarDropdown" booth_url="{% url "queue:booth_list_url" %}">
+        </div>
+      </li>
+      <li class="nav-item">
+        <a id="booking-form-link" class="nav-link" >
+        testing
+        </a>
+      </li>
+    </ul>
+    <span class="navbar-text">
+        <i class="fas fa-user-cog"></i>
+    </span>
+    <span class="navbar-text">
+    
+      {{ request.user.get_full_name }}
+    </span>
+	{% if request.session.CounterBooth %}
+    <span class="navbar-text">
+		<i class="fa fa-angle-double-right " style="margin:0px 5px"></i>
+    </span>
+    <span class="navbar-text">
+      {{ request.session.CounterBooth.name }} 
+    </span>
+    {% endif %}
+  </div>
+</nav>
+<!--modal-->
+<div class="modal fade" id="modal-form" tabindex="-1" role="dialog" aria-labelledby="modal-form-title" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal-form-title">Booking Form</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div form_url="{% url "queue:add_booking_url" %}" class="modal-body" id="modal-form-body">
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block content %}
+
+{% block content-main %}
+{% endblock %}
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'queue_app/core/js/manager.js' %}"></script>
+<script type="text/javascript">
+$('#booth-menu').list_booth();  
+$('#modal-form-body').as_booking_form();
+</script>
+	{% block javascript-content %}
+	{% endblock %}
+{% endblock %}

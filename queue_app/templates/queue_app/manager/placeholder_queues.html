@@ -14,8 +14,11 @@
 		{{ queue.customer.get_full_name|default:queue.customer|default:"-" }} 
 	</td>
 	<td>
-		<a href="#" class="btn btn-primary btn-bell" role="button" data-toggle="tooltip" data-placement="top" title="Call this queue" session_booth ="{{ request.session.CounterBooth.id }}"><i class="fa fa-bell"></i></a>
-		<a href="{% url "queue:call_queue_url" queue.id %}" class="btn btn-primary btn-check" session_booth ="{{ request.session.CounterBooth.id }}" role="button"><i class="fa fa-check"></i></a>
+		<audio class="call-audio" preload="none"> 
+			<source src="{% url "queue:test" %}" type="audio/mpeg">
+		</audio>
+		<a href="{% url "queue:test" %}" class="btn btn-primary btn-bell faa-parent animated-hover" role="button" data-toggle="tooltip" data-placement="top" title="Call this queue" session_booth ="{{ request.session.CounterBooth.id }}"><i class="fa fa-bell faa-ring"></i></a>
+		<a href="{% url "queue:call_queue_url" queue.id %}" class="btn btn-primary btn-check" role="button" data-placement="top" title="Finish" session_booth ="{{ request.session.CounterBooth.id }}"><i class="fa fa-check"></i></a>
 	</td>
 </tr>
 {% endfor %}
