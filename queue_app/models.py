@@ -148,17 +148,17 @@ class QueueQueryset(models.QuerySet):
 	
 	def is_printed(self, flag=None):
 		if flag is not None:
-			return self.filter(print_flag=flag)
+			return self.filter(is_printed=flag)
 		return self
 	
 	def is_booking(self, flag=None):
 		if flag is not None:
-			return self.filter(booking_flag=flag)
+			return self.filter(is_booking=flag)
 		return self
 	
 	def is_called(self, flag=None):
 		if flag is not None:
-			return self.filter(call_flag=flag)
+			return self.filter(is_called=flag)
 		return self
 	
 	def services_filter(self, iterable):
@@ -208,11 +208,11 @@ class Queue(models.Model):
 		related_name='queues'
 	)#
 	
-	booking_flag=models.BooleanField(default=False)#
+	is_booking=models.BooleanField(default=False)#
 		
-	call_flag=models.BooleanField(default=False)#
+	is_called=models.BooleanField(default=False)#
 	
-	print_flag=models.BooleanField(default=False)#
+	is_printed=models.BooleanField(default=False)#
 	
 	booking_datetime=models.DateTimeField(null=True,blank=True,)
 	

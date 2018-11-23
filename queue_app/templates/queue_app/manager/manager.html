@@ -12,22 +12,35 @@
 <script src="{% static 'queue_app/core/js/cookies_manager.js' %}"></script>
 
 <script type="text/javascript">
+//activate tool tip
+$('body').tooltip({
+    selector: '[data-toggle="tooltip"]'
+});
 
+//queue table initialization
 $('.queue-list-table').as_queue_list();
+
+//uncoment these 3 lines for auto refresh 
 //setInterval(function(){
 //	$('.queue-list-table').as_queue_list();
 //},5*60*1000);
+
+//recall queue table initialization for refresh button
 $('.btn.btn-refresh').click(function(event){
 	event.preventDefault();
 	$(this).parent().find('.queue-list-table').as_queue_list();
 });
 
-$('body').tooltip({
-    selector: '[data-toggle="tooltip"]'
-});
+//calling queue update queue data in database
+//so a POST request to the server is required to change that data
+//if the request is successfull then the secon click will play the audio
+$('body').on('click','a.btn-bell',handle_call);
 
-$('body').as_finish_button('a.btn-check');
-$('body').as_call_button('a.btn-bell');
+
+$('body').on('click','a.btn-check',function(e){
+	e.preventDefault();
+	$(this).closest('.called').remove()
+});
 
 </script>
 {% endblock %}

@@ -93,7 +93,7 @@ class QueueModelBaseForms(forms.ModelForm):
     def save(self, commit=True):
         #get models.Queue isntance to create or edit
         new_queue = super(QueueModelBaseForms,self).save(commit=False)  
-        if self.cleaned_data.get('booking_flag', False):
+        if self.cleaned_data.get('is_booking', False):
             try:
             #get booking data
                 new_queue.booking_datetime = datetime.combine(
@@ -104,7 +104,7 @@ class QueueModelBaseForms(forms.ModelForm):
                 pass
    
         #define queue number automaticly
-        if self.cleaned_data.pop('print_flag',False):
+        if self.cleaned_data.pop('is_printed',False):
             #get latest queue
             recent_queue = (
                 models.Queue.objects
@@ -126,21 +126,19 @@ class QueueModelBaseForms(forms.ModelForm):
 #then add one for booking
 class AddQueueModelForms(QueueModelBaseForms):
     class Meta(QueueModelBaseForms.Meta):
-        fields=('service','print_flag',)
+        fields=('service','is_printed',)
 class AddBookingQueuemodelForms(QueueModelBaseForms):
     class Meta(QueueModelBaseForms.Meta):
-        fields = ('service','customer','print_flag','booking_flag')
+        fields = ('service','customer','is_booking')
 class PrintBookingQueuemodelForms(QueueModelBaseForms):
     class Meta(QueueModelBaseForms.Meta):
-        fields = ('print_flag',)
+        fields = ('is_printed',)
 class CallQueueModelForms(QueueModelBaseForms):
     class Meta(QueueModelBaseForms.Meta):
-        fields=('call_flag','counter_booth',)
+        fields=('is_called','counter_booth',)
     def save(self, commit=True):
         new_queue = super(CallQueueModelForms,self).save(commit=False)
-        new_queue.call_flag = self.cleaned_data.pop('call_flag',new_queue.call_flag)
+        new_queue.is_called = self.cleaned_data.pop('is_called',new_queue.is_called)
         if commit:
             new_queue.save()
-        return new_queue
-        
-            
+        return new_queue        

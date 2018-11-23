@@ -44,7 +44,7 @@ class QueueSerializer(serializers.ModelSerializer):
 			raise CustomException('Invalid data', 'service', status_code=status.HTTP_400_BAD_REQUEST)
 	def update(self, instance, validated_data):
 		if instance.number == validated_data.get('number'):
-			instance.call_flag = validated_data.pop('call_flag')
+			instance.is_called = validated_data.pop('call_flag')
 			instance.save()
 			return instance
 		raise CustomException('Invalid data','number', status_code=status.HTTP_400_BAD_REQUEST)

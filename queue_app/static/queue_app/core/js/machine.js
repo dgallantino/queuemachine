@@ -23,7 +23,7 @@ function PrintTicket(data) {
 (function( $ ) {
 	
 	//not sure why
-	print_ticket = function( data ) {
+	var print_ticket = function( data ) {
     	var contents = data;
         var frame1 = document.createElement('iframe');
         frame1.name = "frame1";
@@ -75,7 +75,7 @@ function PrintTicket(data) {
     		var $this = $(this);
         	var url = $this.attr('href');
         	var service = $this.attr('service_id')?'&service='+$this.attr('service_id'):'';
-        	var form_data = "print_flag=on"+service;
+        	var form_data = "is_printed=True"+service;
         	console.log(form_data);
         	$.ajax({
         		url : url,
@@ -97,36 +97,6 @@ function PrintTicket(data) {
         	});
     	});
     	//prevent default action
-    	return false;
+    	return this;
     };
-    
-    $.fn.as_print_new_queue_handler = function(selector){
-    	$(this).on('submit',selector, function(event){
-    		if (selector || false){
-				event.preventDefault();	
-	    		var asd = $.param($(this).serializeArray());
-	    		console.log(asd);
-	    		var url = $(this).attr('action');
-	    		$.ajax({
-	    			url : url,
-	    			type : "POST",
-	    			dataType: 'html',
-	    			contentType: 'application/x-www-form-urlencoded',
-	    			data:$(this).serialize(),
-	    		})
-	    		.fail(function(xhr){
-	    			var error_message = "AJAX Err:\n";
-	    			error_message += "["+xhr.status.toString()+"] : ";
-	    			error_message += xhr.statusText;
-	    			window.alert(error_message);
-	    		})
-	    		.done(function(data){
-	    			print_ticket(data);	    
-	    		});
-    		}
-    		return false
-    	});
-    };
-    
- 
 }( jQuery ));

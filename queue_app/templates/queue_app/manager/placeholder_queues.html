@@ -1,5 +1,5 @@
 {% for queue in object_list %}
-<tr style="background:{{ queue.booking_flag|yesno:"#ccd8e5," }}">
+<tr style="background:{{ queue.is_booking|yesno:"#ccd8e5," }}">
 	<td>
 		{{ queue.number }}
 	</td>
@@ -14,11 +14,27 @@
 		{{ queue.customer.get_full_name|default:queue.customer|default:"-" }} 
 	</td>
 	<td>
-		<audio class="call-audio" preload="none"> 
+		<audio class="call-audio" preload="none" ontimeupdate="audio_progress(this)"> 
 			<source src="{% url "queue:test" %}" type="audio/mpeg">
 		</audio>
-		<a href="{% url "queue:test" %}" class="btn btn-primary btn-bell faa-parent animated-hover" role="button" data-toggle="tooltip" data-placement="top" title="Call this queue" session_booth ="{{ request.session.CounterBooth.id }}"><i class="fa fa-bell faa-ring"></i></a>
-		<a href="{% url "queue:call_queue_url" queue.id %}" class="btn btn-primary btn-check" role="button" data-placement="top" title="Finish" session_booth ="{{ request.session.CounterBooth.id }}"><i class="fa fa-check"></i></a>
+		<a 
+		href="{% url "queue:call_queue_url" queue.id%}" 
+		class="btn-bell progress-button faa-parent animated-hover" 
+		role="button" data-toggle="tooltip" data-placement="top" 
+		data-loading="" data-finished="" data-type="background-bar"
+		title="Call this queue" 
+		session_booth ="{{ request.session.CounterBooth.id }}"
+		>
+			<i class="fa fa-bell faa-ring"></i>
+		</a>
+		<a 
+		href="#" 
+		class="progress-button btn-check" 
+		role="button" data-placement="top" title="Finish" 
+		session_booth ="{{ request.session.CounterBooth.id }}"
+		>
+			<i class="fa fa-check"></i>
+		</a>
 	</td>
 </tr>
 {% endfor %}
