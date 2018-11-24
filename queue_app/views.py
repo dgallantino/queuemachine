@@ -303,3 +303,13 @@ def playAudioFile(request):
 	response['Content-Type'] ='audio/mp3'
 	response['Content-Length'] =os.path.getsize(fname )
 	return response
+
+'''
+Queue info boards
+Displaying the list of remaining queue
+and the current served queue
+hope i got this right
+'''
+
+class InfoBoardMainView(LoginRequiredMixin,TemplateView):
+	login_url = reverse_lazy('login')

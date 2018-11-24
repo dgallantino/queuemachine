@@ -280,7 +280,4 @@ var audio_progress = function(audio_obj){
 
         }, seconds*1000);
     };
-	
-	
-	
 }(jQuery));

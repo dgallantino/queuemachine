@@ -57,6 +57,9 @@ $(document).ready(function(){
     });
 });
 
+$('select').on("select2:close", function () { $(this).focus(); });
+
+
 $("#form-success").fadeTo(2000, 500).slideUp(500, function(){
     $("#form-success").slideUp(500);
 });
