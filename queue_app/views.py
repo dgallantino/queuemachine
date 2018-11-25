@@ -5,15 +5,29 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import ListView, DetailView, TemplateView
 from django.urls.base import reverse_lazy
 from dal import autocomplete
-from django.views.generic.base import RedirectView, View
+from django.views.generic.base import RedirectView
 from django.views.generic.detail import SingleObjectMixin
 from django.http.response import HttpResponse
 import os
 
+'''
+Bases
+'''
+class QueueAppLoginMixin(LoginRequiredMixin):
+	login_url = reverse_lazy('login')
 
+class BaseBoothListView(QueueAppLoginMixin,ListView):
+	context_object_name = 'booths'
+	def get_queryset(self):
+		return (
+			models.CounterBooth.objects
+			.filter(groups__in=self.request.user.groups.all())
+		)
+		
 
-#todos: 
-#work on the manager
+'''
+No signins views
+'''
 class IndexView(TemplateView):
 	template_name = 'queue_app/index.html'
 
@@ -34,8 +48,9 @@ component
 '''
 
 #Implpmptation using form and normal html request
-class MachineDisplayView(LoginRequiredMixin, CreateView,):
-	login_url = reverse_lazy('login')
+#CreateView to create new normal Queue
+#context['services'] to list availale services
+class MachineDisplayView(QueueAppLoginMixin, CreateView,):
 	template_name ='queue_app/machine/machine.html'
 	model = models.Queue
 	form_class=forms.AddQueueModelForms
@@ -48,13 +63,11 @@ class MachineDisplayView(LoginRequiredMixin, CreateView,):
 	
 #booking entry is updated right before printing
 #so the number is sorted based on time it was printed
-class PrintBookingTicketView(LoginRequiredMixin, UpdateView,):
-	login_url = reverse_lazy('login')
+#UpdateView class is there to handle booking queue
+class PrintTicketView(QueueAppLoginMixin, DetailView, UpdateView,):
 	template_name ='queue_app/machine/placeholder_ticket.html'
 	object_name = 'queue'
 	form_class=forms.PrintBookingQueuemodelForms
-	#models = models.Queue would sufice
-	#probably
 	def get_queryset(self):
 		services =( 
 			models.Service.objects
@@ -64,29 +77,24 @@ class PrintBookingTicketView(LoginRequiredMixin, UpdateView,):
 			models.Queue.objects
 			.today_filter()
 			.services_filter(services)
-			.is_booking(True)
 		)
 		
 	def get_success_url(self):
 		return reverse_lazy('queue:print_ticket_url', kwargs={'pk':self.object.id})
 	
-class PrintTicketView(LoginRequiredMixin, DetailView,):
-	login_url = reverse_lazy('login')
-	template_name ='queue_app/machine/placeholder_ticket.html'
-	object_name = 'queue'
-	model=models.Queue
-
+#ListView list all booking queue
+#SingleObjectMixin get Queue id in url and list the new queue after that one
 class BookingQueueListView(
-		LoginRequiredMixin, 
+		QueueAppLoginMixin, 
 		SingleObjectMixin, 
 		ListView,
 	):
-	login_url = reverse_lazy('login')
 	template_name ='queue_app/machine/placeholder_queues.html'
 	def get_object(self, queryset=None):
 		if self.kwargs.get(self.pk_url_kwarg):
 			return super().get_object( queryset=queryset)
 		return None
+	
 	def get(self, request, *args, **kwargs):
 		services =( 
 			models.Service.objects
@@ -100,6 +108,7 @@ class BookingQueueListView(
 			.is_booking(True)
 		)
 		return super(BookingQueueListView,self).get( request, *args, **kwargs)
+	
 	def get_queryset(self):
 		services = (
 			models.Service.objects
@@ -118,38 +127,13 @@ class BookingQueueListView(
 				.filter(date_created__gt=self.object.date_created)
 			)
 		return qs
+	
 	def get_context_data(self, **kwargs):
 		context = super(BookingQueueListView, self).get_context_data(**kwargs)
 		context['queues'] = self.object_list
 		return context
-#deprecated
-class BookingQueueListUpdateView(LoginRequiredMixin, DetailView):
-	login_url = reverse_lazy('login')
-	template_name ='queue_app/machine/placeholder_queues.html'
-	context_object_name = 'queues'
 	
-	def get_queryset(self):
-		services = (
-			models.Service.objects
-			.group_filter(self.request.user.groups.all())
-		)
-		return (
-			models.Queue.objects
-			.today_filter()
-			.services_filter(services)
-			.is_booking(True)
-			.is_printed(False)
-		)	
-	
-	def get_context_data(self, **kwargs):
-		context = super().get_context_data(**kwargs)
-		context['queues']=(
-			self.get_queryset()
-			.filter(date_created__gt=self.object.date_created)
-			.is_printed(False)
-		)
-		return context
-	
+
 '''
 Manager...
 ...to manage queue like calling, delete and shit
@@ -160,18 +144,16 @@ componen:
 	-> GET: add booking form
 	-> POST: booking submition
 '''
-class ManagerDisplayView(LoginRequiredMixin, ListView):
-	login_url = reverse_lazy('login')
+class ManagerDisplayView(QueueAppLoginMixin, ListView):
 	template_name='queue_app/manager/manager.html'
 	context_object_name = 'services'
 	def get_queryset(self):
 		return models.Service.objects.group_filter(self.request.user.groups.all())
 	
 class UserLookupView(
-		LoginRequiredMixin, 
+		QueueAppLoginMixin, 
 		autocomplete.Select2QuerySetView,
 	):
-	login_url = reverse_lazy('login')
 	def get_queryset(self):
 		query_set = models.User.objects.filter(groups__in=self.request.user.groups.all())
 		if self.q:
@@ -180,17 +162,15 @@ class UserLookupView(
 			qs3 = query_set.filter(last_name__startswith=self.q)
 			query_set = qs1.union(qs2,qs3)
 		return query_set
-	
 	def get_result_label(self, result):
 		return result.get_full_name()
 	def get_selected_result_label(self, result):
 		return result.get_full_name()
 	
 class ServiceLookupView(
-		LoginRequiredMixin, 
+		QueueAppLoginMixin, 
 		autocomplete.Select2QuerySetView,
 	):
-	login_url = reverse_lazy('login')
 	def get_queryset(self):
 		query_set= models.Service.objects.group_filter(self.request.user.groups.all())
 		if self.q:
@@ -199,22 +179,14 @@ class ServiceLookupView(
 			query_set = qs1.union(qs2)
 		return query_set
 	
-class BoothListView(LoginRequiredMixin, ListView,):
-	login_url = reverse_lazy('login')
+class ManagerBoothListView(BaseBoothListView):
 	template_name = 'queue_app/manager/booth_list.html'
-	context_object_name = 'booths'
-	def get_queryset(self):
-		return (
-			models.CounterBooth.objects
-			.filter(groups__in=self.request.user.groups.all())
-		)
 
 class BoothToSession(
-		LoginRequiredMixin,
+		QueueAppLoginMixin,
 		SingleObjectMixin, 
 		RedirectView,
 	):
-	login_url = reverse_lazy('login')
 	http_method_names = ['get',]
 	url = reverse_lazy("queue:manager_url")
 	def get_queryset(self):
@@ -252,12 +224,13 @@ class AddBookingQueueView(
 	form_class=forms.AddBookingQueuemodelForms
 	success_message = "booking was created"
 	
+#SingleObjectMixin get service object from url kwargs
+#ListView list all queues from that service
 class QueuePerServiceView(
-		LoginRequiredMixin, 
+		QueueAppLoginMixin, 
 		SingleObjectMixin, 
 		ListView,
 	):
-	login_url = reverse_lazy('login')
 	template_name='queue_app/manager/placeholder_queues.html'
 	def get(self, request, *args, **kwargs):
 		self.object= self.get_object(
@@ -290,11 +263,6 @@ class CallQueueView(LoginRequiredMixin,UpdateView):
 	model = models.Queue
 	template_name = 'queue_app/manager/test_form_template.html'
 	
-class CallQueueSoundView(LoginRequiredMixin, View):
-	login_url = reverse_lazy('login')	
-	def get(self, request, *args, **kwargs):
-		pass
-	
 def playAudioFile(request):
 	fname="/Users/gallantino/Desktop/Explosion.mp3"
 	f = open(fname,"rb") 
@@ -313,3 +281,8 @@ hope i got this right
 
 class InfoBoardMainView(LoginRequiredMixin,TemplateView):
 	login_url = reverse_lazy('login')
+	template_name = "queue_app/info_board/info_board.html"
+	
+class InfoBoardBoothListView(BaseBoothListView):
+	template_name = "queue_app/info_board/booth_list.html"
+		

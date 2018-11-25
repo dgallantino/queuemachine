@@ -73,12 +73,12 @@ function PrintTicket(data) {
     	$(this).on('click',selector,function(event){
 			event.preventDefault();
     		var $this = $(this);
-        	var url = $this.attr('href');
+        	var print_url = $this.attr('href');
         	var service = $this.attr('service_id')?'&service='+$this.attr('service_id'):'';
         	var form_data = "is_printed=True"+service;
         	console.log(form_data);
         	$.ajax({
-        		url : url,
+        		url : print_url,
         		type : "POST",
         		dataType: 'html',
         		contentType: 'application/x-www-form-urlencoded',

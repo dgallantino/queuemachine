@@ -31,11 +31,6 @@ urlpatterns = [
         name='booking_list_update_url'
     ),
     path(
-        'machine/booking-list/<uuid:pk>/print/',   
-        views.PrintBookingTicketView.as_view(), 
-        name='booking_print_url'
-    ),
-    path(
         'machine/print-ticket/<uuid:pk>/',         
         views.PrintTicketView.as_view(), 
         name='print_ticket_url'
@@ -77,7 +72,7 @@ urlpatterns = [
     ),
     path(
         'manager/booths/',                       
-        views.BoothListView.as_view(),
+        views.ManagerBoothListView.as_view(),
         name='booth_list_url'
     ),
     path(
@@ -86,8 +81,22 @@ urlpatterns = [
         name='booth_detail_url'
     ),
     path(
-        'audiotest/',                       
+        'manager/queues/audiotest/',                       
         views.playAudioFile,
         name='test'
+    ),
+    path(
+        'infoboard/',                       
+        views.InfoBoardMainView.as_view(),
+        name='info_board_url'
+    ),
+    path(
+        'infoboard/queues/service/',                       
+        views.InfoBoardMainView.as_view(),
+        name='info_board_url'
+    ),path(
+        'infoboard/queues/booth/',                       
+        views.InfoBoardMainView.as_view(),
+        name='info_board_url'
     ),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

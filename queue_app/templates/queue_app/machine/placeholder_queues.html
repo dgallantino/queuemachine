@@ -1,9 +1,8 @@
 {% for queue in queues %}
 <div class="container list" queue_id="{{ queue.id }}">
-	<a href="{% url "queue:booking_print_url" queue.id  %}" class="booking_link">
+	<a href="{% url "queue:print_ticket_url" queue.id  %}" class="booking_link">
 		<div>{{ queue.customer.get_full_name|default:queue.customer|default:"-" }}</div>
 		<div>{{ queue.booking_datetime|date:"H:i"|default:"-" }}</div>
 	</a>
 </div>
-
 {% endfor %}
