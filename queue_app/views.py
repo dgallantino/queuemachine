@@ -23,8 +23,7 @@ class BaseBoothListView(QueueAppLoginMixin,ListView):
 			models.CounterBooth.objects
 			.filter(groups__in=self.request.user.groups.all())
 		)
-		
-
+	
 '''
 No signins views
 '''
@@ -209,7 +208,7 @@ class AddCustomerView(
 	success_url = reverse_lazy('queue:add_customer_url')		
 	template_name = 'queue_app/manager/add_customer_form.html'
 	model = models.User
-	form_class=forms.CustomUserCreationForm
+	form_class=forms.CustomerCreationForm
 	success_message = "Customer data creation was successfull"
 	
 class AddBookingQueueView(
@@ -224,12 +223,13 @@ class AddBookingQueueView(
 	form_class=forms.AddBookingQueuemodelForms
 	success_message = "booking was created"
 	
-#SingleObjectMixin get service object from url kwargs
-#ListView list all queues from that service
+#SingleObjectMixin get Service object from url kwargs
+#ListView list all Queues from that service
+#todos: exetend a basic Queue list view(?)
 class QueuePerServiceView(
 		QueueAppLoginMixin, 
-		SingleObjectMixin, 
 		ListView,
+		SingleObjectMixin,
 	):
 	template_name='queue_app/manager/placeholder_queues.html'
 	def get(self, request, *args, **kwargs):
@@ -269,7 +269,7 @@ def playAudioFile(request):
 	response = HttpResponse()
 	response.write(f.read())
 	response['Content-Type'] ='audio/mp3'
-	response['Content-Length'] =os.path.getsize(fname )
+	response['Content-Length'] =os.path.getsize(fname)
 	return response
 
 '''
@@ -279,10 +279,26 @@ and the current served queue
 hope i got this right
 '''
 
-class InfoBoardMainView(LoginRequiredMixin,TemplateView):
-	login_url = reverse_lazy('login')
+class InfoBoardMainView(QueueAppLoginMixin,TemplateView):
 	template_name = "queue_app/info_board/info_board.html"
 	
 class InfoBoardBoothListView(BaseBoothListView):
 	template_name = "queue_app/info_board/booth_list.html"
+	
+class InfoBoardQueuePerService(QueuePerServiceView):
+	template_name = "queue_app/info_board/info_board.html"
+	
+class InfoBoardQueueListView(QueueAppLoginMixin, ListView):
+	template_name = "queue_app/info_board/info_board.html"
+	def get_queryset(self):
+		services =( 
+			models.Service.objects
+			.group_filter(self.request.user.groups.all())
+		)
+		return (
+			models.Queue.objects
+			.today_filter()
+			.services_filter(services)
+			.is_printed(True)
+		)
 		

@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser, Group
 import uuid
 	
 #todos:
-#separate employee and costomer : using staf flag
+#add customer profile
 
 # Organization will be deprocated
 # Using Group instead
@@ -18,9 +18,9 @@ class Organization(models.Model):
 	
 	date_modified=models.DateTimeField(auto_now=True)
 	
-	name=models.CharField(max_length = 200)
+	name=models.CharField(max_length = 20)
 	
-	desc=models.CharField(max_length = 200)
+	desc=models.CharField(max_length = 20)
 	
 	
 	def __str__(self):
@@ -42,7 +42,7 @@ class CounterBooth(models.Model):
 		null=True,
 	)
 	
-	name=models.CharField(max_length = 200)
+	name=models.CharField(max_length = 20)
 	
 	desc=models.CharField(max_length = 200)
 	
@@ -92,6 +92,45 @@ class User(AbstractUser):
 	
 	def __str__(self):
 		return self.username
+	
+# class CustomerProfile(models.Model):
+# 	id=models.UUIDField(
+# 		primary_key=True,
+# 		default=uuid.uuid4,
+# 		editable=False
+# 	)
+# 	
+# 	user=models.OneToOneField(
+# 		User,
+# 		on_delete=models.CASCADE,
+# 		related_name='customer_profile'
+# 	)
+# 	
+# 	groups=models.ManyToManyField(
+# 		Group,
+# 		blank=True,
+# 		related_name='customers',
+# 	)
+# 	
+# 	birth_modified=models.DateTimeField(null=True,blank=True)
+# 
+# 	first_name = models.CharField(max_length=20)
+# 	
+# 	last_name = models.CharField(max_length=20)
+# 	
+# 	email = models.EmailField()
+# 	
+# 	address = models.CharField(max_length=200)
+# 	
+# 	phone=models.CharField(
+# 		null=True,
+# 		blank=True,
+# 		max_length = 12,
+# 	)
+# 	
+# 	date_created=models.DateTimeField(auto_now_add=True)
+# 	
+# 	date_modified=models.DateTimeField(auto_now=True)	
 
 class ServiceQueryset(models.QuerySet):
 	"""docstring for ServiceQueryset."""
@@ -126,7 +165,7 @@ class Service(models.Model):
 		related_name='services',
 	)
 	
-	name=models.CharField(max_length = 200)
+	name=models.CharField(max_length = 30)
 	
 	desc=models.CharField(max_length = 200)
 	

@@ -91,12 +91,18 @@ urlpatterns = [
         name='info_board_url'
     ),
     path(
-        'infoboard/queues/service/',                       
-        views.InfoBoardMainView.as_view(),
+        'infoboard/queues/',                       
+        views.InfoBoardQueueListView.as_view(),
         name='info_board_url'
-    ),path(
-        'infoboard/queues/booth/',                       
-        views.InfoBoardMainView.as_view(),
+    ),
+    path(
+        'infoboard/queues/service/<uuid:pk>/',                       
+        views.InfoBoardQueuePerService.as_view(),
         name='info_board_url'
+    ),
+    path(
+        'infoboard/booths/last-queue/',                       
+        views.InfoBoardBoothListView.as_view(),
+        name='info_booth_url'
     ),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

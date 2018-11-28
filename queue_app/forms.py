@@ -8,6 +8,9 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from queue_app import models
 from dal import autocomplete
 from datetime import datetime
+from random import randint
+from django.db.utils import IntegrityError
+
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
@@ -15,9 +18,35 @@ class CustomUserCreationForm(UserCreationForm):
         fields = ('username','password1','password2',)
          
 class CustomUserChangeForm(UserChangeForm):
- 
     class Meta(UserChangeForm.Meta):
         model = models.User
+
+class CustomerCreationForm(CustomUserCreationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['password1'].required = False
+        self.fields['password2'].required = False
+        
+    def save(self, commit=True):
+        new_customer = super().save(commit=False)
+        new_customer.username = self.cleaned_data.get('first_name')+ self.cleaned_data.get('last_name')
+        new_customer.set_unusable_password()
+        if commit:
+            try:
+                new_customer.save()
+            except IntegrityError:
+                new_customer.username = new_customer.username+str(randint(0,100))
+                new_customer.save()
+        return new_customer
+
+    class Meta(CustomUserCreationForm.Meta):
+        fields = (
+            'first_name',
+            'last_name',
+            'email',
+            'phone',
+        )
+
         
 #its okay to split this into multiple forms
 class QueueModelBaseForms(forms.ModelForm):

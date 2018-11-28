@@ -60,7 +60,7 @@ var audio_progress = function(audio_obj){
 (function($){
 	$.fn.list_booth = function(){
 		var $this = $(this);
-		var booth_url = $this.attr('booth_url')||$this.attr('booth_url');
+		var booth_url = $this.attr('href')||$this.attr('booth_url');
 		$.ajax({
     		url : booth_url,
     		type : "GET",
