@@ -1,21 +1,23 @@
 (function($){
-	$.fn.list_booth = function(){
-		var $this = $(this);
-		var booth_url = $this.attr('href')||$this.attr('booth_url');
-		$.ajax({
-    		url : booth_url,
-    		type : "GET",
-    		dataType: 'html',
-    	})
-    	.fail(function(xhr){
-    		var error_message = "AJAX Err:\n";
-    		error_message += "["+xhr.status.toString()+"] : ";
-    		error_message += xhr.statusText;
-    		window.alert(error_message);
-    	})
-    	.done(function(data){
-    		$this.html(data);
-    	});
+	$.fn.as_booth_detail = function(){
+		$.each(this,function(idx,dom_obj){
+			var $this = $(dom_obj);
+			var booth_url = $this.attr('href')||$this.attr('booth_url');
+			$.ajax({
+	    		url : booth_url,
+	    		type : "GET",
+	    		dataType: 'html',
+	    	})
+	    	.fail(function(xhr){
+	    		var error_message = "AJAX Err:\n";
+	    		error_message += "["+xhr.status.toString()+"] : ";
+	    		error_message += xhr.statusText;
+	    		window.alert(error_message);
+	    	})
+	    	.done(function(data){
+	    		$this.find('.queue-data').html(data);
+	    	});
+		});
 		return this;
 	};
 	

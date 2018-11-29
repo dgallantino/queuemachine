@@ -1,18 +1,3 @@
-{% for booth in booths %}
-<div class="card">
-	<div class="card-header">{{ booth.name }}</div>
-	<div class="card-body">
-		{% if booth.queues.last %}
-			{% with booth.queues.last as last_queue %}
-			<h5 class="card-title">Queue Number</h5>
-			<p class="card-text">{{ last_queue.character }}{{ last_queue.number }} ({{ last_queue.service }})</p>
-			{% endwith %}
-		{% else %}
-			<p class="card-text">No Data</p><br/>
-		{% endif %}
-	</div>
-	<div class="card-footer">
-		footer
-	</div>
-</div>
-{% endfor %}
+{% with booth.queues.last as last_queue %}
+{{ last_queue.character }}{{ last_queue.number }} ({{ last_queue.service }})
+{% endwith %}

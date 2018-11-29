@@ -8,7 +8,10 @@ from dal import autocomplete
 from django.views.generic.base import RedirectView
 from django.views.generic.detail import SingleObjectMixin
 from django.http.response import HttpResponse
+from gtts import gTTS
+from io import BytesIO
 import os
+
 
 '''
 Bases
@@ -264,10 +267,12 @@ class CallQueueView(LoginRequiredMixin,UpdateView):
 	template_name = 'queue_app/manager/test_form_template.html'
 	
 def playAudioFile(request):
-	fname="/Users/gallantino/Desktop/Explosion.mp3"
-	f = open(fname,"rb") 
+	fname="test.mp3"
+	mp3_fp = BytesIO()
+	tts = gTTS('test this', 'en')
+	tts.write_to_fp(mp3_fp)
 	response = HttpResponse()
-	response.write(f.read())
+	response.write(mp3_fp)
 	response['Content-Type'] ='audio/mp3'
 	response['Content-Length'] =os.path.getsize(fname)
 	return response
@@ -278,18 +283,23 @@ Displaying the list of remaining queue
 and the current served queue
 hope i got this right
 '''
-
-class InfoBoardMainView(QueueAppLoginMixin,TemplateView):
+#context : booth list
+class InfoBoardMainView(BaseBoothListView):
 	template_name = "queue_app/info_board/info_board.html"
-	
-class InfoBoardBoothListView(BaseBoothListView):
+
+#context : booth detail
+class InfoBoardBoothDetailView(QueueAppLoginMixin,DetailView):
 	template_name = "queue_app/info_board/booth_list.html"
+	model = models.CounterBooth
+	context_object_name = "booth"
 	
 class InfoBoardQueuePerService(QueuePerServiceView):
 	template_name = "queue_app/info_board/info_board.html"
-	
+
+#context : all queue in loged in user's	groups
 class InfoBoardQueueListView(QueueAppLoginMixin, ListView):
-	template_name = "queue_app/info_board/info_board.html"
+	template_name = "queue_app/info_board/placeholder_queues.html"
+	context_object_name = "queues"
 	def get_queryset(self):
 		services =( 
 			models.Service.objects
@@ -300,5 +310,7 @@ class InfoBoardQueueListView(QueueAppLoginMixin, ListView):
 			.today_filter()
 			.services_filter(services)
 			.is_printed(True)
+			.is_called(False)
+			.order_by('print_datetime')
 		)
 		

@@ -6,50 +6,61 @@ Info Board
 {% block javascript %}
 <script src="{% static 'queue_app/core/js/infoboard.js' %}"></script>
 <script type="text/javascript">
-$('.booth-list').list_booth();
+$('.booth-card').as_booth_detail();
+$('.queue-list-table').as_queue_list();
+setInterval(function(){
+	$('.booth-card').as_booth_detail();
+	$('.queue-list-table').as_queue_list();
+},10*1000);
+
 </script>
 {% endblock %}
 {% block content %}
-<div class="container-fluid">
+<div class="container-fluid" >
 	<div class="row mt-3">
 		<div class="col">
-			<div class="card-deck booth-list" booth_url="{% url "queue:info_booth_url" %}">
-				<div class="card">
-					<div class="card-header">header</div>
+			<div class="card-deck booth-list" >
+				{% for booth in booths %}
+				<div class="card booth-card" booth_url="{% url "queue:info_booth_detail_url"  booth.id%}">
+					<div class="card-header">{{ booth.name }}</div>
 					<div class="card-body">
-						<h5 class="card-title">Primary card title</h5>
-						<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+						{% if booth.queues.last %}
+							{% with booth.queues.last as last_queue %}
+							<h5 class="card-title">Queue Number</h5>
+							<p class="card-text queue-data">{{ last_queue.character }}{{ last_queue.number }} ({{ last_queue.service }})</p>
+							{% endwith %}
+						{% else %}
+							<p class="card-text queue-data">No Data</p><br/>
+						{% endif %}
 					</div>
 					<div class="card-footer">
 						footer
 					</div>
 				</div>
-				<div class="card">
-					<div class="card-header">
-						header
-					</div>
-					<div class="card-body">
-						body
-					</div>
-					<div class="card-footer">
-						footer
-					</div>
-				</div>
+				{% endfor %}
 			</div>
 		</div>
 	</div>
 	<div class="row mt-3">
-		<div class="col-4">
-			this where the queue list will be
+		<div class="col-4 h-100">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>
+							Ticket
+						</th>
+						<th>
+							Service
+						</th>
+					</tr>
+				</thead>
+				<tbody class="queue-list-table" queues_url="{% url 'queue:info_queues_url' %}">
+				</tbody>
+			</table>
 		</div>
 		<div class="col-8">
 			<div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel">
-				<ol class="carousel-indicators">
-					<li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-					<li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-					<li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-				</ol>
-				<div class="carousel-inner" style=" width:100%; height: 300px !important;">
+				<div class="carousel-inner" style=" width:100%; max-height: 300px !important;">
 					<div class="carousel-item active">
 						<img class="d-block w-100" src="{% static 'queue_app/images/ad1.jpg' %}" alt="First slide">
 					</div>

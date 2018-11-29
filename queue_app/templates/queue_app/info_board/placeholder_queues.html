@@ -1,0 +1,10 @@
+{% for queue in queues %}
+<tr>
+	<td>
+		{{ queue.character }}{{ queue.number }}
+	</td>
+	<td>
+		{{ queue.service }}
+	</td>
+</tr>
+{% endfor %}

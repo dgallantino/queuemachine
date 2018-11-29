@@ -66,26 +66,26 @@ $('body').on('click','a.btn-check',function(e){
   				<table id="tabTable_{{ service.id }}" class="table table-sm" data-toggle="#tabTable_{{ service.id }}" >
 					<thead>
   						<tr>
-  							<td rowspan="2">
+  							<th rowspan="2">
   								#
-  							</td>
-  							<td class="text-center" colspan="4">
+  							</th>
+  							<th class="text-center" colspan="4">
   								Queue Detail
-  							</td>
+  							</th>
   						</tr>
   						<tr>
-  							<td>
+  							<th>
   								Ticket
-  							</td>
-  							<td>
+  							</th>
+  							<th>
   								Booking Time
-  							</td>
-  							<td>
+  							</th>
+  							<th>
   								Customer
-  							</td>
-  							<td>
+  							</th>
+  							<th>
   								Actions
-  							</td>
+  							</th>
   						</tr>
 					</thead>
 					<tbody class="queue-list-table" queues_url="{% url 'queue:queue_per_service_url' service.id %}">
