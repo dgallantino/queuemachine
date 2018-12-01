@@ -7,10 +7,38 @@ from django.urls.base import reverse_lazy
 from dal import autocomplete
 from django.views.generic.base import RedirectView
 from django.views.generic.detail import SingleObjectMixin
-from django.http.response import HttpResponse
+from django.http.response import HttpResponse, HttpResponseBadRequest
+
+import calendar
+import time
+import math
+import re
+import requests
 from gtts import gTTS
+from gtts_token.gtts_token import Token
 from io import BytesIO
-import os
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
+
+
+def _patch_faulty_function(self):
+	if self.token_key is not None:
+		return self.token_key
+	
+	timestamp = calendar.timegm(time.gmtime())
+	hours = int(math.floor(timestamp / 3600))
+	
+	results = requests.get("https://translate.google.com/")
+	tkk_expr = re.search("(tkk:*?'\d{2,}.\d{3,}')", results.text).group(1)
+	tkk = re.search("(\d{5,}.\d{6,})", tkk_expr).group(1)
+	
+	a , b = tkk.split('.')
+	
+	result = str(hours) + "." + str(int(a) + int(b))
+	self.token_key = result
+	return result
+
+Token._get_token_key = _patch_faulty_function
 
 
 '''
@@ -265,17 +293,29 @@ class CallQueueView(LoginRequiredMixin,UpdateView):
 	form_class = forms.CallQueueModelForms
 	model = models.Queue
 	template_name = 'queue_app/manager/test_form_template.html'
-	
+
+@login_required	
 def playAudioFile(request):
-	fname="test.mp3"
-	mp3_fp = BytesIO()
-	tts = gTTS('test this', 'en')
-	tts.write_to_fp(mp3_fp)
-	response = HttpResponse()
-	response.write(mp3_fp)
-	response['Content-Type'] ='audio/mp3'
-	response['Content-Length'] =os.path.getsize(fname)
-	return response
+	queue = get_object_or_404(
+		models.Queue,
+		pk = request.GET.get('queue')
+	)
+	booth = get_object_or_404(
+		models.CounterBooth,
+		pk = request.session['CounterBooth'].get('id')
+	)
+	if (queue and booth):
+		tts_string = "antrian "+queue.character+" "+str(queue.number)+" ke "+booth.name
+		mp3_fp = BytesIO()
+		tts = gTTS(tts_string, 'id')
+		tts.write_to_fp(mp3_fp)
+		response = HttpResponse()
+		response.write(mp3_fp.getvalue())
+		response['Content-Type'] ='audio/mp3'
+		response['Content-Length'] =mp3_fp.getbuffer().nbytes
+		mp3_fp.close()
+		return response
+	return HttpResponseBadRequest 
 
 '''
 Queue info boards

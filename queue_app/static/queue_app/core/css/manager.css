@@ -7,7 +7,11 @@
 } */
 
 tr.called{
-	background-color : rgba(226, 247, 203, 1.0);
+	background-color : rgba(226, 247, 203, 1.0) !important;
+}
+
+tr.booking{
+	background-color : #ccd8e5;
 }
 
 .btn-primary{

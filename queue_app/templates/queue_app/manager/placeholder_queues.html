@@ -1,5 +1,5 @@
 {% for queue in object_list %}
-<tr style="background:{{ queue.is_booking|yesno:"#ccd8e5," }}">
+<tr class="{{ queue.is_booking|yesno:"booking," }} {{ queue.is_called|yesno:"called," }}">
 	<td>
 		{{ queue.number }}
 	</td>
@@ -15,7 +15,7 @@
 	</td>
 	<td>
 		<audio class="call-audio" preload="none" ontimeupdate="audio_progress(this)"> 
-			<source src="{% url "queue:test" %}" type="audio/mpeg">
+			<source src="{% url "queue:test" %}?queue={{ queue.id }}" type="audio/mpeg">
 		</audio>
 		<a 
 		href="{% url "queue:call_queue_url" queue.id%}" 
