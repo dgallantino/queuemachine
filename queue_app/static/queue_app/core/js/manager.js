@@ -22,7 +22,7 @@ var handle_call = function(event){
 	}
 
 
-	//POST roquest before actualy calling the queue
+	//POST request before actualy calling the queue
 	var call_url = $(this).attr('href') || $(this).attr(defaults.url_locatian);
 	var session_booth = $(this).attr('session_booth') || $(this).attr(defaults.booth_locatian);
 	var form_data = "is_called="+defaults.is_called+"&counter_booth="+session_booth;

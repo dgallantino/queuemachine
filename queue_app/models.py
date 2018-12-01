@@ -42,7 +42,9 @@ class CounterBooth(models.Model):
 		null=True,
 	)
 	
-	name=models.CharField(max_length = 20)
+	display_name=models.CharField(max_length = 20)
+	
+	spoken_name=models.CharField(max_length = 30)
 	
 	desc=models.CharField(max_length = 200)
 	
@@ -59,12 +61,13 @@ class CounterBooth(models.Model):
 	)
 	
 	def __str__(self):
-		return self.name
+		return self.display_name
 	
 	def to_flat_dict(self):
 		return {
 			'id' : str(self.id),
-			'name' : self.name,
+			'display_name' : self.display_name,
+			'spoken_name' : self.spoken_name,
 			'desc' : self.desc,
 			'group': str(self.groups.id),
  		}

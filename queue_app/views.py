@@ -305,7 +305,7 @@ def playAudioFile(request):
 		pk = request.session['CounterBooth'].get('id')
 	)
 	if (queue and booth):
-		tts_string = "antrian "+queue.character+" "+str(queue.number)+" ke "+booth.name
+		tts_string = "antrian "+queue.character+" "+str(queue.number)+" ke "+booth.spoken_name
 		mp3_fp = BytesIO()
 		tts = gTTS(tts_string, 'id')
 		tts.write_to_fp(mp3_fp)
