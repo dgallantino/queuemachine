@@ -5,6 +5,7 @@ todos:
 	-code programatic error message with err code
 	-maybe write a function to generate good looking err
 
+
 ideas:
 -make json encoder for queues object(s)
 -rombak semua fokus model ke service bukan queue
