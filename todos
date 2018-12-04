@@ -4,7 +4,6 @@ todos:
 -Error handling
 	-code programatic error message with err code
 	-maybe write a function to generate good looking err
-	-tet
 
 ideas:
 -make json encoder for queues object(s)
