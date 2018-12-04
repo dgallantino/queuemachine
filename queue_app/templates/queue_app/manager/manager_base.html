@@ -17,33 +17,42 @@
   <div class="collapse navbar-collapse">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
-        <a id="booking-form-link" class="nav-link" href="{% url "queue:add_booking_url" %}" data-toggle="modal" data-target="#modal-form">
-        Add Booking
+        <a
+					id="booking-form-link"
+					class="nav-link"
+					href="{% url "queue:add_booking_url" %}"
+					data-toggle="modal" data-target="#modal-form"
+				>
+         Tambah Booking
         </a>
       </li>
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Counter
+        <a
+					class="nav-link dropdown-toggle"
+					href="#" id="navbarDropdown"
+					role="button"
+					data-toggle="dropdown"
+					aria-haspopup="true"
+					aria-expanded="false"
+				>
+      	{% if request.session.CounterBooth %}
+        {{ request.session.CounterBooth.display_name }}
+        {% else %}
+        Pilih Konter
+        {% endif %}
         </a>
-        <div id="booth-menu" class="dropdown-menu" aria-labelledby="navbarDropdown" booth_url="{% url "queue:booth_list_url" %}">
+        <div
+					id="booth-menu"
+					class="dropdown-menu"
+					aria-labelledby="navbarDropdown"
+					booth_url="{% url "queue:booth_list_url" %}"
+				>
         </div>
       </li>
     </ul>
     <span class="navbar-text">
-        <i class="fas fa-user-cog"></i>
+    {{ request.user.get_full_name }}
     </span>
-    <span class="navbar-text">
-    
-      {{ request.user.get_full_name }}
-    </span>
-	{% if request.session.CounterBooth %}
-    <span class="navbar-text">
-		<i class="fa fa-angle-double-right " style="margin:0px 5px"></i>
-    </span>
-    <span class="navbar-text">
-      {{ request.session.CounterBooth.display_name }} 
-    </span>
-    {% endif %}
   </div>
 </nav>
 <!--modal-->
@@ -51,7 +60,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modal-form-title">Booking Form</h5>
+        <h5 class="modal-title" id="modal-form-title">Tambah Booking</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -74,7 +83,7 @@
 {% block javascript %}
 <script src="{% static 'queue_app/core/js/manager.js' %}"></script>
 <script type="text/javascript">
-$('#booth-menu').list_booth();  
+$('#booth-menu').list_booth();
 
 </script>
 	{% block javascript-content %}

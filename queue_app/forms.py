@@ -4,7 +4,7 @@ Created on Oct 1, 2018
 @author: gallantino
 '''
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm 
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from queue_app import models
 from dal import autocomplete
 from datetime import datetime
@@ -16,7 +16,7 @@ class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = models.User
         fields = ('username','password1','password2',)
-         
+
 class CustomUserChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
         model = models.User
@@ -26,7 +26,7 @@ class CustomerCreationForm(CustomUserCreationForm):
         super().__init__(*args, **kwargs)
         self.fields['password1'].required = False
         self.fields['password2'].required = False
-        
+
     def save(self, commit=True):
         new_customer = super().save(commit=False)
         new_customer.username = self.cleaned_data.get('first_name')+ self.cleaned_data.get('last_name')
@@ -47,10 +47,21 @@ class CustomerCreationForm(CustomUserCreationForm):
             'phone',
         )
 
-        
+    class Media:
+        css={
+            'all':(
+                'queue_app/bootstrap/css/bootstrap.min.css',
+                'queue_app/jquery-ui/jquery-ui.min.css',
+            ),
+        }
+        js=(
+            'queue_app/jquery/jquery.js',
+            'queue_app/jquery-ui/jquery-ui.min.js',
+        )
+
 #its okay to split this into multiple forms
 class QueueModelBaseForms(forms.ModelForm):
-    
+
     booking_time=forms.TimeField(
         label="Booking Time",
         initial= datetime.now(),
@@ -63,7 +74,7 @@ class QueueModelBaseForms(forms.ModelForm):
             },
         ),
     )
-    
+
     booking_date=forms.DateField(
         label="Booking Date",
         initial= datetime.now(),
@@ -81,7 +92,7 @@ class QueueModelBaseForms(forms.ModelForm):
         model=models.Queue
         fields= '__all__'
 
-        
+
         widgets={
             'service':autocomplete.ModelSelect2(
                 url = 'queue:service_lookup_url',
@@ -100,7 +111,7 @@ class QueueModelBaseForms(forms.ModelForm):
                 },
             ),
         }
-    
+
     class Media:
         css={
             'all':(
@@ -112,26 +123,26 @@ class QueueModelBaseForms(forms.ModelForm):
             ),
         }
         js=(
-            'queue_app/jquery/jquery.js', 
+            'queue_app/jquery/jquery.js',
             'queue_app/jquery-ui/jquery-ui.min.js',
-            'queue_app/jquery-timepicker/jquery.timepicker.min.js',               
+            'queue_app/jquery-timepicker/jquery.timepicker.min.js',
         )
-        
-        
-    
+
+
+
     def save(self, commit=True):
         #get models.Queue isntance to create or edit
-        new_queue = super(QueueModelBaseForms,self).save(commit=False)  
+        new_queue = super(QueueModelBaseForms,self).save(commit=False)
         if self.cleaned_data.get('is_booking', False):
             try:
             #get booking data
                 new_queue.booking_datetime = datetime.combine(
                     self.cleaned_data.pop('booking_date'),
                     self.cleaned_data.pop('booking_time')
-                )      
+                )
             except Exception:
                 pass
-   
+
         #define queue number automaticly
         if self.cleaned_data.pop('is_printed',False):
             #get latest queue
@@ -150,9 +161,8 @@ class QueueModelBaseForms(forms.ModelForm):
         if commit:
             new_queue.save()
         return new_queue
-    
-#todos finish this one
-#then add one for booking
+
+
 class AddQueueModelForms(QueueModelBaseForms):
     class Meta(QueueModelBaseForms.Meta):
         fields=('service','is_printed',)
@@ -170,4 +180,4 @@ class CallQueueModelForms(QueueModelBaseForms):
         new_queue.is_called = self.cleaned_data.pop('is_called',new_queue.is_called)
         if commit:
             new_queue.save()
-        return new_queue        
+        return new_queue

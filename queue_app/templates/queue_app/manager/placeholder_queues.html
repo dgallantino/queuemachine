@@ -6,32 +6,33 @@
 	<td>
 		{{ queue.character }} {{ queue.number }}
 	</td>
-	
+
 	<td>
 		{{ queue.booking_datetime|time:"H:i"|default:"-" }}
 	</td>
 	<td>
-		{{ queue.customer.get_full_name|default:queue.customer|default:"-" }} 
+		{{ queue.customer.get_full_name|default:queue.customer|default:"-" }}
 	</td>
 	<td>
-		<audio class="call-audio" preload="none" ontimeupdate="audio_progress(this)"> 
+		<audio class="call-audio" preload="none" ontimeupdate="audio_progress(this)">
 			<source src="{% url "queue:test" %}?queue={{ queue.id }}" type="audio/mpeg">
 		</audio>
-		<a 
-		href="{% url "queue:call_queue_url" queue.id%}" 
-		class="btn-bell progress-button faa-parent animated-hover" 
-		role="button" data-toggle="tooltip" data-placement="top" 
-		data-loading="" data-finished="" data-type="background-bar"
-		title="Call this queue" 
-		session_booth ="{{ request.session.CounterBooth.id }}"
+
+		<a
+			href="{% url "queue:call_queue_url" queue.id%}"
+			class="btn btn-bell progress-button faa-parent animated-hover {{ request.session.CounterBooth|yesno:',disabled,' }}"
+			role="button" data-toggle="tooltip" data-placement="top"
+			data-loading="" data-finished="" data-type="background-bar"
+			title="Panggil antrian"
+			session_booth ="{{ request.session.CounterBooth.id }}"
 		>
 			<i class="fa fa-bell faa-ring"></i>
 		</a>
-		<a 
-		href="#" 
-		class="progress-button btn-check" 
-		role="button" data-placement="top" title="Finish" 
-		session_booth ="{{ request.session.CounterBooth.id }}"
+		<a
+			href="#"
+			class="btn progress-button btn-check {{ request.session.CounterBooth|yesno:',disabled,' }}"
+			role="button" data-placement="top" title="Finish"
+			session_booth ="{{ request.session.CounterBooth.id }}"
 		>
 			<i class="fa fa-check"></i>
 		</a>
