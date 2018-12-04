@@ -20,7 +20,7 @@ $('body').tooltip({
 //queue table initialization
 $('.queue-list-table').as_queue_list();
 
-//uncoment these 3 lines for auto refresh 
+//uncoment these 3 lines for auto refresh
 //setInterval(function(){
 //	$('.queue-list-table').as_queue_list();
 //},5*60*1000);
@@ -47,7 +47,7 @@ $('body').on('click','a.btn-check',function(e){
 
 {% block content-main %}
 <div class="row">
-	<div class="col-3">				
+	<div class="col-3">
 		<div class="nav flex-column nav-pills sticky-top" id="v-pills-tab" role="tablist" aria-orientation="vertical" >
 		{% for service in services %}
 			<a class="nav-link text-capitalize {{ forloop.first|yesno:"active,," }}" id="tab_{{ service.id }}" data-toggle="pill" href="#tabContent_{{ service.id }}" role="tab" aria-controls="tabContent_{{ service.id }}" aria-selected="{{ forloop.first }}">
@@ -70,21 +70,21 @@ $('body').on('click','a.btn-check',function(e){
   								#
   							</th>
   							<th class="text-center" colspan="4">
-  								Queue Detail
+  								Detil Antrian
   							</th>
   						</tr>
   						<tr>
   							<th>
-  								Ticket
+  								Antrian
   							</th>
   							<th>
-  								Booking Time
+  								Waktu Booking
   							</th>
   							<th>
-  								Customer
+  								Pelanggan
   							</th>
   							<th>
-  								Actions
+  								Opsi
   							</th>
   						</tr>
 					</thead>
@@ -96,7 +96,7 @@ $('body').on('click','a.btn-check',function(e){
 							</td>
 						</tr>
 					</tbody>
-  				</table>  				
+  				</table>
       		</div>
     	{% endfor %}
 		</div>
