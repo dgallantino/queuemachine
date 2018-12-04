@@ -4,6 +4,7 @@ todos:
 -Error handling
 	-code programatic error message with err code
 	-maybe write a function to generate good looking err
+	-auah
 
 
 ideas:
