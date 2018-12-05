@@ -1,4 +1,4 @@
-.groups_filterfrom queue_app import forms, models
+from queue_app import forms, models
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic.edit import CreateView, UpdateView
