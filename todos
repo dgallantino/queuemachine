@@ -1,7 +1,11 @@
 todos:
-	-indon interface
-
-
-ideas:
--make json encoder for queues object(s)
--rombak semua fokus model ke service bukan queue
+	-indonesian interface
+	-add booking form(own page not modal)
+	-add costumer form(own page not modal)
+	-create custom group model
+	-choose group option(kinda like booth)
+		-front :
+			-dropdown
+		-back :
+			-list view
+			-redirect view
