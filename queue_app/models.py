@@ -81,7 +81,6 @@ class User(AbstractUser):
 	organization=models.ManyToManyField(
 		Organization,
 		related_name='users',
-		null=True,
 		blank=True,
 	)
 
