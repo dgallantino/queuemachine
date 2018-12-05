@@ -10,7 +10,7 @@ import uuid
 
 # Organization will be deprocated
 # Using Group instead
-class Organization(Group):
+class Organization(models.Model):
 	id=models.UUIDField(
 		primary_key=True,
 		default=uuid.uuid4,
@@ -80,7 +80,6 @@ class User(AbstractUser):
 
 	organization=models.ManyToManyField(
 		Organization,
-		on_delete=models.CASCADE,
 		related_name='users',
 		null=True,
 		blank=True,
