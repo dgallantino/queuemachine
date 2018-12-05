@@ -14,7 +14,8 @@
 <script type="text/javascript">
 //activate tool tip
 $('body').tooltip({
-    selector: '[data-toggle="tooltip"]'
+    selector: '[data-toggle="tooltip"]',
+		'delay' : { show: 3000, hide: 500 }
 });
 
 //queue table initialization
@@ -44,7 +45,8 @@ $('body').on('click','a.btn-check',function(e){
 
 </script>
 {% endblock %}
-{% block content-main %}
+
+{% block content %}
 <div class="row">
 	<div class="col-3">
 		<div class="nav flex-column nav-pills sticky-top" id="v-pills-tab" role="tablist" aria-orientation="vertical" >
@@ -61,7 +63,13 @@ $('body').on('click','a.btn-check',function(e){
     	<div class="tab-content" id="v-pills-tabContent">
     	{% for service in services %}
       		<div class="tab-pane fade {{ forloop.first|yesno:"show active," }}" id="tabContent_{{ service.id }}" role="tabpanel" aria-labelledby="tab_{{ service.id }}" >
-      			<a class="btn btn-primary btn-refresh" href="#" role="button" style="margin-bottom:10px" data-toggle="tooltip" data-placement="bottom" title="Refresh queue table">Refresh</a>
+      			<a
+							class="btn btn-primary btn-refresh"
+							href="#" role="button" style="margin-bottom:10px"
+							data-toggle="tooltip" data-placement="bottom" title="Muat ulang tabel"
+						>
+							Refresh
+						</a>
   				<table id="tabTable_{{ service.id }}" class="table table-sm" data-toggle="#tabTable_{{ service.id }}" >
 					<thead>
   						<tr>

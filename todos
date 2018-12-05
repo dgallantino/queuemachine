@@ -1,9 +1,5 @@
 todos:
--repair login and logout redirect urls
-	-dont use harcoded urls
--Error handling
-	-code programatic error message with err code
-	-maybe write a function to generate good looking err
+	-indon interface
 
 
 ideas:

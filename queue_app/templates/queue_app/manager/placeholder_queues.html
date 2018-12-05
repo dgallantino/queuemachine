@@ -19,11 +19,11 @@
 		</audio>
 
 		<a
-			href="{% url "queue:call_queue_url" queue.id%}"
+			href="{% url 'queue:call_queue_url' queue.id%}"
 			class="btn btn-bell progress-button faa-parent animated-hover {{ request.session.CounterBooth|yesno:',disabled,' }}"
-			role="button" data-toggle="tooltip" data-placement="top"
+			role="button"
 			data-loading="" data-finished="" data-type="background-bar"
-			title="Panggil antrian"
+			title="Panggil antrian" data-toggle="tooltip" data-placement="top"
 			session_booth ="{{ request.session.CounterBooth.id }}"
 		>
 			<i class="fa fa-bell faa-ring"></i>
@@ -31,7 +31,8 @@
 		<a
 			href="#"
 			class="btn progress-button btn-check {{ request.session.CounterBooth|yesno:',disabled,' }}"
-			role="button" data-placement="top" title="Finish"
+			role="button"
+			data-placement="top" title="Selesai dan hapus" data-toggle="tooltip"
 			session_booth ="{{ request.session.CounterBooth.id }}"
 		>
 			<i class="fa fa-check"></i>
