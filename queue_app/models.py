@@ -22,14 +22,6 @@ class Organization(models.Model):
 
 	name=models.CharField(max_length = 20)
 
-<<<<<<< HEAD
-	desc=models.CharField(max_length = 20)
-
-
-	def __str__(self):
-		return self.name
-
-=======
 	def __str__(self):
 		return self.name
 
@@ -39,7 +31,6 @@ class Organization(models.Model):
 			'name':self.name,
 		}
 
->>>>>>> fix/group_model
 class CounterBooth(models.Model):
 
 	id=models.UUIDField(
@@ -93,11 +84,7 @@ class User(AbstractUser):
 		editable=False
 	)
 
-<<<<<<< HEAD
-	organization=models.ForeignKey(
-=======
 	organization=models.ManyToManyField(
->>>>>>> fix/group_model
 		Organization,
 		related_name='users',
 		blank=True,
@@ -155,16 +142,10 @@ class ServiceQueryset(models.QuerySet):
 	"""docstring for ServiceQueryset."""
 	def get_last_queue(self):
 		return self.queues.last()
-<<<<<<< HEAD
 	def groups_filter(self, iterable):
 		return self.filter(group__in=iterable)
 	def group_filter(self, group_obj):
 		return self.filter(group=group_obj)
-=======
-
-	def group_filter(self, iterable):
-		return self.filter(groups__in=iterable)
->>>>>>> fix/group_model
 
 	def org_filter(self, org):
 		return self.filter(organization=org)
@@ -192,11 +173,7 @@ class Service(models.Model):
 		blank=False,
 	)
 
-<<<<<<< HEAD
 	group=models.ForeignKey(
-=======
-	groups=models.ManyToManyField(
->>>>>>> fix/group_model
 		Group,
 		on_delete=models.CASCADE,
 		null=True,

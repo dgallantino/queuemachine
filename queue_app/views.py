@@ -181,11 +181,7 @@ class ManagerDisplayView(QueueAppLoginMixin, ListView):
 	template_name='queue_app/manager/manager.html'
 	context_object_name = 'services'
 	def get_queryset(self):
-<<<<<<< HEAD
 		return models.Service.objects.groups_filter(self.request.user.groups.all())
-=======
-		return models.Service.objects.group_filter(self.request.user.groups.all())
->>>>>>> fix/group_model
 
 class UserLookupView(
 		QueueAppLoginMixin,
