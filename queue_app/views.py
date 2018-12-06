@@ -249,7 +249,7 @@ class OrganizationToSession(
 	def get_queryset(self):
 		return self.request.user.organization.all()
 	def get_redirect_url(self, *args, **kwargs):
-		self.request.session['Organinization'] = self.get_object().to_flat_dict()
+		self.request.session['Organization'] = self.get_object().to_flat_dict()
 		return super().get_redirect_url(*args, **kwargs)
 
 class AddCustomerView(

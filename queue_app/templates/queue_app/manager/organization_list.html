@@ -1,7 +1,11 @@
-{% for organization in organizations %}
-	{% if  request.session.organization.id  == organization.id|stringformat:"s" %}
-		<a class="dropdown-item disabled" href="{% url 'queue:organization_detail_url' organization.id %}?next={{ request.get_full_path|urlencode }}">{{ organization.name }}</a>
-	{% else %}
-		<a class="dropdown-item" href="{% url 'queue:organization_detail_url' organizations.id %}?next={{ request.get_full_path|urlencode }}">{{ organizations.name }}</a>
-	{% endif %}
-{% endfor %}
+{% if organizations %} 
+	{% for organization in organizations %}
+		{% if  request.session.Organization.id  == organization.id|stringformat:"s" %}
+			<a class="dropdown-item disabled" href="{% url 'queue:organization_detail_url' organization.id %}?next={{ request.get_full_path|urlencode }}">{{ organization.name }}</a>
+		{% else %}
+			<a class="dropdown-item" href="{% url 'queue:organization_detail_url' organization.id %}?next={{ request.get_full_path|urlencode }}">{{ organization.name }}</a>
+		{% endif %}
+	{% endfor %}
+{% else %}
+	No Data
+{% endif %}
