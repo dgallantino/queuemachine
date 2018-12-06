@@ -233,6 +233,25 @@ class BoothToSession(
 			self.request.session['CounterBooth'] = CounterBooth_object.to_flat_dict()
 		return super().get_redirect_url(*args,**kwargs)
 
+class OrganizationListView(QueueAppLoginMixin,ListView):
+	template_name = 'queue_app/manager/organization_list.html'
+	context_object_name = 'organizations'
+	def get_queryset(self):
+		return self.request.user.organization.all()
+
+class OrganizationToSession(
+		QueueAppLoginMixin,
+		SingleObjectMixin,
+		RedirectView,
+	):
+	http_method_names = ['get',]
+	url = reverse_lazy('queue:manager_url')
+	def get_queryset(self):
+		return self.request.user.organization.all()
+	def get_redirect_url(self, *args, **kwargs):
+		self.request.session['Organinization'] = self.get_object().to_flat_dict()
+		return super().get_redirect_url(*args, **kwargs)
+
 class AddCustomerView(
 		LoginRequiredMixin,
 		SuccessMessageMixin,
