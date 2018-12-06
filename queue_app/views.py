@@ -55,7 +55,7 @@ class BaseBoothListView(QueueAppLoginMixin,ListView):
 	def get_queryset(self):
 		return (
 			models.CounterBooth.objects
-			.filter(groups__in=self.request.user.groups.all())
+			.filter(organization=self.request.session['Organization'].get('id'))
 		)
 
 '''
@@ -89,7 +89,12 @@ class MachineDisplayView(QueueAppLoginMixin, CreateView,):
 	form_class=forms.AddQueueModelForms
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['services'] = models.Service.objects.groups_filter(self.request.user.groups.all())
+		context['services'] = (
+			models.Service.objects
+			.orgs_filter(
+				self.request.user.organizations.all()
+			)
+		)
 		return context
 	def get_success_url(self):
 		return reverse_lazy('queue:print_ticket_url', kwargs={'pk':self.object.id})
@@ -104,7 +109,9 @@ class PrintTicketView(QueueAppLoginMixin, DetailView, UpdateView,):
 	def get_queryset(self):
 		services =(
 			models.Service.objects
-			.groups_filter(self.request.user.groups.all())
+			.orgs_filter(
+				self.request.user.organizations.all()
+			)
 		)
 		return (
 			models.Queue.objects
@@ -131,7 +138,9 @@ class BookingQueueListView(
 	def get(self, request, *args, **kwargs):
 		services =(
 			models.Service.objects
-			.groups_filter(self.request.user.groups.all())
+			.orgs_filter(
+				self.request.user.organizations.all()
+			)
 		)
 		self.object = self.get_object(
 			models.Queue.objects
@@ -145,7 +154,9 @@ class BookingQueueListView(
 	def get_queryset(self):
 		services = (
 			models.Service.objects
-			.groups_filter(self.request.user.groups.all())
+			.orgs_filter(
+				self.request.user.organizations.all()
+			)
 		)
 		qs = (
 			models.Queue.objects
@@ -181,14 +192,22 @@ class ManagerDisplayView(QueueAppLoginMixin, ListView):
 	template_name='queue_app/manager/manager.html'
 	context_object_name = 'services'
 	def get_queryset(self):
-		return models.Service.objects.groups_filter(self.request.user.groups.all())
+		return (
+			models.Service.objects
+			.org_filter(self.request.session['Organization'].get('id'))
+		)
 
 class UserLookupView(
 		QueueAppLoginMixin,
 		autocomplete.Select2QuerySetView,
 	):
 	def get_queryset(self):
-		query_set = models.User.objects.filter(groups__in=self.request.user.groups.all())
+		query_set = (
+			models.User.objects
+			.filter(
+				organization=self.request.session['Organization'].get('id')
+			)
+		)
 		if self.q:
 			qs1 = query_set.filter(username__startswith=self.q)
 			qs2 = query_set.filter(first_name__startswith=self.q)
@@ -205,7 +224,12 @@ class ServiceLookupView(
 		autocomplete.Select2QuerySetView,
 	):
 	def get_queryset(self):
-		query_set= models.Service.objects.groups_filter(self.request.user.groups.all())
+		query_set= (
+			models.Service.objects
+			.org_filter(
+				self.request.session['Organization'].get('id')
+			)
+		)
 		if self.q:
 			qs1 = query_set.filter(name__startswith=self.q)
 			qs2 = query_set.filter(desc__startswith=self.q)
@@ -225,7 +249,7 @@ class BoothToSession(
 	def get_queryset(self):
 		return (
 			models.CounterBooth.objects
-			.filter(groups__in=self.request.user.groups.all())
+			.filter(organization=self.request.session['Organization'].get('id'))
 		)
 	def get_redirect_url(self, *args, **kwargs):
 		CounterBooth_object=self.get_object()
@@ -288,7 +312,7 @@ class QueuePerServiceView(
 	def get(self, request, *args, **kwargs):
 		self.object= self.get_object(
 			models.Service.objects
-			.groups_filter(self.request.user.groups.all())
+			.org_filter(self.request.session['Organization'].get('id'))
 		)
 		return super().get( request, *args, **kwargs)
 
