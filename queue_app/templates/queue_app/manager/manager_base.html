@@ -45,13 +45,38 @@
 					id="booth-menu"
 					class="dropdown-menu"
 					aria-labelledby="navbarDropdown"
-					booth_url="{% url "queue:booth_list_url" %}"
+					url_data="{% url "queue:booth_list_url" %}"
 				>
+				No Data
+        </div>
+      </li>
+			<li class="nav-item dropdown">
+        <a
+					class="nav-link dropdown-toggle"
+					href="#" id="navbarDropdown"
+					role="button"
+					data-toggle="dropdown"
+					aria-haspopup="true"
+					aria-expanded="false"
+				>
+      	{% if request.session.Organinization %}
+        {{ request.session.Organinization.name }}
+        {% else %}
+        Pilih Organisasi
+        {% endif %}
+        </a>
+        <div
+					id="organization-menu"
+					class="dropdown-menu"
+					aria-labelledby="navbarDropdown"
+					url_data="{% url "queue:organization_list_url" %}"
+				>
+					No Data
         </div>
       </li>
     </ul>
     <span class="navbar-text">
-    {{ request.user.get_full_name }}
+    {{ request.user.get_full_name|default:request.user.username }}
     </span>
   </div>
 </nav>
@@ -82,7 +107,7 @@
 {% block javascript %}
 <script src="{% static 'queue_app/core/js/manager.js' %}"></script>
 <script type="text/javascript">
-$('#booth-menu').list_booth();
+$('.dropdown-menu').initiate_dropdown();
 
 </script>
 	{% block javascript-content %}

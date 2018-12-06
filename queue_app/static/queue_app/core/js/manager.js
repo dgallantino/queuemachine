@@ -9,7 +9,7 @@ var handle_call = function(event){
 			sound_obj : $(event.target).closest('a').siblings('.call-audio')[0],
 	};
 	$.extend(defaults, event.data);
-	
+
 	if ($(event.target).closest('tr').hasClass('called')){
 		var call_audio = $(event.target).siblings('.call-audio')[0] || defaults.sound_obj;
 		if (call_audio.paused){
@@ -37,13 +37,13 @@ var handle_call = function(event){
 		type : "POST",
 		dataType: 'html',
 		contentType: 'application/x-www-form-urlencoded',
-		data:form_data,    		
+		data:form_data,
 	})
 	.fail(function(xhr){
 		var error_message = "AJAX Err:\n";
 		error_message += "["+xhr.status.toString()+"] : ";
 		error_message += xhr.statusText;
-		window.alert(error_message);	
+		window.alert(error_message);
 	})
 	.done(function(data){
 		$(event.target).closest('tr').addClass('called');
@@ -58,26 +58,28 @@ var audio_progress = function(audio_obj){
 };
 
 (function($){
-	$.fn.list_booth = function(){
-		var $this = $(this);
-		var booth_url = $this.attr('href')||$this.attr('booth_url');
-		$.ajax({
-    		url : booth_url,
-    		type : "GET",
-    		dataType: 'html',
-    	})
-    	.fail(function(xhr){
-    		var error_message = "AJAX Err:\n";
-    		error_message += "["+xhr.status.toString()+"] : ";
-    		error_message += xhr.statusText;
-    		window.alert(error_message);
-    	})
-    	.done(function(data){
-    		$this.append(data);
-    	});
+	$.fn.initiate_dropdown = function(){
+		$.each(this,function(idx,dom_obj){
+			var $this = $(dom_obj);
+			var booth_url = $this.attr('href')||$this.attr('url_data');
+			$.ajax({
+					url : booth_url,
+					type : "GET",
+					dataType: 'html',
+				})
+				.fail(function(xhr){
+					var error_message = "AJAX Err:\n";
+					error_message += "["+xhr.status.toString()+"] : ";
+					error_message += xhr.statusText;
+					window.alert(error_message);
+				})
+				.done(function(data){
+					$this.html(data);
+				});
+		});
 		return this;
 	};
-	
+
 	//request the most updated queue list
 	$.fn.as_queue_list = function(){
 		$.each(this,function(idx,dom_obj){
@@ -91,7 +93,7 @@ var audio_progress = function(audio_obj){
 				url:queue_url,
 				type:'GET',
 				dataType:'html',
-				contentType: 'application/x-www-form-urlencoded',				
+				contentType: 'application/x-www-form-urlencoded',
 			})
 			.fail(function(xhr){
 				window.alert(xhr.status.toString());
@@ -102,7 +104,7 @@ var audio_progress = function(audio_obj){
 		});
 		return this;
 	};
-	
+
     // Creating a number of jQuery plugins that you can use to
     // initialize and control the progress meters.
 
@@ -204,7 +206,7 @@ var audio_progress = function(audio_obj){
             last_progress = new Date().getTime();
         });
 
-        // Every half a second check whether the progress 
+        // Every half a second check whether the progress
         // has been incremented in the last two seconds
 
         var interval = window.setInterval(function(){
@@ -252,7 +254,7 @@ var audio_progress = function(audio_obj){
         return this.first().trigger('progress',[val, true, finish]);
     };
 
-    // This function creates a progress meter that 
+    // This function creates a progress meter that
     // finishes in a specified amount of time.
 
     $.fn.progressTimed = function(seconds, cb){
