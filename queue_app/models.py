@@ -25,6 +25,12 @@ class Organization(models.Model):
 	def __str__(self):
 		return self.name
 
+	def to_flat_dict(self):
+		return{
+			'id':str(self.id),
+			'name':self.name,
+		}
+
 class CounterBooth(models.Model):
 
 	id=models.UUIDField(
