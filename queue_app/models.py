@@ -143,6 +143,9 @@ class ServiceQueryset(models.QuerySet):
 	def org_filter(self, org):
 		return self.filter(organization=org)
 
+	def orgs_filter(self, orgs):
+		return self.filter(organization__in=orgs)
+
 class Service(models.Model):
 
 	id=models.UUIDField(
