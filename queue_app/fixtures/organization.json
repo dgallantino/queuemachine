@@ -1,0 +1,20 @@
+[
+{
+  "model": "queue_app.organization",
+  "pk": "399e289f-10de-4ef7-839f-231bd4ce5b0b",
+  "fields": {
+    "date_created": "2018-12-06T22:43:31.230",
+    "date_modified": "2018-12-06T22:43:31.230",
+    "name": "Cahaya Pusat"
+  }
+},
+{
+  "model": "queue_app.organization",
+  "pk": "853d708e-fea4-4ef4-80e9-269293862598",
+  "fields": {
+    "date_created": "2018-12-06T22:43:38.074",
+    "date_modified": "2018-12-06T22:43:38.074",
+    "name": "Cahaya Batang"
+  }
+}
+]

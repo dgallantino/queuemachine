@@ -1,0 +1,41 @@
+[
+{
+  "model": "queue_app.service",
+  "pk": "3bde1120-0c03-4ea8-a60a-70560ecc57e2",
+  "fields": {
+    "date_created": "2018-12-06T22:45:41.136",
+    "date_modified": "2018-12-06T22:45:41.136",
+    "organization": "399e289f-10de-4ef7-839f-231bd4ce5b0b",
+    "group": null,
+    "name": "Pembelian",
+    "desc": "beli",
+    "queue_char": "B"
+  }
+},
+{
+  "model": "queue_app.service",
+  "pk": "4df18cfe-0b9b-476c-8e9d-4a7010f2e3eb",
+  "fields": {
+    "date_created": "2018-12-06T22:45:11.869",
+    "date_modified": "2018-12-06T22:45:11.869",
+    "organization": "399e289f-10de-4ef7-839f-231bd4ce5b0b",
+    "group": null,
+    "name": "Pelayanan Pelanggan",
+    "desc": "duskripsi",
+    "queue_char": "A"
+  }
+},
+{
+  "model": "queue_app.service",
+  "pk": "e5934b68-3d40-4184-8ecd-1890419d34d3",
+  "fields": {
+    "date_created": "2018-12-06T22:46:14.587",
+    "date_modified": "2018-12-06T22:46:14.587",
+    "organization": "853d708e-fea4-4ef4-80e9-269293862598",
+    "group": null,
+    "name": "Pelayanan Pelanggan",
+    "desc": "yes",
+    "queue_char": "A"
+  }
+}
+]
