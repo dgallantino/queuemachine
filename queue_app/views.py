@@ -1,24 +1,27 @@
-from queue_app import forms, models
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.messages.views import SuccessMessageMixin
-from django.views.generic.edit import CreateView, UpdateView
-from django.views.generic import ListView, DetailView, TemplateView
-from django.urls.base import reverse_lazy
-from dal import autocomplete
-from django.views.generic.base import RedirectView
-from django.views.generic.detail import SingleObjectMixin
-from django.http.response import HttpResponse, HttpResponseBadRequest
-
+from io import BytesIO
 import calendar
 import time
 import math
 import re
 import requests
-from gtts import gTTS
-from gtts_token.gtts_token import Token
-from io import BytesIO
+
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
+from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic import ListView, DetailView, TemplateView
+from django.urls.base import reverse_lazy
+from django.views.generic.base import RedirectView
+from django.views.generic.detail import SingleObjectMixin
+from django.http.response import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
+
+from dal import autocomplete
+
+from gtts import gTTS
+from gtts_token.gtts_token import Token
+
+from queue_app import forms, models
 
 
 def _patch_faulty_function(self):
@@ -178,7 +181,11 @@ class ManagerDisplayView(QueueAppLoginMixin, ListView):
 	template_name='queue_app/manager/manager.html'
 	context_object_name = 'services'
 	def get_queryset(self):
+<<<<<<< HEAD
 		return models.Service.objects.groups_filter(self.request.user.groups.all())
+=======
+		return models.Service.objects.group_filter(self.request.user.groups.all())
+>>>>>>> fix/group_model
 
 class UserLookupView(
 		QueueAppLoginMixin,
