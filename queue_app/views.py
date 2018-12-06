@@ -1,39 +1,42 @@
-from queue_app import forms, models
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.messages.views import SuccessMessageMixin
-from django.views.generic.edit import CreateView, UpdateView
-from django.views.generic import ListView, DetailView, TemplateView
-from django.urls.base import reverse_lazy
-from dal import autocomplete
-from django.views.generic.base import RedirectView
-from django.views.generic.detail import SingleObjectMixin
-from django.http.response import HttpResponse, HttpResponseBadRequest
-
+from io import BytesIO
 import calendar
 import time
 import math
 import re
 import requests
-from gtts import gTTS
-from gtts_token.gtts_token import Token
-from io import BytesIO
+
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
+from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic import ListView, DetailView, TemplateView
+from django.urls.base import reverse_lazy
+from django.views.generic.base import RedirectView
+from django.views.generic.detail import SingleObjectMixin
+from django.http.response import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
+
+from dal import autocomplete
+
+from gtts import gTTS
+from gtts_token.gtts_token import Token
+
+from queue_app import forms, models
 
 
 def _patch_faulty_function(self):
 	if self.token_key is not None:
 		return self.token_key
-	
+
 	timestamp = calendar.timegm(time.gmtime())
 	hours = int(math.floor(timestamp / 3600))
-	
+
 	results = requests.get("https://translate.google.com/")
 	tkk_expr = re.search("(tkk:*?'\d{2,}.\d{3,}')", results.text).group(1)
 	tkk = re.search("(\d{5,}.\d{6,})", tkk_expr).group(1)
-	
+
 	a , b = tkk.split('.')
-	
+
 	result = str(hours) + "." + str(int(a) + int(b))
 	self.token_key = result
 	return result
@@ -54,7 +57,7 @@ class BaseBoothListView(QueueAppLoginMixin,ListView):
 			models.CounterBooth.objects
 			.filter(groups__in=self.request.user.groups.all())
 		)
-	
+
 '''
 No signins views
 '''
@@ -90,7 +93,7 @@ class MachineDisplayView(QueueAppLoginMixin, CreateView,):
 		return context
 	def get_success_url(self):
 		return reverse_lazy('queue:print_ticket_url', kwargs={'pk':self.object.id})
-	
+
 #booking entry is updated right before printing
 #so the number is sorted based on time it was printed
 #UpdateView class is there to handle booking queue
@@ -99,7 +102,7 @@ class PrintTicketView(QueueAppLoginMixin, DetailView, UpdateView,):
 	object_name = 'queue'
 	form_class=forms.PrintBookingQueuemodelForms
 	def get_queryset(self):
-		services =( 
+		services =(
 			models.Service.objects
 			.group_filter(self.request.user.groups.all())
 		)
@@ -108,15 +111,15 @@ class PrintTicketView(QueueAppLoginMixin, DetailView, UpdateView,):
 			.today_filter()
 			.services_filter(services)
 		)
-		
+
 	def get_success_url(self):
 		return reverse_lazy('queue:print_ticket_url', kwargs={'pk':self.object.id})
-	
+
 #ListView list all booking queue
 #SingleObjectMixin get Queue id in url and list the new queue after that one
 class BookingQueueListView(
-		QueueAppLoginMixin, 
-		SingleObjectMixin, 
+		QueueAppLoginMixin,
+		SingleObjectMixin,
 		ListView,
 	):
 	template_name ='queue_app/machine/placeholder_queues.html'
@@ -124,9 +127,9 @@ class BookingQueueListView(
 		if self.kwargs.get(self.pk_url_kwarg):
 			return super().get_object( queryset=queryset)
 		return None
-	
+
 	def get(self, request, *args, **kwargs):
-		services =( 
+		services =(
 			models.Service.objects
 			.group_filter(self.request.user.groups.all())
 		)
@@ -138,7 +141,7 @@ class BookingQueueListView(
 			.is_booking(True)
 		)
 		return super(BookingQueueListView,self).get( request, *args, **kwargs)
-	
+
 	def get_queryset(self):
 		services = (
 			models.Service.objects
@@ -157,12 +160,12 @@ class BookingQueueListView(
 				.filter(date_created__gt=self.object.date_created)
 			)
 		return qs
-	
+
 	def get_context_data(self, **kwargs):
 		context = super(BookingQueueListView, self).get_context_data(**kwargs)
 		context['queues'] = self.object_list
 		return context
-	
+
 
 '''
 Manager...
@@ -179,9 +182,9 @@ class ManagerDisplayView(QueueAppLoginMixin, ListView):
 	context_object_name = 'services'
 	def get_queryset(self):
 		return models.Service.objects.group_filter(self.request.user.groups.all())
-	
+
 class UserLookupView(
-		QueueAppLoginMixin, 
+		QueueAppLoginMixin,
 		autocomplete.Select2QuerySetView,
 	):
 	def get_queryset(self):
@@ -196,9 +199,9 @@ class UserLookupView(
 		return result.get_full_name()
 	def get_selected_result_label(self, result):
 		return result.get_full_name()
-	
+
 class ServiceLookupView(
-		QueueAppLoginMixin, 
+		QueueAppLoginMixin,
 		autocomplete.Select2QuerySetView,
 	):
 	def get_queryset(self):
@@ -208,13 +211,13 @@ class ServiceLookupView(
 			qs2 = query_set.filter(desc__startswith=self.q)
 			query_set = qs1.union(qs2)
 		return query_set
-	
+
 class ManagerBoothListView(BaseBoothListView):
 	template_name = 'queue_app/manager/booth_list.html'
 
 class BoothToSession(
 		QueueAppLoginMixin,
-		SingleObjectMixin, 
+		SingleObjectMixin,
 		RedirectView,
 	):
 	http_method_names = ['get',]
@@ -229,36 +232,36 @@ class BoothToSession(
 		if CounterBooth_object:
 			self.request.session['CounterBooth'] = CounterBooth_object.to_flat_dict()
 		return super().get_redirect_url(*args,**kwargs)
-	
+
 class AddCustomerView(
 		LoginRequiredMixin,
-		SuccessMessageMixin, 
+		SuccessMessageMixin,
 		CreateView,
 	):
 	login_url = reverse_lazy('login')
-	success_url = reverse_lazy('queue:add_customer_url')		
+	success_url = reverse_lazy('queue:add_customer_url')
 	template_name = 'queue_app/manager/add_customer_form.html'
 	model = models.User
 	form_class=forms.CustomerCreationForm
 	success_message = "Customer data creation was successfull"
-	
+
 class AddBookingQueueView(
-		LoginRequiredMixin, 
-		SuccessMessageMixin, 
+		LoginRequiredMixin,
+		SuccessMessageMixin,
 		CreateView,
 	):
 	login_url = reverse_lazy('login')
-	success_url = reverse_lazy('queue:add_booking_url')		
+	success_url = reverse_lazy('queue:add_booking_url')
 	template_name = 'queue_app/manager/add_booking_form.html'
 	model = models.Queue
 	form_class=forms.AddBookingQueuemodelForms
 	success_message = "booking was created"
-	
+
 #SingleObjectMixin get Service object from url kwargs
 #ListView list all Queues from that service
 #todos: exetend a basic Queue list view(?)
 class QueuePerServiceView(
-		QueueAppLoginMixin, 
+		QueueAppLoginMixin,
 		ListView,
 		SingleObjectMixin,
 	):
@@ -269,13 +272,13 @@ class QueuePerServiceView(
 			.group_filter(self.request.user.groups.all())
 		)
 		return super().get( request, *args, **kwargs)
-	
+
 	def get_context_data(self, **kwargs):
 		context= super().get_context_data(**kwargs)
 		context['service'] = self.object
 		context['queues'] = self.object_list
 		return context
-	
+
 	def get_queryset(self):
 		qs = (
 			self.object.queues
@@ -286,15 +289,15 @@ class QueuePerServiceView(
 			.order_by('print_datetime')
 		)
 		return qs
-	
+
 class CallQueueView(LoginRequiredMixin,UpdateView):
-	login_url = reverse_lazy('login')	
+	login_url = reverse_lazy('login')
 	success_url = reverse_lazy('queue:manager_url')
 	form_class = forms.CallQueueModelForms
 	model = models.Queue
 	template_name = 'queue_app/manager/test_form_template.html'
 
-@login_required	
+@login_required
 def playAudioFile(request):
 	queue = get_object_or_404(
 		models.Queue,
@@ -315,7 +318,7 @@ def playAudioFile(request):
 		response['Content-Length'] =mp3_fp.getbuffer().nbytes
 		mp3_fp.close()
 		return response
-	return HttpResponseBadRequest 
+	return HttpResponseBadRequest
 
 '''
 Queue info boards
@@ -332,7 +335,7 @@ class InfoBoardBoothDetailView(QueueAppLoginMixin,DetailView):
 	template_name = "queue_app/info_board/booth_list.html"
 	model = models.CounterBooth
 	context_object_name = "booth"
-	
+
 class InfoBoardQueuePerService(QueuePerServiceView):
 	template_name = "queue_app/info_board/info_board.html"
 
@@ -341,7 +344,7 @@ class InfoBoardQueueListView(QueueAppLoginMixin, ListView):
 	template_name = "queue_app/info_board/placeholder_queues.html"
 	context_object_name = "queues"
 	def get_queryset(self):
-		services =( 
+		services =(
 			models.Service.objects
 			.group_filter(self.request.user.groups.all())
 		)
@@ -353,4 +356,3 @@ class InfoBoardQueueListView(QueueAppLoginMixin, ListView):
 			.is_called(False)
 			.order_by('print_datetime')
 		)
-		
