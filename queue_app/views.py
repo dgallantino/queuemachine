@@ -397,7 +397,7 @@ class InfoBoardMainView(BaseBoothListView,OrganizationSetter):
 	def get_queryset(self):
 		return (
 			models.CounterBooth.objects
-			.filter(organization=self.request.session.get(const.IDX.ORG))
+			.filter(organization=self.request.session.get(const.IDX.ORG,{}).get('id'))
 		)
 
 #context : booth detail
@@ -416,7 +416,7 @@ class InfoBoardQueueListView(QueueAppLoginMixin, ListView):
 	def get_queryset(self):
 		services =(
 			models.Service.objects
-			.groups_filter(self.request.user.groups.all())
+			.org_filter(self.request.user.groups.all())
 		)
 		return (
 			models.Queue.objects
