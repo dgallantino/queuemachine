@@ -23,5 +23,13 @@
 	</main>
 	<footer>
 	</footer>
+	<script>
+	{% if messages %}
+		{% for message in messages %}
+			window.alert("{{ message }}");
+		{% endfor %}
+	{% endif %}
+	</script>
+
 	{% block javascript %}{% endblock %}
 </body>

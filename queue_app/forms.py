@@ -169,7 +169,7 @@ class AddQueueModelForms(QueueModelBaseForms):
 class AddBookingQueuemodelForms(QueueModelBaseForms):
     class Meta(QueueModelBaseForms.Meta):
         fields = ('service','customer','is_booking')
-class PrintBookingQueuemodelForms(QueueModelBaseForms):
+class PrintQueueModelForms(QueueModelBaseForms):
     class Meta(QueueModelBaseForms.Meta):
         fields = ('is_printed',)
 class CallQueueModelForms(QueueModelBaseForms):

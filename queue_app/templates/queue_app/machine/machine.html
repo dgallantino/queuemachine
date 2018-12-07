@@ -20,7 +20,7 @@
 $("#menu-toggle").click(function(e) {
     e.preventDefault();
     $(".wrapper").toggleClass("toggled");
-    $("#button-icon").toggleClass("flip")    
+    $("#button-icon").toggleClass("flip")
 });
 
 $('body').as_print_handler('a.booking_link');
@@ -51,7 +51,7 @@ setInterval(function(){
     			Booking List
     			<hr class="white">
     		</div>
-    		<div id="booking-list-body" class="list-body" queues_url="{% url 'queue:booking_list_url' %}">    		
+    		<div id="booking-list-body" class="list-body" queues_url="{% url 'queue:booking_list_url' %}">
     		</div>
     	</div>
     </div>
@@ -61,9 +61,9 @@ setInterval(function(){
 		</a>
     	<div class="container-fluid vertical-center">
     		<div class="container-fluid">
-				{% for service in services %}
+				{% for Service in Services %}
 				<div class="container-fluid  btn-container text-center">
-					<a class="service-button" href="{% url 'queue:machine_url' %}" service_id="{{ service.id }}">{{ service }}</a>
+					<a class="service-button" href="{% url 'queue:machine_url' %}" service_id="{{ Service.id }}">{{ Service.name }}</a>
 				</div>
 				{% endfor %}
 			</div>

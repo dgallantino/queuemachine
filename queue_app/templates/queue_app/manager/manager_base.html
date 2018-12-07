@@ -35,11 +35,7 @@
 					aria-haspopup="true"
 					aria-expanded="false"
 				>
-      	{% if request.session.CounterBooth %}
-        {{ request.session.CounterBooth.display_name }}
-        {% else %}
-        Pilih Konter
-        {% endif %}
+        {{ request.session.CounterBooth.display_name|default:'Pilih Konter' }}
         </a>
         <div
 					id="booth-menu"
@@ -59,11 +55,7 @@
 					aria-haspopup="true"
 					aria-expanded="false"
 				>
-      	{% if request.session.Organinization %}
-        {{ request.session.Organinization.name }}
-        {% else %}
-        Pilih Organisasi
-        {% endif %}
+        {{ request.session.Organization.name|default:'Pilih Organisasi' }}
         </a>
         <div
 					id="organization-menu"
