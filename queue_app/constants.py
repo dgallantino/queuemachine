@@ -9,3 +9,4 @@ class TEMPLATE(object):
     SERVICE = 'Service'
     ORGS = 'Organizations'
     BOOTHS = 'CounterBooths'
+    BOOTH = 'CounterBooth'

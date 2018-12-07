@@ -52,7 +52,7 @@ class QueueAppLoginMixin(LoginRequiredMixin):
 	login_url = reverse_lazy('login')
 
 class BaseBoothListView(QueueAppLoginMixin,ListView):
-	context_object_name = 'booths'
+	context_object_name = const.TEMPLATE.BOOTHS
 	def get_queryset(self):
 		return (
 			models.CounterBooth.objects
@@ -340,8 +340,8 @@ class QueuePerServiceView(
 
 	def get_context_data(self, **kwargs):
 		context= super().get_context_data(**kwargs)
-		context['service'] = self.object
-		context['queues'] = self.object_list
+		context[const.TEMPLATE.SERVICE] = self.object
+		context[const.TEMPLATE.QUEUES] = self.object_list
 		return context
 
 	def get_queryset(self):
@@ -397,26 +397,29 @@ class InfoBoardMainView(BaseBoothListView,OrganizationSetter):
 	def get_queryset(self):
 		return (
 			models.CounterBooth.objects
-			.filter(organization=self.request.session.get(const.IDX.ORG,{}).get('id'))
+			.filter(
+				organization=self.request.session.get(const.IDX.ORG,{}).get('id')
+			)
 		)
 
 #context : booth detail
 class InfoBoardBoothDetailView(QueueAppLoginMixin,DetailView):
-	template_name = "queue_app/info_board/booth_list.html"
+	template_name = "queue_app/info_board/booth_detail.html"
 	model = models.CounterBooth
-	context_object_name = "booth"
+	context_object_name = const.TEMPLATE.BOOTH
 
+#havent been used
 class InfoBoardQueuePerService(QueuePerServiceView):
 	template_name = "queue_app/info_board/info_board.html"
 
-#context : all queue in loged in user's	groups
+#context : all queues in loged in user's selected organization
 class InfoBoardQueueListView(QueueAppLoginMixin, ListView):
 	template_name = "queue_app/info_board/placeholder_queues.html"
-	context_object_name = "queues"
+	context_object_name = const.TEMPLATE.QUEUES
 	def get_queryset(self):
 		services =(
 			models.Service.objects
-			.org_filter(self.request.user.groups.all())
+			.org_filter(self.request.session.get(const.IDX.ORG,{}).get('id'))
 		)
 		return (
 			models.Queue.objects
