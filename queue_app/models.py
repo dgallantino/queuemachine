@@ -31,6 +31,7 @@ class Organization(models.Model):
 			'name':self.name,
 		}
 
+
 class CounterBooth(models.Model):
 
 	id=models.UUIDField(
@@ -77,6 +78,9 @@ class CounterBooth(models.Model):
 			'organization': str(self.organization.id or 'null'),
 			#'group': str(self.groups.id or 'null'),
  		}
+
+	def latest_queue(self):
+		return self.queues.order_by('date_modified').last()
 
 class User(AbstractUser):
 	id=models.UUIDField(
@@ -219,6 +223,9 @@ class QueueQueryset(models.QuerySet):
 
 	def services_filter(self, iterable):
 		return self.filter(service__in=iterable)
+
+	def last_modified(self):
+		return self.order_by('date_modified').last()
 
 class Queue(models.Model):
 	id=models.UUIDField(
