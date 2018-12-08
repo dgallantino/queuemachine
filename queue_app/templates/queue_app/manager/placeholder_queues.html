@@ -1,4 +1,4 @@
-{% for queue in object_list %}
+{% for queue in Queues %}
 <tr class="{{ queue.is_booking|yesno:"booking," }} {{ queue.is_called|yesno:"called," }}">
 	<td>
 		{{ queue.number }}

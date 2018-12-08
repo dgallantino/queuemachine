@@ -7,8 +7,9 @@ import requests
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib import messages
 from django.views.generic.edit import CreateView, UpdateView
-from django.views.generic import ListView, DetailView, TemplateView
+from django.views.generic import ListView, DetailView, TemplateView, View
 from django.urls.base import reverse_lazy
 from django.views.generic.base import RedirectView
 from django.views.generic.detail import SingleObjectMixin
@@ -22,7 +23,7 @@ from gtts import gTTS
 from gtts_token.gtts_token import Token
 
 from queue_app import forms, models
-
+from queue_app import constants as const
 
 def _patch_faulty_function(self):
 	if self.token_key is not None:
@@ -51,12 +52,26 @@ class QueueAppLoginMixin(LoginRequiredMixin):
 	login_url = reverse_lazy('login')
 
 class BaseBoothListView(QueueAppLoginMixin,ListView):
-	context_object_name = 'booths'
+	context_object_name = const.TEMPLATE.BOOTHS
 	def get_queryset(self):
 		return (
 			models.CounterBooth.objects
-			.filter(groups__in=self.request.user.groups.all())
+			.filter(organization=self.request.session.get(const.IDX.ORG,{}).get('id'))
 		)
+
+class OrganizationSetter(View):
+	def get(self, request, *args, **kwargs):
+		if not request.session.get(const.IDX.ORG):
+			if request.user.organization.all().count() > 1:
+				messages.add_message(
+					request=request,
+					level=messages.WARNING,
+					message='Anda mempunyai beberapa organisasi, harap pilih salah satu melalui manager',
+					fail_silently=True,
+				)
+			else:
+				request.session[const.IDX.ORG] = request.user.organization.last().to_flat_dict()
+		return super(OrganizationSetter, self).get( request, *args, **kwargs)
 
 '''
 No signins views
@@ -83,13 +98,22 @@ component
 #Implpmptation using form and normal html request
 #CreateView to create new normal Queue
 #context['services'] to list availale services
-class MachineDisplayView(QueueAppLoginMixin, CreateView,):
+class MachineDisplayView(
+		QueueAppLoginMixin,
+		OrganizationSetter,
+		CreateView,
+	):
 	template_name ='queue_app/machine/machine.html'
 	model = models.Queue
 	form_class=forms.AddQueueModelForms
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['services'] = models.Service.objects.groups_filter(self.request.user.groups.all())
+		context[const.TEMPLATE.SERVICES] = (
+			models.Service.objects
+			.org_filter(
+				self.request.session.get(const.IDX.ORG,{}).get('id')
+			)
+		)
 		return context
 	def get_success_url(self):
 		return reverse_lazy('queue:print_ticket_url', kwargs={'pk':self.object.id})
@@ -99,12 +123,14 @@ class MachineDisplayView(QueueAppLoginMixin, CreateView,):
 #UpdateView class is there to handle booking queue
 class PrintTicketView(QueueAppLoginMixin, DetailView, UpdateView,):
 	template_name ='queue_app/machine/placeholder_ticket.html'
-	object_name = 'queue'
-	form_class=forms.PrintBookingQueuemodelForms
+	context_object_name = const.TEMPLATE.QUEUE
+	form_class=forms.PrintQueueModelForms
 	def get_queryset(self):
 		services =(
 			models.Service.objects
-			.groups_filter(self.request.user.groups.all())
+			.org_filter(
+				self.request.session.get(const.IDX.ORG,{}).get('id')
+			)
 		)
 		return (
 			models.Queue.objects
@@ -131,8 +157,11 @@ class BookingQueueListView(
 	def get(self, request, *args, **kwargs):
 		services =(
 			models.Service.objects
-			.groups_filter(self.request.user.groups.all())
+			.filter(
+				organization=self.request.session.get(const.IDX.ORG,{}).get('id')
+			)
 		)
+
 		self.object = self.get_object(
 			models.Queue.objects
 			.today_filter()
@@ -145,7 +174,9 @@ class BookingQueueListView(
 	def get_queryset(self):
 		services = (
 			models.Service.objects
-			.groups_filter(self.request.user.groups.all())
+			.org_filter(
+				self.request.session.get(const.IDX.ORG,{}).get('id')
+			)
 		)
 		qs = (
 			models.Queue.objects
@@ -163,7 +194,7 @@ class BookingQueueListView(
 
 	def get_context_data(self, **kwargs):
 		context = super(BookingQueueListView, self).get_context_data(**kwargs)
-		context['queues'] = self.object_list
+		context[const.TEMPLATE.QUEUES] = self.object_list
 		return context
 
 
@@ -176,19 +207,29 @@ componen:
 - AddBookingQueue
 	-> GET: add booking form
 	-> POST: booking submition
+- LookUps: Django auto complete views,
+	to list all result of auto complete queries for forms
 '''
-class ManagerDisplayView(QueueAppLoginMixin, ListView):
+class ManagerDisplayView(QueueAppLoginMixin, OrganizationSetter, ListView):
 	template_name='queue_app/manager/manager.html'
-	context_object_name = 'services'
+	context_object_name = const.TEMPLATE.SERVICES
 	def get_queryset(self):
-		return models.Service.objects.groups_filter(self.request.user.groups.all())
+		return (
+			models.Service.objects
+			.org_filter(self.request.session.get(const.IDX.ORG,{}).get('id'))
+		)
 
 class UserLookupView(
 		QueueAppLoginMixin,
 		autocomplete.Select2QuerySetView,
 	):
 	def get_queryset(self):
-		query_set = models.User.objects.filter(groups__in=self.request.user.groups.all())
+		query_set = (
+			models.User.objects
+			.filter(
+				organization=(self.request.session.get(const.IDX.ORG,{}).get('id'))
+			)
+		)
 		if self.q:
 			qs1 = query_set.filter(username__startswith=self.q)
 			qs2 = query_set.filter(first_name__startswith=self.q)
@@ -205,7 +246,12 @@ class ServiceLookupView(
 		autocomplete.Select2QuerySetView,
 	):
 	def get_queryset(self):
-		query_set= models.Service.objects.groups_filter(self.request.user.groups.all())
+		query_set= (
+			models.Service.objects
+			.org_filter(
+				self.request.session.get(const.IDX.ORG,{}).get('id')
+			)
+		)
 		if self.q:
 			qs1 = query_set.filter(name__startswith=self.q)
 			qs2 = query_set.filter(desc__startswith=self.q)
@@ -225,13 +271,32 @@ class BoothToSession(
 	def get_queryset(self):
 		return (
 			models.CounterBooth.objects
-			.filter(groups__in=self.request.user.groups.all())
+			.filter(organization=self.request.session.get(const.IDX.ORG,{}).get('id'))
 		)
 	def get_redirect_url(self, *args, **kwargs):
 		CounterBooth_object=self.get_object()
 		if CounterBooth_object:
-			self.request.session['CounterBooth'] = CounterBooth_object.to_flat_dict()
+			self.request.session[const.IDX.BOOTH] = CounterBooth_object.to_flat_dict()
 		return super().get_redirect_url(*args,**kwargs)
+
+class OrganizationListView(QueueAppLoginMixin,ListView):
+	template_name = 'queue_app/manager/organization_list.html'
+	context_object_name = const.TEMPLATE.ORGS
+	def get_queryset(self):
+		return self.request.user.organization.all()
+
+class OrganizationToSession(
+		QueueAppLoginMixin,
+		SingleObjectMixin,
+		RedirectView,
+	):
+	http_method_names = ['get',]
+	url = reverse_lazy('queue:manager_url')
+	def get_queryset(self):
+		return self.request.user.organization.all()
+	def get_redirect_url(self, *args, **kwargs):
+		self.request.session[const.IDX.ORG] = self.get_object().to_flat_dict()
+		return super().get_redirect_url(*args, **kwargs)
 
 class AddCustomerView(
 		LoginRequiredMixin,
@@ -269,14 +334,14 @@ class QueuePerServiceView(
 	def get(self, request, *args, **kwargs):
 		self.object= self.get_object(
 			models.Service.objects
-			.groups_filter(self.request.user.groups.all())
+			.org_filter(self.request.session.get(const.IDX.ORG,{}).get('id'))
 		)
 		return super().get( request, *args, **kwargs)
 
 	def get_context_data(self, **kwargs):
 		context= super().get_context_data(**kwargs)
-		context['service'] = self.object
-		context['queues'] = self.object_list
+		context[const.TEMPLATE.SERVICE] = self.object
+		context[const.TEMPLATE.QUEUES] = self.object_list
 		return context
 
 	def get_queryset(self):
@@ -305,7 +370,7 @@ def playAudioFile(request):
 	)
 	booth = get_object_or_404(
 		models.CounterBooth,
-		pk = request.session['CounterBooth'].get('id')
+		pk = request.session.get(const.IDX.BOOTH,{}).get('id')
 	)
 	if (queue and booth):
 		tts_string = "antrian "+queue.character+" "+str(queue.number)+" ke "+booth.spoken_name
@@ -327,26 +392,34 @@ and the current served queue
 hope i got this right
 '''
 #context : booth list
-class InfoBoardMainView(BaseBoothListView):
+class InfoBoardMainView(BaseBoothListView,OrganizationSetter):
 	template_name = "queue_app/info_board/info_board.html"
+	def get_queryset(self):
+		return (
+			models.CounterBooth.objects
+			.filter(
+				organization=self.request.session.get(const.IDX.ORG,{}).get('id')
+			)
+		)
 
 #context : booth detail
 class InfoBoardBoothDetailView(QueueAppLoginMixin,DetailView):
-	template_name = "queue_app/info_board/booth_list.html"
+	template_name = "queue_app/info_board/booth_detail.html"
 	model = models.CounterBooth
-	context_object_name = "booth"
+	context_object_name = const.TEMPLATE.BOOTH
 
+#havent been used
 class InfoBoardQueuePerService(QueuePerServiceView):
 	template_name = "queue_app/info_board/info_board.html"
 
-#context : all queue in loged in user's	groups
+#context : all queues in loged in user's selected organization
 class InfoBoardQueueListView(QueueAppLoginMixin, ListView):
 	template_name = "queue_app/info_board/placeholder_queues.html"
-	context_object_name = "queues"
+	context_object_name = const.TEMPLATE.QUEUES
 	def get_queryset(self):
 		services =(
 			models.Service.objects
-			.groups_filter(self.request.user.groups.all())
+			.org_filter(self.request.session.get(const.IDX.ORG,{}).get('id'))
 		)
 		return (
 			models.Queue.objects

@@ -20,7 +20,7 @@ setInterval(function(){
 	<div class="row mt-3">
 		<div class="col">
 			<div class="card-deck booth-list" >
-				{% for booth in booths %}
+				{% for booth in CounterBooths %}
 				<div class="card booth-card" booth_url="{% url "queue:info_booth_detail_url"  booth.id%}">
 					<div class="card-header">{{ booth.display_name }}</div>
 					<div class="card-body">

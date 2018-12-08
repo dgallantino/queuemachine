@@ -74,7 +74,8 @@ class CounterBooth(models.Model):
 			'display_name' : self.display_name,
 			'spoken_name' : self.spoken_name,
 			'desc' : self.desc,
-			'group': str(self.groups.id),
+			'organization': str(self.organization.id or 'null'),
+			#'group': str(self.groups.id or 'null'),
  		}
 
 class User(AbstractUser):

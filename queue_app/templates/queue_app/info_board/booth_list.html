@@ -1,7 +1,0 @@
-{% if booth.queues.today_filter.last %}
-{% with booth.queues.today_filter.last as last_queue %}
-{{ last_queue.character }}{{ last_queue.number }} ({{ last_queue.service }})
-{% endwith %}
-{% else %}
-No Data
-{% endif %}

@@ -50,7 +50,7 @@ $('body').on('click','a.btn-check',function(e){
 <div class="row">
 	<div class="col-3">
 		<div class="nav flex-column nav-pills sticky-top" id="v-pills-tab" role="tablist" aria-orientation="vertical" >
-		{% for service in services %}
+		{% for service in Services %}
 			<a class="nav-link text-capitalize {{ forloop.first|yesno:"active,," }}" id="tab_{{ service.id }}" data-toggle="pill" href="#tabContent_{{ service.id }}" role="tab" aria-controls="tabContent_{{ service.id }}" aria-selected="{{ forloop.first }}">
 				{{ service.name }} <span class="badge badge-secondary"></span>
 			</a>
@@ -61,7 +61,7 @@ $('body').on('click','a.btn-check',function(e){
 	</div>
   	<div class="col-9">
     	<div class="tab-content" id="v-pills-tabContent">
-    	{% for service in services %}
+    	{% for service in Services %}
       		<div class="tab-pane fade {{ forloop.first|yesno:"show active," }}" id="tabContent_{{ service.id }}" role="tabpanel" aria-labelledby="tab_{{ service.id }}" >
       			<a
 							class="btn btn-primary btn-refresh"

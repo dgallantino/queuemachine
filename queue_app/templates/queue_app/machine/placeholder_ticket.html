@@ -10,12 +10,12 @@
 	<!-- queue_time     : for date time the queue is created -->
 	<!-- queue_number   : for the queueu line number -->
 	<div class="ticket_div">HELLO</div>
-	<div class="ticket_div" id="queue_service">{{ queue.service }}</div>
-	<div class="ticket_div" id="queue_time">{{ queue.date_created }}</div>
-	<div class="ticket_div big_number" id="qeueu_number">{{ queue.character|default:'' }} {{ queue.number }}</div>
-	{% if queue.customer or queue.booking_datetime %}
-	<div class="ticket_div" >{{ queue.customer.get_full_name|default:queue.customer }}</div>
+	<div class="ticket_div" id="queue_service">{{ Queue.service }}</div>
+	<div class="ticket_div" id="queue_time">{{ Queue.date_created }}</div>
+	<div class="ticket_div big_number" id="qeueu_number">{{ Queue.character|default:'' }} {{ Queue.number }}</div>
+	{% if Queue.customer or Queue.booking_datetime %}
+	<div class="ticket_div" >{{ Queue.customer.get_full_name|default:Queue.customer.username }}</div>
 	<div class="ticket_div" >your booking time is</div>
-	<div class="ticket_div" >{{ queue.booking_datetime|date:"H:i" }}</div>
+	<div class="ticket_div" >{{ Queue.booking_datetime|date:"H:i" }}</div>
 	{% endif %}
 </body>
