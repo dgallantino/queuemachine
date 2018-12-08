@@ -1,5 +1,9 @@
 {% for queue in Queues %}
+{% if queue.is_booking %}
+<tr class="booking">
+{% else %}
 <tr>
+{% endif %}
 	<td>
 		{{ queue.character }}{{ queue.number }}
 	</td>
