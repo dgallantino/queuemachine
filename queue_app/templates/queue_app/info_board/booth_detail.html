@@ -1,5 +1,5 @@
-{% if CounterBooth.queues.today_filter.last %}
-  {% with CounterBooth.queues.today_filter.last as last_queue %}
+{% if CounterBooth.latest_queue %}
+  {% with CounterBooth.latest_queue as last_queue %}
     {{ last_queue.character }}{{ last_queue.number }} ({{ last_queue.service }})
   {% endwith %}
 {% else %}
