@@ -157,11 +157,11 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: white; 
+    background: white;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: lightgrey; 
+    background: lightgrey;
 }
 /* sidebar buttons */
 .btn {
@@ -182,10 +182,10 @@ body {
   color: #ffffff;
 }
 
-.btn-primary:hover, 
-.btn-primary:focus, 
-.btn-primary:active, 
-.btn-primary.active, 
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
 .open > .dropdown-toggle.btn-primary {
     background: #33a6cc;
 }
@@ -204,7 +204,7 @@ body {
 #menu-toggle{
   top: 0vh;
   margin-left: -20px;
-  position: fixed;
+  position: absolute;
   padding-top: 0px;
   padding-bottom: 0px;
   font-size : 50px;
