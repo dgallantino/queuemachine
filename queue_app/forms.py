@@ -52,6 +52,7 @@ class CustomerCreationForm(CustomUserCreationForm):
             'all':(
                 'queue_app/bootstrap/css/bootstrap.min.css',
                 'queue_app/jquery-ui/jquery-ui.min.css',
+                'queue_app/core/css/manager-add_customer_form.css'
             ),
         }
         js=(

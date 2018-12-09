@@ -1,12 +1,15 @@
+{% extends "queue_app/manager/manager_base.html" %}
 {% load static %}
 {% load widget_tweaks %}
-<head>
-{{ form.media }}
-</head>
+{% block stylesheet-content %}
+	{{ form.media }}
+{% endblock %}
+
+{% block content %}
 <body style="margin-top:0">
 	<div class="container-fluid form-container" id="form-container" style="margin-top:0">
 		<form id="add-booking-form" action="{% url "queue:add_booking_url" %}" method="POST">
-			{% csrf_token %}		
+			{% csrf_token %}
 			<input type="hidden" name="is_booking" value="True"/>
 			<div class ="form-group">
 				<label for="service">{{ form.service.label }} </label>
@@ -33,35 +36,38 @@
 	    {% endfor %}
 		</div>
 		{% endif %}
-		
+
 		{% if form.errors %}
 		<div id="form-error" class="alert alert-warning fade show" role="alert">
 			<p>The operation could not be performed because one or more error(s) occurred.<br />Please resubmit the form after making the following changes:</p>
 			<ul>
 			{% for field in form %}
-				{% if field.errors %}<li>{{ field.errors|striptags }}</li>{% endif %}
+				{% if field.errors %}<li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
 			{% endfor %}
 			</ul>
 		</div>
 		{% endif %}
 	</div>
+{% endblock %}
+
+{% block javascript-content %}
 <script type="text/javascript">
 $(document).ready(function(){
-    $('#booking-time').timepicker({
-    	timeFormat: 'HH:mm',
-    	dropdown: false,
-    });
-    $( "#booking-date" ).datepicker({
+		$('#booking-time').timepicker({
+			timeFormat: 'HH:mm',
+			dropdown: false,
+		});
+		$( "#booking-date" ).datepicker({
 		buttonText: "Select date",
 		dateFormat:"d-m-yy",
-    });
+		});
 });
 
 $('select').on("select2:close", function () { $(this).focus(); });
 
 
 $("#form-success").fadeTo(2000, 500).slideUp(500, function(){
-    $("#form-success").slideUp(500);
+		$("#form-success").slideUp(500);
 });
 </script>
-</body>
+{% endblock %}

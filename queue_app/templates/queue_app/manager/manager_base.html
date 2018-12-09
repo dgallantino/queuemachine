@@ -13,7 +13,7 @@
 
 {% block content-header %}
 <nav class="navbar fixed-top navbar-expand-md navbar-dark bg-dark" >
-  <a class="navbar-brand" href="#">Queue Manager</a>
+  <a class="navbar-brand" href="{% url 'queue:manager_url' %}">Queue Manager</a>
   <div class="collapse navbar-collapse">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
@@ -21,9 +21,17 @@
 					id="booking-form-link"
 					class="nav-link"
 					href="{% url "queue:add_booking_url" %}"
-					data-toggle="modal" data-target="#modal-form"
 				>
          Tambah Booking
+        </a>
+      </li>
+			<li class="nav-item">
+        <a
+					id="customer-form-link"
+					class="nav-link"
+					href="{% url "queue:add_customer_url" %}"
+				>
+         Tambah Customer
         </a>
       </li>
       <li class="nav-item dropdown">
@@ -102,6 +110,6 @@
 $('.dropdown-menu').initiate_dropdown();
 
 </script>
-	{% block javascript-content %}
-	{% endblock %}
+{% block javascript-content %}
+{% endblock %}
 {% endblock %}
