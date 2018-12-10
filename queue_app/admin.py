@@ -24,7 +24,7 @@ class QueueAdmin(admin.ModelAdmin):
                     'print_datetime',
                 )
     fieldsets = (
-        (_('Something'), {
+        (_('Service'), {
             'fields': (
                 'service',
                 'customer',
@@ -35,7 +35,7 @@ class QueueAdmin(admin.ModelAdmin):
                 'is_printed',
             )
         }),
-        (_('Read-only fields'),{
+        (_('Read onlies'),{
             'fields':(
                 'date_created',
                 'date_modified',
