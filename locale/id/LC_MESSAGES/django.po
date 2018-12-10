@@ -1,6 +1,6 @@
 #: queue_app/admin.py:27
-msgid "Service"
-msgstr "Layanan"
+msgid "Editable"
+msgstr "Dapat diedit"
 
 #: queue_app/admin.py:38
 msgid "Read onlies"
@@ -12,18 +12,35 @@ msgstr "Info pribadi"
 
 #: queue_app/admin.py:69
 msgid "Permissions"
-msgstr ""
+msgstr "Hak akses"
 
 #: queue_app/admin.py:71
 msgid "Important dates"
 msgstr "Tanggal penting"
 
-#: queue_machine/settings.py:116
+#: queue_app/templates/queue_app/index.html:14
+msgid "Admin"
+msgstr "Pengurus"
+
+#: queue_app/templates/queue_app/index.html:20
+msgid "Machine"
+msgstr "Mesin"
+
+#: queue_app/templates/queue_app/index.html:23
+msgid "Manager"
+msgstr "Manajer"
+
+#: queue_app/templates/queue_app/index.html:26
+msgid "Information Board"
+msgstr "Papan Informasi"
+
+#: queue_machine/settings.py:117
 msgid "English"
 msgstr "Inggris"
 
-#: queue_machine/settings.py:117
-#, fuzzy
-#| msgid "Indonesian"
+#: queue_machine/settings.py:118
 msgid "Indonesian"
 msgstr "Bahasa Indonesia"
+
+#~ msgid "Service"
+#~ msgstr "Layanan"

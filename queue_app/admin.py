@@ -24,7 +24,7 @@ class QueueAdmin(admin.ModelAdmin):
                     'print_datetime',
                 )
     fieldsets = (
-        (_('Service'), {
+        (_('Editable'), {
             'fields': (
                 'service',
                 'customer',
