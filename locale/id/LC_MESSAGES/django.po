@@ -1,0 +1,29 @@
+#: queue_app/admin.py:27
+msgid "Service"
+msgstr "Layanan"
+
+#: queue_app/admin.py:38
+msgid "Read onlies"
+msgstr "Hanya baca"
+
+#: queue_app/admin.py:67
+msgid "Personal info"
+msgstr "Info pribadi"
+
+#: queue_app/admin.py:69
+msgid "Permissions"
+msgstr ""
+
+#: queue_app/admin.py:71
+msgid "Important dates"
+msgstr "Tanggal penting"
+
+#: queue_machine/settings.py:116
+msgid "English"
+msgstr "Inggris"
+
+#: queue_machine/settings.py:117
+#, fuzzy
+#| msgid "Indonesian"
+msgid "Indonesian"
+msgstr "Bahasa Indonesia"
