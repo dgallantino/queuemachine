@@ -118,7 +118,7 @@ class QueueModelBaseForms(forms.ModelForm):
                 url = 'queue:user_lookup_url',
                 attrs={
                     'id':'service',
-                    'data-placeholder': 'Polanggan ...',
+                    'data-placeholder': 'Pelanggan ...',
                     'data-minimum-input-length': 3,
                 },
             ),
