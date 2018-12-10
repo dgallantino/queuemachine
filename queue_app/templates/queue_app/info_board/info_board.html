@@ -1,5 +1,6 @@
 {% extends 'queue_app/base.html' %}
 {% load static %}
+{% load i18n %}
 {% block title %}
 Info Board
 {% endblock %}
@@ -29,11 +30,11 @@ setInterval(function(){
 					<div class="card-body">
 						{% if booth.queues.last %}
 							{% with booth.queues.today_filter.last as last_queue %}
-							<h5 class="card-title">Antrian</h5>
+							<h5 class="card-title">{% trans "Queue" %}</h5>
 							<p class="card-text queue-data">{{ last_queue.character }}{{ last_queue.number }} ({{ last_queue.service }})</p>
 							{% endwith %}
 						{% else %}
-							<p class="card-text queue-data">No Data</p><br/>
+							<p class="card-text queue-data">{% trans "No Data" %}</p><br/>
 						{% endif %}
 					</div>
 					<div class="card-footer">
@@ -50,10 +51,10 @@ setInterval(function(){
 				<thead>
 					<tr>
 						<th>
-							Ticket
+							{% trans "Ticket" %}
 						</th>
 						<th>
-							Service
+							{% trans "Service" %}
 						</th>
 					</tr>
 				</thead>
