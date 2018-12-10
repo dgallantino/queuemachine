@@ -260,12 +260,12 @@ class ServiceLookupView(
 
 class OrganizationLookupView(
 		QueueAppLoginMixin,
-		autocomplete.Select2Multiple,
+		autocomplete.Select2QuerySetView,
 	):
 	def get_queryset(self):
 		queryset = (
 			models.Organization.objects
-			.filter(user = self.request.user)
+			.filter(users = self.request.user)
 		)
 
 		if self.q:
