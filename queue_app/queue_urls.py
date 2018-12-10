@@ -91,6 +91,11 @@ urlpatterns = [
         name='organization_detail_url'
     ),
     path(
+        'manager/organization/lookup/',
+        views.OrganizationLookupView.as_view(),
+        name='organization_lookup_url'
+    ),
+    path(
         'manager/queues/audiotest/',
         views.playAudioFile,
         name='test'
