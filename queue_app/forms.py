@@ -45,13 +45,25 @@ class CustomerCreationForm(CustomUserCreationForm):
             'last_name',
             'email',
             'phone',
+            'organization',
         )
+
+        widgets = {
+            'organization':autocomplete.ModelSelect2Multiple(
+                url = 'queue:organization_lookup_url',
+                attrs = {
+                    'id':'organization',
+                    'data-placeholder': 'Organisasi ...',
+                },
+            ),
+        }
 
     class Media:
         css={
             'all':(
                 'queue_app/bootstrap/css/bootstrap.min.css',
                 'queue_app/jquery-ui/jquery-ui.min.css',
+                'queue_app/core/css/manager-add_customer_form.css'
             ),
         }
         js=(
@@ -98,7 +110,7 @@ class QueueModelBaseForms(forms.ModelForm):
                 url = 'queue:service_lookup_url',
                 attrs={
                     'id':'service',
-                    'data-placeholder': 'Service ...',
+                    'data-placeholder': 'Layanan ...',
                     'data-minimum-input-length': 1,
                 },
             ),
@@ -106,7 +118,7 @@ class QueueModelBaseForms(forms.ModelForm):
                 url = 'queue:user_lookup_url',
                 attrs={
                     'id':'service',
-                    'data-placeholder': 'Customer ...',
+                    'data-placeholder': 'Polanggan ...',
                     'data-minimum-input-length': 3,
                 },
             ),

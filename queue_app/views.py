@@ -246,17 +246,32 @@ class ServiceLookupView(
 		autocomplete.Select2QuerySetView,
 	):
 	def get_queryset(self):
-		query_set= (
+		queryset= (
 			models.Service.objects
 			.org_filter(
 				self.request.session.get(const.IDX.ORG,{}).get('id')
 			)
 		)
 		if self.q:
-			qs1 = query_set.filter(name__startswith=self.q)
-			qs2 = query_set.filter(desc__startswith=self.q)
-			query_set = qs1.union(qs2)
-		return query_set
+			qs1 = queryset.filter(name__startswith=self.q)
+			qs2 = queryset.filter(desc__startswith=self.q)
+			queryset = qs1.union(qs2)
+		return queryset
+
+class OrganizationLookupView(
+		QueueAppLoginMixin,
+		autocomplete.Select2QuerySetView,
+	):
+	def get_queryset(self):
+		queryset = (
+			models.Organization.objects
+			.filter(users = self.request.user)
+		)
+
+		if self.q:
+			queryset = queryset.filter(name__starwiwth=self.q)
+
+		return queryset
 
 class ManagerBoothListView(BaseBoothListView):
 	template_name = 'queue_app/manager/booth_list.html'
