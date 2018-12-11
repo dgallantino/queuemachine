@@ -43,7 +43,7 @@ manager_patterns = [
     path(
         'booths/',
         views.ManagerBoothListView.as_view(),
-        name='booth_list_url'
+        name='booth_list'
     ),
     path(
         'booths/<uuid:pk>/',
@@ -53,7 +53,7 @@ manager_patterns = [
     path(
         'organization/',
         views.OrganizationListView.as_view(),
-        name='organization_list_url'
+        name='organization_list'
     ),
     path(
         'organization/<uuid:pk>/',
