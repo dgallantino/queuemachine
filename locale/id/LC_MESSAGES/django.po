@@ -42,5 +42,5 @@ msgstr "Inggris"
 msgid "Indonesian"
 msgstr "Bahasa Indonesia"
 
-#~ msgid "Service"
-#~ msgstr "Layanan"
+msgid "Service"
+msgstr "Layanan"
