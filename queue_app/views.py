@@ -116,7 +116,7 @@ class MachineDisplayView(
 		)
 		return context
 	def get_success_url(self):
-		return reverse_lazy('queue:print_ticket_url', kwargs={'pk':self.object.id})
+		return reverse_lazy('queue:machine:print', kwargs={'pk':self.object.id})
 
 #booking entry is updated right before printing
 #so the number is sorted based on time it was printed
@@ -282,7 +282,7 @@ class BoothToSession(
 		RedirectView,
 	):
 	http_method_names = ['get',]
-	url = reverse_lazy("queue:manager_url")
+	url = reverse_lazy("queue:manager:index")
 	def get_queryset(self):
 		return (
 			models.CounterBooth.objects
@@ -306,7 +306,7 @@ class OrganizationToSession(
 		RedirectView,
 	):
 	http_method_names = ['get',]
-	url = reverse_lazy('queue:manager_url')
+	url = reverse_lazy('queue:manager:index')
 	def get_queryset(self):
 		return self.request.user.organization.all()
 	def get_redirect_url(self, *args, **kwargs):
@@ -319,7 +319,7 @@ class AddCustomerView(
 		CreateView,
 	):
 	login_url = reverse_lazy('login')
-	success_url = reverse_lazy('queue:add_customer_url')
+	success_url = reverse_lazy('queue:manager:add_customer')
 	template_name = 'queue_app/manager/add_customer_form.html'
 	model = models.User
 	form_class=forms.CustomerCreationForm
@@ -331,7 +331,7 @@ class AddBookingQueueView(
 		CreateView,
 	):
 	login_url = reverse_lazy('login')
-	success_url = reverse_lazy('queue:add_booking_url')
+	success_url = reverse_lazy('queue:manager:add_booking')
 	template_name = 'queue_app/manager/add_booking_form.html'
 	model = models.Queue
 	form_class=forms.AddBookingQueuemodelForms
@@ -372,7 +372,7 @@ class QueuePerServiceView(
 
 class CallQueueView(LoginRequiredMixin,UpdateView):
 	login_url = reverse_lazy('login')
-	success_url = reverse_lazy('queue:manager_url')
+	success_url = reverse_lazy('queue:manager:index')
 	form_class = forms.CallQueueModelForms
 	model = models.Queue
 	template_name = 'queue_app/manager/test_form_template.html'
