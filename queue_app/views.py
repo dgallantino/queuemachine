@@ -81,7 +81,7 @@ class IndexView(TemplateView):
 
 class SignUp(CreateView):
 	form_class = forms.CustomUserCreationForm
-	success_url = reverse_lazy('queue:print_ticket_url')
+	success_url = reverse_lazy('queue:index')
 	template_name = 'registration/signup.html'
 
 '''
