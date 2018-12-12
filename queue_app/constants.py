@@ -10,3 +10,7 @@ class TEMPLATE(object):
     ORGS = 'Organizations'
     BOOTHS = 'CounterBooths'
     BOOTH = 'CounterBooth'
+
+class LANG(object):
+    ID = 'id'
+    EN = 'en'

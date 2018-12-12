@@ -16,6 +16,7 @@ from django.views.generic.detail import SingleObjectMixin
 from django.http.response import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.utils import translation
 
 from dal import autocomplete
 
@@ -59,8 +60,10 @@ class BaseBoothListView(QueueAppLoginMixin,ListView):
 			.filter(organization=self.request.session.get(const.IDX.ORG,{}).get('id'))
 		)
 
-class OrganizationSetter(View):
+class SessionInitializer(View):
 	def get(self, request, *args, **kwargs):
+		translation.activate(const.LANG.ID)
+		request.session[translation.LANGUAGE_SESSION_KEY] = const.LANG.ID
 		if not request.session.get(const.IDX.ORG):
 			if request.user.organization.all().count() > 1:
 				messages.add_message(
@@ -71,7 +74,7 @@ class OrganizationSetter(View):
 				)
 			else:
 				request.session[const.IDX.ORG] = request.user.organization.last().to_flat_dict()
-		return super(OrganizationSetter, self).get( request, *args, **kwargs)
+		return super(SessionInitializer, self).get( request, *args, **kwargs)
 
 '''
 No signins views
@@ -100,7 +103,7 @@ component
 #context['services'] to list availale services
 class MachineDisplayView(
 		QueueAppLoginMixin,
-		OrganizationSetter,
+		SessionInitializer,
 		CreateView,
 	):
 	template_name ='queue_app/machine/machine.html'
@@ -210,7 +213,7 @@ componen:
 - LookUps: Django auto complete views,
 	to list all result of auto complete queries for forms
 '''
-class ManagerDisplayView(QueueAppLoginMixin, OrganizationSetter, ListView):
+class ManagerDisplayView(QueueAppLoginMixin, SessionInitializer, ListView):
 	template_name='queue_app/manager/manager.html'
 	context_object_name = const.TEMPLATE.SERVICES
 	def get_queryset(self):
@@ -400,6 +403,11 @@ def playAudioFile(request):
 		return response
 	return HttpResponseBadRequest
 
+class SetLanguageRedirect(QueueAppLoginMixin,RedirectView):
+	http_method_names = ['get',]
+	url = reverse_lazy('queue:manager:index')
+
+
 '''
 Queue info boards
 Displaying the list of remaining queue
@@ -407,7 +415,7 @@ and the current served queue
 hope i got this right
 '''
 #context : booth list
-class InfoBoardMainView(BaseBoothListView,OrganizationSetter):
+class InfoBoardMainView(BaseBoothListView,SessionInitializer):
 	template_name = "queue_app/info_board/info_board.html"
 	def get_queryset(self):
 		return (
