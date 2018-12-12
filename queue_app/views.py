@@ -139,7 +139,7 @@ class PrintTicketView(QueueAppLoginMixin, DetailView, UpdateView,):
 		)
 
 	def get_success_url(self):
-		return reverse_lazy('queue:print_ticket_url', kwargs={'pk':self.object.id})
+		return reverse_lazy('queue:machine:print', kwargs={'pk':self.object.id})
 
 #ListView list all booking queue
 #SingleObjectMixin get Queue id in url and list the new queue after that one
