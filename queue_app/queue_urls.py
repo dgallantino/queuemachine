@@ -5,28 +5,6 @@ from django.conf.urls.static import static
 
 app_name='queue'
 
-board_patterns = [
-    path(
-        '',
-        views.InfoBoardMainView.as_view(),
-        name='index'
-    ),
-    path(
-        'queues/',
-        views.InfoBoardQueueListView.as_view(),
-        name='queues'
-    ),
-    path(
-        'queues/service/<uuid:pk>/',
-        views.InfoBoardQueuePerService.as_view(),
-        name='service_queues'
-    ),
-    path(
-        'booths/<uuid:pk>/details/',
-        views.InfoBoardBoothDetailView.as_view(),
-        name='booth_detail'
-    ),
-]
 
 manager_patterns = [
     path(
@@ -124,7 +102,28 @@ machine_patterns =[
     ),
 ]
 
-
+board_patterns = [
+    path(
+        '',
+        views.InfoBoardMainView.as_view(),
+        name='index'
+    ),
+    path(
+        'queues/',
+        views.InfoBoardQueueListView.as_view(),
+        name='queues'
+    ),
+    path(
+        'queues/service/<uuid:pk>/',
+        views.InfoBoardQueuePerService.as_view(),
+        name='service_queues'
+    ),
+    path(
+        'booths/<uuid:pk>/details/',
+        views.InfoBoardBoothDetailView.as_view(),
+        name='booth_detail'
+    ),
+]
 
 urlpatterns = [
     path('machine/', include((machine_patterns,'machine'))),

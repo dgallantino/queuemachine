@@ -34,13 +34,30 @@ msgstr "Manajer"
 msgid "Information Board"
 msgstr "Papan Informasi"
 
-#: queue_machine/settings.py:117
+#: queue_app/templates/queue_app/info_board/info_board.html:33
+msgid "Queue"
+msgstr "Antrian"
+
+#: queue_app/templates/queue_app/info_board/info_board.html:37
+msgid "No Data"
+msgstr "Tidak ada data"
+
+#: queue_app/templates/queue_app/info_board/info_board.html:54
+msgid "Ticket"
+msgstr "Tiket"
+
+#: queue_app/templates/queue_app/info_board/info_board.html:57
+msgid "Service"
+msgstr "Layanan"
+
+#: queue_app/templates/queue_app/machine/machine.html:52
+msgid "Booking Queue"
+msgstr "Antrian Booking"
+
+#: queue_machine/settings.py:118
 msgid "English"
 msgstr "Inggris"
 
-#: queue_machine/settings.py:118
+#: queue_machine/settings.py:119
 msgid "Indonesian"
 msgstr "Bahasa Indonesia"
-
-msgid "Service"
-msgstr "Layanan"

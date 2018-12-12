@@ -415,8 +415,8 @@ and the current served queue
 hope i got this right
 '''
 #context : booth list
-class InfoBoardMainView(BaseBoothListView, SessionInitializer):
-	template_name = "queue_app/info_board/info_board.html"
+class InfoBoardMainView(SessionInitializer,BaseBoothListView):
+	template_name = 'queue_app/info_board/info_board.html'
 	def get_queryset(self):
 		return (
 			models.CounterBooth.objects

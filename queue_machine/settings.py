@@ -115,15 +115,15 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
 LANGUAGES =(
+	('id',_('Indonesian')),
 	('en',_('English')),
-	('id',_('Indonesian'))
 )
 
 LANGUAGE_CODE = 'id'
 
 TIME_ZONE = 'Asia/Jakarta'
 
-USE_I18N = False
+USE_I18N = True
 
 USE_L10N = False
 
