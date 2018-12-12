@@ -13,14 +13,14 @@
 
 {% block content-header %}
 <nav class="navbar fixed-top navbar-expand-md navbar-dark bg-dark" >
-  <a class="navbar-brand" href="{% url 'queue:manager_url' %}">Queue Manager</a>
+  <a class="navbar-brand" href="{% url 'queue:manager:index' %}">Queue Manager</a>
   <div class="collapse navbar-collapse">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
         <a
 					id="booking-form-link"
 					class="nav-link"
-					href="{% url "queue:add_booking_url" %}"
+					href="{% url "queue:manager:add_booking" %}"
 				>
          Tambah Booking
         </a>
@@ -29,7 +29,7 @@
         <a
 					id="customer-form-link"
 					class="nav-link"
-					href="{% url "queue:add_customer_url" %}"
+					href="{% url "queue:manager:add_customer" %}"
 				>
          Tambah Customer
         </a>
@@ -49,7 +49,7 @@
 					id="booth-menu"
 					class="dropdown-menu"
 					aria-labelledby="navbarDropdown"
-					url_data="{% url "queue:booth_list_url" %}"
+					url_data="{% url "queue:manager:booth_list" %}"
 				>
 				Pilih Organisasi Dahulu
         </div>
@@ -69,7 +69,7 @@
 					id="organization-menu"
 					class="dropdown-menu"
 					aria-labelledby="navbarDropdown"
-					url_data="{% url "queue:organization_list_url" %}"
+					url_data="{% url "queue:manager:organization_list" %}"
 				>
 					No Data
         </div>

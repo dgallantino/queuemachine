@@ -1,9 +1,9 @@
 {% if Organizations %}
 	{% for organization in Organizations %}
 		{% if  request.session.Organization.id  == organization.id|stringformat:"s" %}
-			<a class="dropdown-item disabled" href="{% url 'queue:organization_detail_url' organization.id %}?next={{ request.get_full_path|urlencode }}">{{ organization.name }}</a>
+			<a class="dropdown-item disabled" href="{% url 'queue:manager:session_org' organization.id %}?next={{ request.get_full_path|urlencode }}">{{ organization.name }}</a>
 		{% else %}
-			<a class="dropdown-item" href="{% url 'queue:organization_detail_url' organization.id %}?next={{ request.get_full_path|urlencode }}">{{ organization.name }}</a>
+			<a class="dropdown-item" href="{% url 'queue:manager:session_org' organization.id %}?next={{ request.get_full_path|urlencode }}">{{ organization.name }}</a>
 		{% endif %}
 	{% endfor %}
 {% else %}
