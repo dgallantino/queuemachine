@@ -50,7 +50,7 @@ class CustomerCreationForm(CustomUserCreationForm):
 
         widgets = {
             'organization':autocomplete.ModelSelect2Multiple(
-                url = 'queue:organization_lookup_url',
+                url = 'queue:manager:organization_autocomplete',
                 attrs = {
                     'id':'organization',
                     'data-placeholder': 'Organisasi ...',
@@ -107,7 +107,7 @@ class QueueModelBaseForms(forms.ModelForm):
 
         widgets={
             'service':autocomplete.ModelSelect2(
-                url = 'queue:service_lookup_url',
+                url = 'queue:manager:service_autocomplete',
                 attrs={
                     'id':'service',
                     'data-placeholder': 'Layanan ...',
@@ -115,7 +115,7 @@ class QueueModelBaseForms(forms.ModelForm):
                 },
             ),
             'customer':autocomplete.ModelSelect2(
-                url = 'queue:user_lookup_url',
+                url = 'queue:manager:user_autocomplete',
                 attrs={
                     'id':'service',
                     'data-placeholder': 'Pelanggan ...',

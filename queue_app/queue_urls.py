@@ -28,17 +28,17 @@ manager_patterns = [
     path(
         'users/',
         views.UserLookupView.as_view(),
-        name='user_lookup_url'
+        name='user_autocomplete'
     ),
     path(
         'services/',
         views.ServiceLookupView.as_view(),
-        name='service_lookup_url'
+        name='service_autocomplete'
     ),
     path(
         'organization/lookup/',
         views.OrganizationLookupView.as_view(),
-        name='organization_lookup_url'
+        name='organization_autocomplete'
     ),
     path(
         'customer/add/',
