@@ -97,22 +97,22 @@ machine_patterns =[
 
 board_patterns = [
     path(
-        'infoboard/',
+        '',
         views.InfoBoardMainView.as_view(),
         name='index'
     ),
     path(
-        'infoboard/queues/',
+        'queues/',
         views.InfoBoardQueueListView.as_view(),
         name='queues'
     ),
     path(
-        'infoboard/queues/service/<uuid:pk>/',
+        'queues/service/<uuid:pk>/',
         views.InfoBoardQueuePerService.as_view(),
         name='service_queues'
     ),
     path(
-        'infoboard/booths/<uuid:pk>/details/',
+        'booths/<uuid:pk>/details/',
         views.InfoBoardBoothDetailView.as_view(),
         name='booth_detail'
     ),
