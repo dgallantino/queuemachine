@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from queue_app import views
 from django.conf import settings
 from django.conf.urls.static import static
@@ -119,9 +119,9 @@ board_patterns = [
 ]
 
 urlpatterns = [
-    path('manager/', include(manager_patterns,namaspace='manager'))
-    path('machine/', include(machine_patterns,namespace='machine'))
-    path('infoboard/', include(board_patterns,namaspace='infoboard'))
+    path('manager/', include((manager_patterns,'manager'))),
+    path('machine/', include((machine_patterns,'machine'))),
+    path('infoboard/', include((board_patterns,'infoboard'))),
     path(
         '',
         views.IndexView.as_view(),
