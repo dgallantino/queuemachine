@@ -1,9 +1,9 @@
 {% if  CounterBooths%}
 	{% for booth in CounterBooths %}
 		{% if  request.session.CounterBooth.id  == booth.id|stringformat:"s" %}
-			<a class="dropdown-item disabled" href="{% url "queue:booth_detail_url" booth.id %}?next={{ request.get_full_path|urlencode }}">{{ booth.display_name }}</a>
+			<a class="dropdown-item disabled" href="{% url "queue:manager:session_booth" booth.id %}?next={{ request.get_full_path|urlencode }}">{{ booth.display_name }}</a>
 		{% else %}
-			<a class="dropdown-item" href="{% url "queue:booth_detail_url" booth.id %}?next={{ request.get_full_path|urlencode }}">{{ booth.display_name }}</a>
+			<a class="dropdown-item" href="{% url "queue:manager:session_booth" booth.id %}?next={{ request.get_full_path|urlencode }}">{{ booth.display_name }}</a>
 		{% endif %}
 	{% endfor %}
 {% else %}

@@ -15,11 +15,11 @@
 	</td>
 	<td>
 		<audio class="call-audio" preload="none" ontimeupdate="audio_progress(this)">
-			<source src="{% url "queue:test" %}?queue={{ queue.id }}" type="audio/mpeg">
+			<source src="{% url "queue:manager:audio" %}?queue={{ queue.id }}" type="audio/mpeg">
 		</audio>
 
 		<a
-			href="{% url 'queue:call_queue_url' queue.id%}"
+			href="{% url 'queue:manager:call' queue.id%}"
 			class="btn btn-bell progress-button faa-parent animated-hover {{ request.session.CounterBooth|yesno:',disabled,' }}"
 			role="button"
 			data-loading="" data-finished="" data-type="background-bar"

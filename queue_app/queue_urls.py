@@ -13,7 +13,7 @@ manager_patterns = [
     path(
         'queues/<uuid:pk>/call/',
         views.CallQueueView.as_view(),
-        name='call_queue_url'
+        name='call'
     ),
     path(
         'queues/add-booking/',
@@ -23,7 +23,7 @@ manager_patterns = [
     path(
         'queues/service/<uuid:pk>/',
         views.QueuePerServiceView.as_view(),
-        name='queue_per_service_url'
+        name='service_queues'
     ),
     path(
         'users/',
@@ -31,14 +31,19 @@ manager_patterns = [
         name='user_lookup_url'
     ),
     path(
-        'customer/add/',
-        views.AddCustomerView.as_view(),
-        name='add_customer'
-    ),
-    path(
         'services/',
         views.ServiceLookupView.as_view(),
         name='service_lookup_url'
+    ),
+    path(
+        'organization/lookup/',
+        views.OrganizationLookupView.as_view(),
+        name='organization_lookup_url'
+    ),
+    path(
+        'customer/add/',
+        views.AddCustomerView.as_view(),
+        name='add_customer'
     ),
     path(
         'booths/',
@@ -48,7 +53,7 @@ manager_patterns = [
     path(
         'booths/<uuid:pk>/',
         views.BoothToSession.as_view(),
-        name='booth_detail_url'
+        name='session_booth'
     ),
     path(
         'organization/',
@@ -58,17 +63,12 @@ manager_patterns = [
     path(
         'organization/<uuid:pk>/',
         views.OrganizationToSession.as_view(),
-        name='organization_detail_url'
-    ),
-    path(
-        'organization/lookup/',
-        views.OrganizationLookupView.as_view(),
-        name='organization_lookup_url'
+        name='session_org'
     ),
     path(
         'queues/audiotest/',
         views.playAudioFile,
-        name='test'
+        name='audio'
     ),
 ]
 
