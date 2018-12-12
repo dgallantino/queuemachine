@@ -7,7 +7,7 @@
 {% endblock %}
 {% block content %}
 	<div class="container-fluid form-container">
-		<form id="add-booking-form" action="{% url "queue:add_customer_url" %}" method="POST">
+		<form id="add-booking-form" action="{% url "queue:manager:add_customer" %}" method="POST">
 			{% csrf_token %}
 			<div class="form-row">
 				<div class="col">

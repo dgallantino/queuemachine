@@ -25,7 +25,7 @@ setInterval(function(){
 		<div class="col">
 			<div class="card-deck booth-list" >
 				{% for booth in CounterBooths %}
-				<div class="card booth-card" booth_url="{% url "queue:info_booth_detail_url"  booth.id%}">
+				<div class="card booth-card" booth_url="{% url "queue:infoboard:booth_detail"  booth.id%}">
 					<div class="card-header">{{ booth.display_name }}</div>
 					<div class="card-body">
 						{% if booth.queues.last %}
@@ -58,7 +58,7 @@ setInterval(function(){
 						</th>
 					</tr>
 				</thead>
-				<tbody class="queue-list-table" queues_url="{% url 'queue:info_queues_url' %}">
+				<tbody class="queue-list-table" queues_url="{% url 'queue:infoboard:queues' %}">
 				</tbody>
 			</table>
 		</div>

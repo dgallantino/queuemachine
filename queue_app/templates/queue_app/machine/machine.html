@@ -52,7 +52,7 @@ setInterval(function(){
     			{% trans "Booking Queue" %}
     			<hr class="white">
     		</div>
-    		<div id="booking-list-body" class="list-body" queues_url="{% url 'queue:booking_list_url' %}">
+    		<div id="booking-list-body" class="list-body" queues_url="{% url 'queue:machine:booking_list' %}">
     		</div>
     	</div>
     </div>
@@ -64,7 +64,7 @@ setInterval(function(){
     		<div class="container-fluid">
 				{% for Service in Services %}
 				<div class="container-fluid  btn-container text-center">
-					<a class="service-button" href="{% url 'queue:machine_url' %}" service_id="{{ Service.id }}">{{ Service.name }}</a>
+					<a class="service-button" href="{% url 'queue:machine:index' %}" service_id="{{ Service.id }}">{{ Service.name }}</a>
 				</div>
 				{% endfor %}
 			</div>

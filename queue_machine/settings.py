@@ -122,7 +122,7 @@ LANGUAGE_CODE = 'id'
 
 TIME_ZONE = 'Asia/Jakarta'
 
-USE_I18N = True
+USE_I18N = False
 
 USE_L10N = False
 
