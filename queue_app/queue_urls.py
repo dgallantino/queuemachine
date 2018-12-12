@@ -5,6 +5,29 @@ from django.conf.urls.static import static
 
 app_name='queue'
 
+board_patterns = [
+    path(
+        '',
+        views.InfoBoardMainView.as_view(),
+        name='index'
+    ),
+    path(
+        'queues/',
+        views.InfoBoardQueueListView.as_view(),
+        name='queues'
+    ),
+    path(
+        'queues/service/<uuid:pk>/',
+        views.InfoBoardQueuePerService.as_view(),
+        name='service_queues'
+    ),
+    path(
+        'booths/<uuid:pk>/details/',
+        views.InfoBoardBoothDetailView.as_view(),
+        name='booth_detail'
+    ),
+]
+
 manager_patterns = [
     path(
         '',
@@ -101,33 +124,12 @@ machine_patterns =[
     ),
 ]
 
-board_patterns = [
-    path(
-        '',
-        views.InfoBoardMainView.as_view(),
-        name='index'
-    ),
-    path(
-        'queues/',
-        views.InfoBoardQueueListView.as_view(),
-        name='queues'
-    ),
-    path(
-        'queues/service/<uuid:pk>/',
-        views.InfoBoardQueuePerService.as_view(),
-        name='service_queues'
-    ),
-    path(
-        'booths/<uuid:pk>/details/',
-        views.InfoBoardBoothDetailView.as_view(),
-        name='booth_detail'
-    ),
-]
+
 
 urlpatterns = [
-    path('manager/', include((manager_patterns,'queue'),'manager')),
-    path('machine/', include((machine_patterns,'queue'),'machine')),
-    path('infoboard/', include((board_patterns,'queue'),'infoboard')),
+    path('machine/', include((machine_patterns,'machine'))),
+    path('manager/', include((manager_patterns,'manager'))),
+    path('infoboard/', include((board_patterns,'infoboard'))),
     path(
         '',
         views.IndexView.as_view(),
