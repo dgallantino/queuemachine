@@ -55,9 +55,9 @@ msgid "Booking Queue"
 msgstr "Antrian Booking"
 
 #: queue_machine/settings.py:118
-msgid "English"
-msgstr "Inggris"
-
-#: queue_machine/settings.py:119
 msgid "Indonesian"
 msgstr "Bahasa Indonesia"
+
+#: queue_machine/settings.py:119
+msgid "English"
+msgstr "Inggris"

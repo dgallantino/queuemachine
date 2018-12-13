@@ -394,7 +394,7 @@ def playAudioFile(request):
 	if (queue and booth):
 		tts_string = "antrian "+queue.character+" "+str(queue.number)+" ke "+booth.spoken_name
 		mp3_fp = BytesIO()
-		tts = gTTS(tts_string, 'id')
+		tts = gTTS(tts_string, request.session.get(translation.LANGUAGE_SESSION_KEY, const.LANG.ID))
 		tts.write_to_fp(mp3_fp)
 		response = HttpResponse()
 		response.write(mp3_fp.getvalue())

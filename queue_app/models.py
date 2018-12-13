@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import date
 from django.contrib.auth.models import AbstractUser, Group
+from django.utils import translation as _
 import uuid
 
 #todos:
