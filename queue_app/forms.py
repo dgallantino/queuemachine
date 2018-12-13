@@ -10,6 +10,7 @@ from dal import autocomplete
 from datetime import datetime
 from random import randint
 from django.db.utils import IntegrityError
+from django.utils.translation import gettext_lazy as _
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -23,7 +24,7 @@ class CustomUserChangeForm(UserChangeForm):
 
 class CustomerCreationForm(CustomUserCreationForm):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(CustomerCreationForm,self).__init__(*args, **kwargs)
         self.fields['password1'].required = False
         self.fields['password2'].required = False
 
@@ -47,6 +48,14 @@ class CustomerCreationForm(CustomUserCreationForm):
             'phone',
             'organization',
         )
+
+        labels = {
+            'first_name' : _('first name'),
+            'last_name' : _('last name'),
+            'email' : _('email'),
+            'phone' : _('phone'),
+            'organization' :_('organization')
+        }
 
         widgets = {
             'organization':autocomplete.ModelSelect2Multiple(

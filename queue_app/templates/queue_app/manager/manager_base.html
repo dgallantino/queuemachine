@@ -23,7 +23,7 @@
 					class="nav-link"
 					href="{% url "queue:manager:add_booking" %}"
 				>
-         Tambah Booking
+         {% trans "Add Booking" %}
         </a>
       </li>
 			<li class="nav-item">
@@ -32,7 +32,7 @@
 					class="nav-link"
 					href="{% url "queue:manager:add_customer" %}"
 				>
-         Tambah Customer
+         {% trans "Add Customer" %}
         </a>
       </li>
       <li class="nav-item dropdown">
@@ -52,7 +52,7 @@
 					aria-labelledby="navbarDropdown"
 					url_data="{% url "queue:manager:booth_list" %}"
 				>
-				Pilih Organisasi Dahulu
+				{% trans "Choose an Organization first" %}
         </div>
       </li>
 			<li class="nav-item dropdown">
@@ -64,7 +64,8 @@
 					aria-haspopup="true"
 					aria-expanded="false"
 				>
-        {{ request.session.Organization.name|default:'Pilih Organisasi' }}
+				{% trans "Choose Organization" as choose_org_text %}
+        {{ request.session.Organization.name|default:choose_org_text }}
         </a>
         <div
 					id="organization-menu"
@@ -72,7 +73,7 @@
 					aria-labelledby="navbarDropdown"
 					url_data="{% url "queue:manager:organization_list" %}"
 				>
-					No Data
+					{% trans "No Data" %}
         </div>
       </li>
     </ul>
