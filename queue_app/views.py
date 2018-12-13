@@ -62,8 +62,9 @@ class BaseBoothListView(QueueAppLoginMixin,ListView):
 
 class SessionInitializer(View):
 	def get(self, request, *args, **kwargs):
-		translation.activate(const.LANG.ID)
-		request.session[translation.LANGUAGE_SESSION_KEY] = const.LANG.ID
+		if not request.session.get(translation.LANGUAGE_SESSION_KEY):
+			translation.activate(const.LANG.ID)
+			request.session[translation.LANGUAGE_SESSION_KEY] = const.LANG.ID
 		if not request.session.get(const.IDX.ORG):
 			if request.user.organization.all().count() > 1:
 				messages.add_message(
