@@ -408,6 +408,12 @@ def playAudioFile(request):
 class SetLanguageRedirect(QueueAppLoginMixin,RedirectView):
 	http_method_names = ['get',]
 	url = reverse_lazy('queue:manager:index')
+	avail_lang_codes = [const.LANG.ID, const.LANG.EN]
+	def get_redirect_url(self,*args,**kwargs):
+		req_lang = kwargs.get('lang_id')
+		if req_lang in self.avail_lang_codes:
+			self.request.session[translation.LANGUAGE_SESSION_KEY] = req_lang
+		return super(SetLanguageRedirect,self).get_redirect_url(*args,**kwargs)
 
 
 '''
