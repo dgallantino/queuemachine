@@ -94,11 +94,11 @@ msgstr "Waktu booking"
 
 #: queue_app/templates/queue_app/manager/manager.html:92
 msgid "Customer"
-msgstr ""
+msgstr "Pelanggan"
 
 #: queue_app/templates/queue_app/manager/manager.html:95
 msgid "Options"
-msgstr ""
+msgstr "Opsi"
 
 #: queue_app/templates/queue_app/manager/manager_base.html:26
 msgid "Add Booking"

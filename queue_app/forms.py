@@ -62,7 +62,7 @@ class CustomerCreationForm(CustomUserCreationForm):
                 url = 'queue:manager:organization_autocomplete',
                 attrs = {
                     'id':'organization',
-                    'data-placeholder': 'Organisasi ...',
+                    'data-placeholder': _('organization'),
                 },
             ),
         }

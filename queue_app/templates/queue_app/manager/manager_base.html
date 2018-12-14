@@ -44,7 +44,8 @@
 					aria-haspopup="true"
 					aria-expanded="false"
 				>
-        {{ request.session.CounterBooth.display_name|default:'Pilih Konter' }}
+				{% trans "Choose Counter" as choose_counter_text %}
+        {{ request.session.CounterBooth.display_name|default:choose_counter_text }}
         </a>
         <div
 					id="booth-menu"

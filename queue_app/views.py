@@ -315,6 +315,7 @@ class OrganizationToSession(
 		return self.request.user.organization.all()
 	def get_redirect_url(self, *args, **kwargs):
 		self.request.session[const.IDX.ORG] = self.get_object().to_flat_dict()
+		self.request.session[const.IDX.BOOTH] = None
 		return super().get_redirect_url(*args, **kwargs)
 
 class AddCustomerView(
