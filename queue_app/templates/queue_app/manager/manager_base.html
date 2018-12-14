@@ -17,6 +17,7 @@
   <a class="navbar-brand" href="{% url 'queue:manager:index' %}">Queue Manager</a>
   <div class="collapse navbar-collapse">
     <ul class="navbar-nav mr-auto">
+			<!-- add booking form link -->
       <li class="nav-item">
         <a
 					id="booking-form-link"
@@ -26,6 +27,7 @@
          {% trans "Add Booking" %}
         </a>
       </li>
+			<!-- add costomer form link -->
 			<li class="nav-item">
         <a
 					id="customer-form-link"
@@ -35,6 +37,7 @@
          {% trans "Add Customer" %}
         </a>
       </li>
+			<!-- Counter chooser dropdown -->
       <li class="nav-item dropdown">
         <a
 					class="nav-link dropdown-toggle"
@@ -56,6 +59,7 @@
 				{% trans "Choose an Organization first" %}
         </div>
       </li>
+			<!-- Organization dropdown -->
 			<li class="nav-item dropdown">
         <a
 					class="nav-link dropdown-toggle"
@@ -79,7 +83,7 @@
       </li>
     </ul>
     <span class="navbar-text">
-    {{ request.user.get_full_name|default:request.user.username }}
+    	{{ request.user.get_full_name|default:request.user.username }}
     </span>
   </div>
 </nav>
