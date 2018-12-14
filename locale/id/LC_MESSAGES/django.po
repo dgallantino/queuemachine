@@ -52,7 +52,7 @@ msgstr "Antrian"
 
 #: queue_app/templates/queue_app/index.html:14
 msgid "Admin"
-msgstr "Pengurus"
+msgstr "Administrasi"
 
 #: queue_app/templates/queue_app/index.html:20
 msgid "Machine"

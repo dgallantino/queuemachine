@@ -34,6 +34,7 @@ class Organization(models.Model):
 
 	class Meta:
 		verbose_name = _('organization')
+		verbose_name_plural = verbose_name
 
 
 class CounterBooth(models.Model):
@@ -88,6 +89,7 @@ class CounterBooth(models.Model):
 
 	class Meta:
 		verbose_name = _('counter booth')
+		verbose_name_plural = verbose_name
 
 class User(AbstractUser):
 	id=models.UUIDField(
@@ -211,6 +213,7 @@ class Service(models.Model):
 
 	class Meta:
 		verbose_name = _('service')
+		verbose_name_plural = verbose_name
 
 
 class QueueQueryset(models.QuerySet):
@@ -304,3 +307,4 @@ class Queue(models.Model):
 	class Meta:
 		ordering=['date_created']
 		verbose_name = _('queue')
+		verbose_name_plural = verbose_name
