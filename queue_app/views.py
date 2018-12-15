@@ -17,6 +17,7 @@ from django.http.response import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils import translation
+from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 
 from dal import autocomplete
@@ -63,15 +64,17 @@ class BaseBoothListView(QueueAppLoginMixin,ListView):
 
 class SessionInitializer(View):
 	def get(self, request, *args, **kwargs):
+		#set default language to indonesia
 		if not request.session.get(translation.LANGUAGE_SESSION_KEY):
 			translation.activate(const.LANG.ID)
 			request.session[translation.LANGUAGE_SESSION_KEY] = const.LANG.ID
+		#set organization if user only have one
 		if not request.session.get(const.IDX.ORG):
 			if request.user.organization.all().count() > 1:
 				messages.add_message(
 					request=request,
 					level=messages.WARNING,
-					message='Anda mempunyai beberapa organisasi, harap pilih salah satu melalui manager',
+					message= _('You have more than one organization, please choose one'),
 					fail_silently=True,
 				)
 			else:
@@ -338,7 +341,7 @@ class AddCustomerView(
 	template_name = 'queue_app/manager/add_customer_form.html'
 	model = models.User
 	form_class=forms.CustomerCreationForm
-	success_message = "Customer data creation was successfull"
+	success_message = _("Customer data creation was successfull")
 
 class AddBookingQueueView(
 		LoginRequiredMixin,
@@ -350,7 +353,7 @@ class AddBookingQueueView(
 	template_name = 'queue_app/manager/add_booking_form.html'
 	model = models.Queue
 	form_class=forms.AddBookingQueuemodelForms
-	success_message = "booking was created"
+	success_message = _("New booking was created")
 
 #SingleObjectMixin get Service object from url kwargs
 #ListView list all Queues from that service
