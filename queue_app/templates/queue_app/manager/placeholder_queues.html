@@ -1,3 +1,4 @@
+{% load i18n %}
 {% for queue in Queues %}
 <tr class="{{ queue.is_booking|yesno:"booking," }} {{ queue.is_called|yesno:"called," }}">
 	<td>
@@ -23,7 +24,7 @@
 			class="btn btn-bell progress-button faa-parent animated-hover {{ request.session.CounterBooth|yesno:',disabled,' }}"
 			role="button"
 			data-loading="" data-finished="" data-type="background-bar"
-			title="Panggil antrian" data-toggle="tooltip" data-placement="top"
+			title="{% trans "Call this queue" %}" data-toggle="tooltip" data-placement="top"
 			session_booth ="{{ request.session.CounterBooth.id }}"
 		>
 			<i class="fa fa-bell faa-ring"></i>

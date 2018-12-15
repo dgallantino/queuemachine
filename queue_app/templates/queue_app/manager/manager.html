@@ -67,9 +67,9 @@ $('body').on('click','a.btn-check',function(e){
       			<a
 							class="btn btn-primary btn-refresh"
 							href="#" role="button" style="margin-bottom:10px"
-							data-toggle="tooltip" data-placement="bottom" title="Muat ulang tabel"
+							data-toggle="tooltip" data-placement="bottom" title="{% trans "Refresh queue table" %}"
 						>
-							Refresh
+							{% trans "Refresh" %}
 						</a>
   				<table id="tabTable_{{ service.id }}" class="table table-sm" data-toggle="#tabTable_{{ service.id }}" >
 					<thead>
