@@ -319,6 +319,15 @@ class OrganizationToSession(
 		self.request.session[const.IDX.BOOTH] = None
 		return super().get_redirect_url(*args, **kwargs)
 
+class SetLanguageRedirect(QueueAppLoginMixin,RedirectView):
+	http_method_names = ['get',]
+	url = reverse_lazy('queue:manager:index')
+	def get_redirect_url(self,*args,**kwargs):
+		req_lang = kwargs.get('lang_id')
+		if dict(settings.LANGUAGES).get(req_lang):
+			self.request.session[translation.LANGUAGE_SESSION_KEY] = req_lang
+		return super(SetLanguageRedirect,self).get_redirect_url(*args,**kwargs)
+
 class AddCustomerView(
 		LoginRequiredMixin,
 		SuccessMessageMixin,
@@ -405,16 +414,6 @@ def playAudioFile(request):
 		mp3_fp.close()
 		return response
 	return HttpResponseBadRequest
-
-class SetLanguageRedirect(QueueAppLoginMixin,RedirectView):
-	http_method_names = ['get',]
-	url = reverse_lazy('queue:manager:index')
-	def get_redirect_url(self,*args,**kwargs):
-		req_lang = kwargs.get('lang_id')
-		if dict(settings.LANGUAGES).get(req_lang):
-			self.request.session[translation.LANGUAGE_SESSION_KEY] = req_lang
-		return super(SetLanguageRedirect,self).get_redirect_url(*args,**kwargs)
-
 
 '''
 Queue info boards
