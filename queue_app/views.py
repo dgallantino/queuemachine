@@ -74,7 +74,7 @@ class SessionInitializer(View):
 				messages.add_message(
 					request=request,
 					level=messages.WARNING,
-					message= _('You have more than one organization, please choose one'),
+					message= _('you have more than one organization, please choose one'),
 					fail_silently=True,
 				)
 			else:
@@ -341,7 +341,7 @@ class AddCustomerView(
 	template_name = 'queue_app/manager/add_customer_form.html'
 	model = models.User
 	form_class=forms.CustomerCreationForm
-	success_message = _("Customer data creation was successfull")
+	success_message = _("customer data creation was successfull")
 
 class AddBookingQueueView(
 		LoginRequiredMixin,
@@ -353,7 +353,7 @@ class AddBookingQueueView(
 	template_name = 'queue_app/manager/add_booking_form.html'
 	model = models.Queue
 	form_class=forms.AddBookingQueuemodelForms
-	success_message = _("New booking was created")
+	success_message = _("new booking was created")
 
 #SingleObjectMixin get Service object from url kwargs
 #ListView list all Queues from that service
