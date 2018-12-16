@@ -4,13 +4,7 @@ from datetime import date
 from django.contrib.auth.models import AbstractUser, Group
 import uuid
 
-#todos:
-#add customer profile
 
-
-
-# Organization will be deprocated
-# Using Group instead
 class Organization(models.Model):
 	id=models.UUIDField(
 		primary_key=True,
@@ -21,7 +15,10 @@ class Organization(models.Model):
 
 	date_modified=models.DateTimeField(auto_now=True)
 
-	name=models.CharField(max_length = 20)
+	name=models.CharField(
+		max_length = 20,
+		verbose_name = _('name'),
+	)
 
 	def __str__(self):
 		return self.name
@@ -51,16 +48,24 @@ class CounterBooth(models.Model):
 		related_name='booths',
 		on_delete=models.CASCADE,
 		null=True,
+		verbose_name = _('groups'),
 	)
 
-	display_name=models.CharField(max_length = 20)
+	display_name=models.CharField(
+		max_length = 20,
+		verbose_name = _('display name'),
+	)
 
-	spoken_name=models.CharField(max_length = 30)
+	spoken_name=models.CharField(
+		max_length = 30,
+		verbose_name = _('spoken name'),
+		)
 
 	desc=models.CharField(
 		max_length = 200,
 		null = True,
 		blank =True,
+		verbose_name = _('description'),
 	)
 
 	date_created=models.DateTimeField(auto_now_add=True)
@@ -73,6 +78,7 @@ class CounterBooth(models.Model):
 		related_name='counter_booth',
 		null=False,
 		blank=False,
+		verbose_name = _('organization'),
 	)
 
 	def __str__(self):
@@ -106,12 +112,14 @@ class User(AbstractUser):
 		Organization,
 		related_name='users',
 		blank = False,
+		verbose_name = _('organization')
 	)
 
 	phone=models.CharField(
 		null=True,
 		blank=True,
 		max_length = 12,
+		verbose_name =_('phone number')
 	)
 
 	def __str__(self):
@@ -190,6 +198,7 @@ class Service(models.Model):
 		null=False,
 		# null=True,
 		blank=False,
+		verbose_name = _('organization'),
 	)
 
 	group=models.ForeignKey(
@@ -198,20 +207,26 @@ class Service(models.Model):
 		null=True,
 		blank=True,
 		related_name='services',
+		verbose_name =_('group'),
 	)
 
-	name=models.CharField(max_length = 30)
+	name=models.CharField(
+		max_length = 30,
+		verbose_name = _('name'),
+	)
 
 	desc=models.CharField(
 		max_length = 200,
 		null=True,
 		blank=True,
+		verbose_name = _('description'),
 	)
 
 	queue_char=models.CharField(
 		null=True,
 		blank=True,
 		max_length=1,
+		verbose_name = _('queue character'),
 	)
 
 	objects=ServiceQueryset.as_manager()
@@ -263,18 +278,25 @@ class Queue(models.Model):
 	service=models.ForeignKey(
 		Service,
 		on_delete=models.CASCADE,
-		related_name='queues'
+		related_name='queues',
+		null = False,
+		blank = False,
+		verbose_name = _('service'),
 	)#
 
 	character=models.CharField(
 		null=True,
 		blank=True,
 		max_length=1,
+		verbose_name = _('character'),
+
 	)
 
+	#calculated by forms
 	number=models.IntegerField(
 		null=True,
-		blank=True
+		blank=True,
+		verbose_name = _('number'),
 	)
 
 	customer=models.ForeignKey(
@@ -282,7 +304,9 @@ class Queue(models.Model):
 		on_delete=models.CASCADE,
 		null=True,
 		blank=True,
-		related_name='queues'
+		related_name='queues',
+		verbose_name = _('customer'),
+
 	)#
 
 	counter_booth=models.ForeignKey(
@@ -290,7 +314,9 @@ class Queue(models.Model):
 		on_delete=models.SET_NULL,
 		null=True,
 		blank=True,
-		related_name='queues'
+		related_name='queues',
+		verbose_name = _('counter'),
+
 	)#
 
 	is_booking=models.BooleanField(default=False)#
