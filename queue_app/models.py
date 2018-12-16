@@ -263,7 +263,9 @@ class Queue(models.Model):
 	service=models.ForeignKey(
 		Service,
 		on_delete=models.CASCADE,
-		related_name='queues'
+		related_name='queues',
+		null = False,
+		blank = False,
 	)#
 
 	character=models.CharField(
@@ -272,6 +274,7 @@ class Queue(models.Model):
 		max_length=1,
 	)
 
+	#calculated by forms
 	number=models.IntegerField(
 		null=True,
 		blank=True
