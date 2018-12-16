@@ -1,0 +1,125 @@
+#: queue_app/admin.py:27
+msgid "Editable"
+msgstr "Dapat diedit"
+
+#: queue_app/admin.py:38
+msgid "Read onlies"
+msgstr "Hanya baca"
+
+#: queue_app/admin.py:67
+msgid "Personal info"
+msgstr "Info pribadi"
+
+#: queue_app/admin.py:69
+msgid "Permissions"
+msgstr "Hak akses"
+
+#: queue_app/admin.py:71
+msgid "Important dates"
+msgstr "Tanggal penting"
+
+#: queue_app/forms.py:53
+msgid "first name"
+msgstr "nama depan"
+
+#: queue_app/forms.py:54
+msgid "last name"
+msgstr "nama belakang"
+
+#: queue_app/forms.py:55
+msgid "email"
+msgstr "email"
+
+#: queue_app/forms.py:56
+msgid "phone"
+msgstr "telephone"
+
+#: queue_app/forms.py:57 queue_app/models.py:36
+msgid "organization"
+msgstr "organisasi"
+
+#: queue_app/models.py:90
+msgid "counter booth"
+msgstr "konter"
+
+#: queue_app/models.py:213
+msgid "service"
+msgstr "Layanan"
+
+#: queue_app/models.py:306
+msgid "queue"
+msgstr "Antrian"
+
+#: queue_app/templates/queue_app/index.html:14
+msgid "Admin"
+msgstr "Administrasi"
+
+#: queue_app/templates/queue_app/index.html:20
+msgid "Machine"
+msgstr "Mesin"
+
+#: queue_app/templates/queue_app/index.html:23
+msgid "Manager"
+msgstr "Manajer"
+
+#: queue_app/templates/queue_app/index.html:26
+msgid "Information Board"
+msgstr "Papan Informasi"
+
+#: queue_app/templates/queue_app/info_board/info_board.html:33
+#: queue_app/templates/queue_app/manager/manager.html:86
+msgid "Queue"
+msgstr "Antrian"
+
+#: queue_app/templates/queue_app/info_board/info_board.html:37
+#: queue_app/templates/queue_app/manager/manager_base.html:76
+msgid "No Data"
+msgstr "Tidak ada data"
+
+#: queue_app/templates/queue_app/info_board/info_board.html:54
+msgid "Ticket"
+msgstr "Tiket"
+
+#: queue_app/templates/queue_app/info_board/info_board.html:57
+msgid "Service"
+msgstr "Layanan"
+
+#: queue_app/templates/queue_app/machine/machine.html:52
+msgid "Booking Queue"
+msgstr "Antrian Booking"
+
+#: queue_app/templates/queue_app/manager/manager.html:89
+msgid "Booking time"
+msgstr "Waktu booking"
+
+#: queue_app/templates/queue_app/manager/manager.html:92
+msgid "Customer"
+msgstr "Pelanggan"
+
+#: queue_app/templates/queue_app/manager/manager.html:95
+msgid "Options"
+msgstr "Opsi"
+
+#: queue_app/templates/queue_app/manager/manager_base.html:26
+msgid "Add Booking"
+msgstr "Tambah Booking"
+
+#: queue_app/templates/queue_app/manager/manager_base.html:35
+msgid "Add Customer"
+msgstr "Tambah Pelanggan"
+
+#: queue_app/templates/queue_app/manager/manager_base.html:55
+msgid "Choose an Organization first"
+msgstr "Pilih Organisasi dahulu"
+
+#: queue_app/templates/queue_app/manager/manager_base.html:67
+msgid "Choose Organization"
+msgstr "Pilih Organisasi"
+
+#: queue_machine/settings.py:118
+msgid "Indonesian"
+msgstr "Bahasa Indonesia"
+
+#: queue_machine/settings.py:119
+msgid "English"
+msgstr "Inggris"

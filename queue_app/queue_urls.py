@@ -3,6 +3,8 @@ from queue_app import views
 from django.conf import settings
 from django.conf.urls.static import static
 
+app_name='queue'
+
 
 manager_patterns = [
     path(
@@ -70,6 +72,11 @@ manager_patterns = [
         views.playAudioFile,
         name='audio'
     ),
+    path(
+        'lang/<str:lang_id>/',
+        views.SetLanguageRedirect.as_view(),
+        name='language'
+    ),
 ]
 
 machine_patterns =[
@@ -97,30 +104,30 @@ machine_patterns =[
 
 board_patterns = [
     path(
-        'infoboard/',
+        '',
         views.InfoBoardMainView.as_view(),
         name='index'
     ),
     path(
-        'infoboard/queues/',
+        'queues/',
         views.InfoBoardQueueListView.as_view(),
         name='queues'
     ),
     path(
-        'infoboard/queues/service/<uuid:pk>/',
+        'queues/service/<uuid:pk>/',
         views.InfoBoardQueuePerService.as_view(),
         name='service_queues'
     ),
     path(
-        'infoboard/booths/<uuid:pk>/details/',
+        'booths/<uuid:pk>/details/',
         views.InfoBoardBoothDetailView.as_view(),
         name='booth_detail'
     ),
 ]
 
 urlpatterns = [
-    path('manager/', include((manager_patterns,'manager'))),
     path('machine/', include((machine_patterns,'machine'))),
+    path('manager/', include((manager_patterns,'manager'))),
     path('infoboard/', include((board_patterns,'infoboard'))),
     path(
         '',

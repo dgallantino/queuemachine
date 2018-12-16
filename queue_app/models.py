@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 from datetime import date
 from django.contrib.auth.models import AbstractUser, Group
 import uuid
@@ -30,6 +31,10 @@ class Organization(models.Model):
 			'id':str(self.id),
 			'name':self.name,
 		}
+
+	class Meta:
+		verbose_name = _('organization')
+		verbose_name_plural = verbose_name
 
 
 class CounterBooth(models.Model):
@@ -81,6 +86,10 @@ class CounterBooth(models.Model):
 
 	def latest_queue(self):
 		return self.queues.order_by('date_modified').last()
+
+	class Meta:
+		verbose_name = _('counter booth')
+		verbose_name_plural = verbose_name
 
 class User(AbstractUser):
 	id=models.UUIDField(
@@ -202,6 +211,10 @@ class Service(models.Model):
 	def __str__(self):
 		return self.name
 
+	class Meta:
+		verbose_name = _('service')
+		verbose_name_plural = verbose_name
+
 
 class QueueQueryset(models.QuerySet):
 	def today_filter(self):
@@ -293,3 +306,5 @@ class Queue(models.Model):
 
 	class Meta:
 		ordering=['date_created']
+		verbose_name = _('queue')
+		verbose_name_plural = verbose_name

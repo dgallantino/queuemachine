@@ -1,5 +1,6 @@
 {% extends 'queue_app/base.html' %}
 {% load static %}
+{% load i18n %}
 {% block title %}
 Queue Manager App
 {% endblock %}
@@ -10,19 +11,19 @@ Queue Manager App
 <div class="fixed-top ">
 	<a id="admin-link" class="float-right" href="/admin/">
 		<i class="fa fa-user-circle-o"></i>
-		Admin
+		{% trans "Admin" %}
 	</a>
 </div>
 <div class="container-fluid vertical-center">
 	<div class="container-fluid">
 		<div class="container-fluid  btn-container text-center">
-			<a href="{% url 'queue:machine:index' %}" >Machine</a>
+			<a href="{% url 'queue:machine:index' %}" >{% trans "Machine" %}</a>
 		</div>
 		<div class="container-fluid btn btn-container text-center">
-			<a  href="{% url 'queue:manager:index' %}">Manager</a>
+			<a  href="{% url 'queue:manager:index' %}">{% trans "Manager" %}</a>
 		</div>
 		<div class="container-fluid btn btn-container text-center">
-			<a  href="{% url 'queue:infoboard:index' %}">Info Board</a>
+			<a  href="{% url 'queue:infoboard:index' %}">{% trans "Information Board" %}</a>
 		</div>
 	</div>
 </div>

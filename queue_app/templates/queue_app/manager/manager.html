@@ -1,5 +1,6 @@
 {% extends "queue_app/manager/manager_base.html" %}
 {% load static %}
+{% load i18n %}
 {% block title %}Manager{% endblock %}
 {% block stylesheet-content %}
 	<link href="{% static 'queue_app/core/css/manager.css'%}" rel="stylesheet" type="text/css">
@@ -34,7 +35,7 @@ $('.btn.btn-refresh').click(function(event){
 
 //calling queue update queue data in database
 //so a POST request to the server is required to change that data
-//if the request is successfull then the secon click will play the audio
+//if the request is successfull then the second click will play the audio
 $('body').on('click','a.btn-bell',handle_call);
 
 
@@ -66,9 +67,9 @@ $('body').on('click','a.btn-check',function(e){
       			<a
 							class="btn btn-primary btn-refresh"
 							href="#" role="button" style="margin-bottom:10px"
-							data-toggle="tooltip" data-placement="bottom" title="Muat ulang tabel"
+							data-toggle="tooltip" data-placement="bottom" title="{% trans "Refresh queue table" %}"
 						>
-							Refresh
+							{% trans "Refresh" %}
 						</a>
   				<table id="tabTable_{{ service.id }}" class="table table-sm" data-toggle="#tabTable_{{ service.id }}" >
 					<thead>
@@ -77,21 +78,21 @@ $('body').on('click','a.btn-check',function(e){
   								#
   							</th>
   							<th class="text-center" colspan="4">
-  								Detil Antrian
+  								{% trans "Booking Detail" %}
   							</th>
   						</tr>
   						<tr>
   							<th>
-  								Antrian
+  								{% trans "Queue" %}
   							</th>
   							<th>
-  								Waktu Booking
+  								{% trans "Booking time" %}
   							</th>
   							<th>
-  								Pelanggan
+  								{% trans "Customer" %}
   							</th>
   							<th>
-  								Opsi
+  								{% trans "Options" %}
   							</th>
   						</tr>
 					</thead>

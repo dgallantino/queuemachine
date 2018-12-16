@@ -1,5 +1,6 @@
 {% extends "queue_app/base.html" %}
 {% load static %}
+{% load i18n %}
 {% block title %}Machine{% endblock %}
 {% block stylesheet %}
 	<link href="{% static 'queue_app/core/css/machine.css'%}" rel="stylesheet" type="text/css">
@@ -48,7 +49,7 @@ setInterval(function(){
     			logo CAHAYA
     		</div>
     		<div class="list-header text-right" id="list-header">
-    			Booking List
+    			{% trans "Booking Queue" %}
     			<hr class="white">
     		</div>
     		<div id="booking-list-body" class="list-body" queues_url="{% url 'queue:machine:booking_list' %}">

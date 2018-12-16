@@ -1,5 +1,6 @@
 {% extends 'queue_app/base.html' %}
 {% load static %}
+{% load i18n %}
 {% block title %}Manager Home{% endblock %}
 
 {% block stylesheet %}
@@ -16,24 +17,27 @@
   <a class="navbar-brand" href="{% url 'queue:manager:index' %}">Queue Manager</a>
   <div class="collapse navbar-collapse">
     <ul class="navbar-nav mr-auto">
+			<!-- add booking form link -->
       <li class="nav-item">
         <a
 					id="booking-form-link"
 					class="nav-link"
 					href="{% url "queue:manager:add_booking" %}"
 				>
-         Tambah Booking
+         {% trans "Add Booking" %}
         </a>
       </li>
+			<!-- add costomer form link -->
 			<li class="nav-item">
         <a
 					id="customer-form-link"
 					class="nav-link"
 					href="{% url "queue:manager:add_customer" %}"
 				>
-         Tambah Customer
+         {% trans "Add Customer" %}
         </a>
       </li>
+			<!-- Counter chooser dropdown -->
       <li class="nav-item dropdown">
         <a
 					class="nav-link dropdown-toggle"
@@ -43,7 +47,8 @@
 					aria-haspopup="true"
 					aria-expanded="false"
 				>
-        {{ request.session.CounterBooth.display_name|default:'Pilih Konter' }}
+				{% trans "Choose Counter" as choose_counter_text %}
+        {{ request.session.CounterBooth.display_name|default:choose_counter_text }}
         </a>
         <div
 					id="booth-menu"
@@ -51,9 +56,10 @@
 					aria-labelledby="navbarDropdown"
 					url_data="{% url "queue:manager:booth_list" %}"
 				>
-				Pilih Organisasi Dahulu
+				{% trans "Choose an Organization first" %}
         </div>
       </li>
+			<!-- Organization dropdown -->
 			<li class="nav-item dropdown">
         <a
 					class="nav-link dropdown-toggle"
@@ -63,7 +69,8 @@
 					aria-haspopup="true"
 					aria-expanded="false"
 				>
-        {{ request.session.Organization.name|default:'Pilih Organisasi' }}
+				{% trans "Choose Organization" as choose_org_text %}
+        {{ request.session.Organization.name|default:choose_org_text }}
         </a>
         <div
 					id="organization-menu"
@@ -71,12 +78,12 @@
 					aria-labelledby="navbarDropdown"
 					url_data="{% url "queue:manager:organization_list" %}"
 				>
-					No Data
+					{% trans "No Data" %}
         </div>
       </li>
     </ul>
     <span class="navbar-text">
-    {{ request.user.get_full_name|default:request.user.username }}
+    	{{ request.user.get_full_name|default:request.user.username }}
     </span>
   </div>
 </nav>

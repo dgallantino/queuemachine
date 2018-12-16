@@ -24,7 +24,7 @@ class QueueAdmin(admin.ModelAdmin):
                     'print_datetime',
                 )
     fieldsets = (
-        ('Front end fields', {
+        (_('Editable'), {
             'fields': (
                 'service',
                 'customer',
@@ -35,7 +35,7 @@ class QueueAdmin(admin.ModelAdmin):
                 'is_printed',
             )
         }),
-        ('Read only fields',{
+        (_('Read onlies'),{
             'fields':(
                 'date_created',
                 'date_modified',
@@ -75,7 +75,7 @@ class CustomUserAdmin(UserAdmin):
         query_set.update(is_staff = True)
 
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = (_('name'), _('organization'),)
+    list_display = ('name', 'organization',)
     list_filter = ('organization',)
 
 admin.site.register(models.User, CustomUserAdmin)
