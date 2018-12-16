@@ -4,13 +4,7 @@ from datetime import date
 from django.contrib.auth.models import AbstractUser, Group
 import uuid
 
-#todos:
-#add customer profile
 
-
-
-# Organization will be deprocated
-# Using Group instead
 class Organization(models.Model):
 	id=models.UUIDField(
 		primary_key=True,
@@ -21,7 +15,10 @@ class Organization(models.Model):
 
 	date_modified=models.DateTimeField(auto_now=True)
 
-	name=models.CharField(max_length = 20)
+	name=models.CharField(
+		max_length = 20,
+		verbose_name = _('Name'),
+	)
 
 	def __str__(self):
 		return self.name
@@ -51,16 +48,24 @@ class CounterBooth(models.Model):
 		related_name='booths',
 		on_delete=models.CASCADE,
 		null=True,
+		verbose_name = _('Groups'),
 	)
 
-	display_name=models.CharField(max_length = 20)
+	display_name=models.CharField(
+		max_length = 20,
+		verbose_name = _('Display name'),
+	)
 
-	spoken_name=models.CharField(max_length = 30)
+	spoken_name=models.CharField(
+		max_length = 30,
+		verbose_name = _('Spoken name'),
+		)
 
 	desc=models.CharField(
 		max_length = 200,
 		null = True,
 		blank =True,
+		verbose_name = _('Description'),
 	)
 
 	date_created=models.DateTimeField(auto_now_add=True)
@@ -73,6 +78,7 @@ class CounterBooth(models.Model):
 		related_name='counter_booth',
 		null=False,
 		blank=False,
+		verbose_name = _('Organization'),
 	)
 
 	def __str__(self):
