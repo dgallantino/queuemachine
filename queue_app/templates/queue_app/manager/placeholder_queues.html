@@ -24,7 +24,8 @@
 			class="btn btn-bell progress-button faa-parent animated-hover {{ request.session.CounterBooth|yesno:',disabled,' }}"
 			role="button"
 			data-loading="" data-finished="" data-type="background-bar"
-			title="{% trans "Call this queue" %}" data-toggle="tooltip" data-placement="top"
+			title="{% trans "call this queue" as tooltip_tx %}{{tooltip_tx|capfirst}}"
+			data-toggle="tooltip" data-placement="top"
 			session_booth ="{{ request.session.CounterBooth.id }}"
 		>
 			<i class="fa fa-bell faa-ring"></i>
