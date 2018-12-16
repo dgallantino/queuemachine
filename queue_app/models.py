@@ -187,7 +187,7 @@ class Service(models.Model):
 		Organization,
 		on_delete=models.CASCADE,
 		related_name='services',
-		null=Fales,
+		null=False,
 		# null=True,
 		blank=False,
 	)
