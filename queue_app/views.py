@@ -277,7 +277,7 @@ class OrganizationLookupView(
 		)
 
 		if self.q:
-			queryset = queryset.filter(name__starwiwth=self.q)
+			queryset = queryset.filter(name__startswith=self.q)
 
 		return queryset
 

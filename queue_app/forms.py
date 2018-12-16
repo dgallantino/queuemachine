@@ -29,7 +29,7 @@ class CustomerCreationForm(CustomUserCreationForm):
         self.fields['password2'].required = False
 
     def save(self, commit=True):
-        new_customer = super().save(commit=False)
+        new_customer = super(CustomerCreationForm,self).save(commit=False)
         new_customer.username = self.cleaned_data.get('first_name')+ self.cleaned_data.get('last_name')
         new_customer.set_unusable_password()
         if commit:
@@ -38,6 +38,7 @@ class CustomerCreationForm(CustomUserCreationForm):
             except IntegrityError:
                 new_customer.username = new_customer.username+str(randint(0,100))
                 new_customer.save()
+            self.save_m2m()
         return new_customer
 
     class Meta(CustomUserCreationForm.Meta):

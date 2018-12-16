@@ -57,7 +57,11 @@ class CounterBooth(models.Model):
 
 	spoken_name=models.CharField(max_length = 30)
 
-	desc=models.CharField(max_length = 200)
+	desc=models.CharField(
+		max_length = 200,
+		null = True,
+		blank =True,
+	)
 
 	date_created=models.DateTimeField(auto_now_add=True)
 
@@ -67,7 +71,7 @@ class CounterBooth(models.Model):
 		Organization,
 		on_delete=models.CASCADE,
 		related_name='counter_booth',
-		null=True,
+		null=False,
 		blank=False,
 	)
 
@@ -101,7 +105,7 @@ class User(AbstractUser):
 	organization=models.ManyToManyField(
 		Organization,
 		related_name='users',
-		blank=True,
+		blank = False,
 	)
 
 	phone=models.CharField(
@@ -183,8 +187,8 @@ class Service(models.Model):
 		Organization,
 		on_delete=models.CASCADE,
 		related_name='services',
-		#null=Fales,
-		null=True,
+		null=False,
+		# null=True,
 		blank=False,
 	)
 
@@ -198,7 +202,11 @@ class Service(models.Model):
 
 	name=models.CharField(max_length = 30)
 
-	desc=models.CharField(max_length = 200)
+	desc=models.CharField(
+		max_length = 200,
+		null=True,
+		blank=True,
+	)
 
 	queue_char=models.CharField(
 		null=True,
