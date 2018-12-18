@@ -1,206 +1,197 @@
 #: queue_app/admin.py:27
-msgid "Editable"
-msgstr ""
+msgid "editable"
+msgstr "dapat di ubah"
 
 #: queue_app/admin.py:38
-msgid "Read onlies"
-msgstr ""
+msgid "read onlies"
+msgstr "hanya baca"
 
 #: queue_app/admin.py:67
-msgid "Personal info"
-msgstr ""
+msgid "personal info"
+msgstr "info pribadi"
 
 #: queue_app/admin.py:69
-msgid "Permissions"
-msgstr ""
+msgid "permissions"
+msgstr "hak akses"
 
 #: queue_app/admin.py:71
-msgid "Important dates"
-msgstr ""
+msgid "important dates"
+msgstr "tanggal penting"
 
 #: queue_app/forms.py:54
 msgid "first name"
-msgstr ""
+msgstr "nama depan"
 
 #: queue_app/forms.py:55
 msgid "last name"
-msgstr ""
+msgstr "nama belakang"
 
 #: queue_app/forms.py:56
 msgid "email"
-msgstr ""
+msgstr "email"
 
 #: queue_app/forms.py:57
 msgid "phone"
-msgstr ""
+msgstr "telepon"
 
 #: queue_app/forms.py:58 queue_app/forms.py:66 queue_app/models.py:33
 #: queue_app/models.py:81 queue_app/models.py:115 queue_app/models.py:201
 msgid "organization"
-msgstr ""
+msgstr "organisasi"
 
 #: queue_app/models.py:20 queue_app/models.py:215
 msgid "name"
-msgstr ""
+msgstr "nama"
 
 #: queue_app/models.py:51
 msgid "groups"
-msgstr ""
+msgstr "grup"
 
 #: queue_app/models.py:56
 msgid "display name"
-msgstr ""
+msgstr "nama tulisan"
 
 #: queue_app/models.py:61
 msgid "spoken name"
-msgstr ""
+msgstr "nama lisan"
 
 #: queue_app/models.py:68 queue_app/models.py:222
 msgid "description"
-msgstr ""
+msgstr "deskripsi"
 
 #: queue_app/models.py:101
 msgid "counter booth"
-msgstr ""
+msgstr "konter"
 
 #: queue_app/models.py:122
 msgid "phone number"
-msgstr ""
+msgstr "nomor telepon"
 
 #: queue_app/models.py:210
 msgid "group"
-msgstr ""
+msgstr "grup"
 
 #: queue_app/models.py:229
 msgid "queue character"
-msgstr ""
+msgstr "huruf antrian"
 
 #: queue_app/models.py:238 queue_app/models.py:284
+#: queue_app/templates/queue_app/info_board/info_board.html:58
 msgid "service"
-msgstr ""
+msgstr "layanan"
 
 #: queue_app/models.py:291
 msgid "character"
-msgstr ""
+msgstr "huruf"
 
 #: queue_app/models.py:299
 msgid "number"
-msgstr ""
+msgstr "nomor"
 
 #: queue_app/models.py:308
+#: queue_app/templates/queue_app/manager/manager.html:102
 msgid "customer"
-msgstr ""
+msgstr "pelanggan"
 
 #: queue_app/models.py:318
 msgid "counter"
-msgstr ""
+msgstr "konter"
 
 #: queue_app/models.py:343
+#: queue_app/templates/queue_app/info_board/info_board.html:33
+#: queue_app/templates/queue_app/manager/manager.html:94
 msgid "queue"
-msgstr ""
+msgstr "antrian"
 
 #: queue_app/templates/queue_app/index.html:14
-msgid "Admin"
-msgstr ""
+msgid "admin"
+msgstr "administrasi"
 
 #: queue_app/templates/queue_app/index.html:20
-msgid "Machine"
-msgstr ""
+msgid "machine"
+msgstr "mesin"
 
 #: queue_app/templates/queue_app/index.html:23
-msgid "Manager"
-msgstr ""
+msgid "manager"
+msgstr "manajer"
 
 #: queue_app/templates/queue_app/index.html:26
-msgid "Information Board"
-msgstr ""
-
-#: queue_app/templates/queue_app/info_board/info_board.html:33
-#: queue_app/templates/queue_app/manager/manager.html:86
-msgid "Queue"
-msgstr ""
+msgid "information board"
+msgstr "papan informasi"
 
 #: queue_app/templates/queue_app/info_board/info_board.html:37
-#: queue_app/templates/queue_app/manager/manager_base.html:81
-msgid "No Data"
-msgstr ""
+#: queue_app/templates/queue_app/manager/manager_base.html:84
+msgid "no data"
+msgstr "tidak ada data"
 
 #: queue_app/templates/queue_app/info_board/info_board.html:54
-msgid "Ticket"
-msgstr ""
-
-#: queue_app/templates/queue_app/info_board/info_board.html:57
-msgid "Service"
-msgstr ""
+msgid "ticket"
+msgstr "tiket"
 
 #: queue_app/templates/queue_app/machine/machine.html:52
-msgid "Booking Queue"
-msgstr ""
+msgid "booking queue"
+msgstr "antrian booking"
 
-#: queue_app/templates/queue_app/manager/manager.html:70
-msgid "Refresh queue table"
-msgstr ""
+#: queue_app/templates/queue_app/manager/manager.html:77
+msgid "refresh queue table"
+msgstr "perbaharui tabel antrian"
 
-#: queue_app/templates/queue_app/manager/manager.html:72
-msgid "Refresh"
-msgstr ""
+#: queue_app/templates/queue_app/manager/manager.html:79
+msgid "refresh"
+msgstr "perbaharui"
 
-#: queue_app/templates/queue_app/manager/manager.html:81
-msgid "Booking Detail"
-msgstr ""
+#: queue_app/templates/queue_app/manager/manager.html:88
+msgid "booking detail"
+msgstr "detil booking"
 
-#: queue_app/templates/queue_app/manager/manager.html:89
-msgid "Booking time"
-msgstr ""
+#: queue_app/templates/queue_app/manager/manager.html:98
+msgid "booking time"
+msgstr "waktu booking"
 
-#: queue_app/templates/queue_app/manager/manager.html:92
-msgid "Customer"
-msgstr ""
-
-#: queue_app/templates/queue_app/manager/manager.html:95
-msgid "Options"
-msgstr ""
+#: queue_app/templates/queue_app/manager/manager.html:106
+msgid "options"
+msgstr "opsi"
 
 #: queue_app/templates/queue_app/manager/manager_base.html:27
-msgid "Add Booking"
-msgstr ""
+msgid "add booking"
+msgstr "tambah booking"
 
-#: queue_app/templates/queue_app/manager/manager_base.html:37
-msgid "Add Customer"
-msgstr ""
+#: queue_app/templates/queue_app/manager/manager_base.html:38
+msgid "add customer"
+msgstr "tambah pelanggan"
 
-#: queue_app/templates/queue_app/manager/manager_base.html:50
-msgid "Choose Counter"
-msgstr ""
+#: queue_app/templates/queue_app/manager/manager_base.html:52
+msgid "choose counter"
+msgstr "pilih konter"
 
-#: queue_app/templates/queue_app/manager/manager_base.html:59
-msgid "Choose an Organization first"
-msgstr ""
+#: queue_app/templates/queue_app/manager/manager_base.html:61
+msgid "choose an organization first"
+msgstr "pilih salah satu organisasi terlebih dahulu"
 
-#: queue_app/templates/queue_app/manager/manager_base.html:72
-msgid "Choose Organization"
-msgstr ""
+#: queue_app/templates/queue_app/manager/manager_base.html:75
+msgid "choose organization"
+msgstr "pilih organisasi"
 
 #: queue_app/templates/queue_app/manager/placeholder_queues.html:27
-msgid "Call this queue"
-msgstr ""
+msgid "call this queue"
+msgstr "panggil antrian ini"
 
 #: queue_app/views.py:77
-msgid "You have more than one organization, please choose one"
-msgstr ""
+msgid "you have more than one organization, please choose one"
+msgstr "anda memiliki lebih dari satu organisasi, mohon pilih salah satu"
 
 #: queue_app/views.py:344
-msgid "Customer data creation was successfull"
-msgstr ""
+msgid "customer data creation was successfull"
+msgstr "pembuatan pelanggan telah berhasil"
 
 #: queue_app/views.py:356
-msgid "New booking was created"
-msgstr ""
+msgid "new booking was created"
+msgstr "pembuatan booking baru berhasil"
 
 #: queue_machine/settings.py:118
 msgid "Indonesian"
-msgstr ""
+msgstr "Bahasa Indonesia"
 
 #: queue_machine/settings.py:119
 msgid "English"
-msgstr ""
+msgstr "Inggris"
