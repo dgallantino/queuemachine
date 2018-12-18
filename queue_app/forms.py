@@ -85,7 +85,7 @@ class CustomerCreationForm(CustomUserCreationForm):
 class QueueModelBaseForms(forms.ModelForm):
 
     booking_time=forms.TimeField(
-        label="Booking Time",
+        label=_("booking time"),
         initial= datetime.now(),
         required=False,
         widget=forms.TimeInput(
@@ -98,7 +98,7 @@ class QueueModelBaseForms(forms.ModelForm):
     )
 
     booking_date=forms.DateField(
-        label="Booking Date",
+        label=_("booking date"),
         initial= datetime.now(),
         required=False,
         widget=forms.DateInput(
@@ -120,7 +120,7 @@ class QueueModelBaseForms(forms.ModelForm):
                 url = 'queue:manager:service_autocomplete',
                 attrs={
                     'id':'service',
-                    'data-placeholder': 'Layanan ...',
+                    'data-placeholder': _('service'),
                     'data-minimum-input-length': 1,
                 },
             ),
@@ -128,7 +128,7 @@ class QueueModelBaseForms(forms.ModelForm):
                 url = 'queue:manager:user_autocomplete',
                 attrs={
                     'id':'service',
-                    'data-placeholder': 'Pelanggan ...',
+                    'data-placeholder': _('customer'),
                     'data-minimum-input-length': 3,
                 },
             ),
