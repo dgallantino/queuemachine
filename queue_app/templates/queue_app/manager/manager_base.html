@@ -49,7 +49,7 @@
 					aria-haspopup="true"
 					aria-expanded="false"
 				>
-				{% trans "Choose Counter" as choose_counter_text %}
+				{% trans "choose counter" as choose_counter_text %}
         {{ request.session.CounterBooth.display_name|default:choose_counter_text|title }}
         </a>
         <div
@@ -72,8 +72,8 @@
 					aria-haspopup="true"
 					aria-expanded="false"
 				>
-				{% trans "Choose Organization" as choose_org_text %}
-        {{ request.session.Organization.name|default:choose_org_text|capfirst }}
+				{% trans "choose organization" as choose_org_text %}
+        {{ request.session.Organization.name|default:choose_org_text|title }}
         </a>
         <div
 					id="organization-menu"
