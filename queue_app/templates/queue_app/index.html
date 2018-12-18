@@ -11,7 +11,8 @@ Queue Manager App
 <div class="fixed-top ">
 	<a id="admin-link" class="float-right" href="/admin/">
 		<i class="fa fa-user-circle-o"></i>
-		{% trans "Admin" %}
+		{% trans "admin" as admin_tx %}
+		{{admin_tx|capfirst}}
 	</a>
 </div>
 <div class="container-fluid vertical-center">
