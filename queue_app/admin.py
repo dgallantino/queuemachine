@@ -24,7 +24,7 @@ class QueueAdmin(admin.ModelAdmin):
                     'print_datetime',
                 )
     fieldsets = (
-        (_('Editable'), {
+        (_('editable'), {
             'fields': (
                 'service',
                 'customer',
@@ -35,7 +35,7 @@ class QueueAdmin(admin.ModelAdmin):
                 'is_printed',
             )
         }),
-        (_('Read onlies'),{
+        (_('read onlies'),{
             'fields':(
                 'date_created',
                 'date_modified',
@@ -64,11 +64,11 @@ class CustomUserAdmin(UserAdmin):
     )
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
-        (_('Personal info'), {'fields': (('first_name', 'last_name',),
+        (_('personal info'), {'fields': (('first_name', 'last_name',),
                                         'email', 'phone',)}),
-        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
+        (_('permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
                                        'organization','groups', 'user_permissions')}),
-        (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
+        (_('important dates'), {'fields': ('last_login', 'date_joined')}),
     )
     actions = ['set_selected_as_staff',]
     def set_selected_as_staff(self,request,query_set):

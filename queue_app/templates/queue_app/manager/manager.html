@@ -52,7 +52,13 @@ $('body').on('click','a.btn-check',function(e){
 	<div class="col-3">
 		<div class="nav flex-column nav-pills sticky-top" id="v-pills-tab" role="tablist" aria-orientation="vertical" >
 		{% for service in Services %}
-			<a class="nav-link text-capitalize {{ forloop.first|yesno:"active,," }}" id="tab_{{ service.id }}" data-toggle="pill" href="#tabContent_{{ service.id }}" role="tab" aria-controls="tabContent_{{ service.id }}" aria-selected="{{ forloop.first }}">
+			<a
+				class="nav-link text-capitalize {{ forloop.first|yesno:"active,," }}"
+				id="tab_{{ service.id }}"
+				data-toggle="pill" href="#tabContent_{{ service.id }}" role="tab"
+				aria-controls="tabContent_{{ service.id }}"
+				aria-selected="{{ forloop.first }}"
+			>
 				{{ service.name }} <span class="badge badge-secondary"></span>
 			</a>
 		{% empty %}
@@ -67,9 +73,10 @@ $('body').on('click','a.btn-check',function(e){
       			<a
 							class="btn btn-primary btn-refresh"
 							href="#" role="button" style="margin-bottom:10px"
-							data-toggle="tooltip" data-placement="bottom" title="{% trans "Refresh queue table" %}"
+							data-toggle="tooltip" data-placement="bottom"
+							title="{% trans "refresh queue table" as f5_tooltip_tx %}{{f5_tooltip_tx|capfirst}}"
 						>
-							{% trans "Refresh" %}
+							{% trans "refresh" as f5_tx %}{{f5_tx|title}}
 						</a>
   				<table id="tabTable_{{ service.id }}" class="table table-sm" data-toggle="#tabTable_{{ service.id }}" >
 					<thead>
@@ -78,21 +85,26 @@ $('body').on('click','a.btn-check',function(e){
   								#
   							</th>
   							<th class="text-center" colspan="4">
-  								{% trans "Booking Detail" %}
+  								{% trans "booking detail" as detail_tx %}
+									{{detail_tx|title}}
   							</th>
   						</tr>
   						<tr>
   							<th>
-  								{% trans "Queue" %}
+  								{% trans "queue" as queue_tx%}
+									{{queue_tx|title}}
   							</th>
   							<th>
-  								{% trans "Booking time" %}
+  								{% trans "booking time" as time_tx%}
+									{{time_tx|title}}
   							</th>
   							<th>
-  								{% trans "Customer" %}
+  								{% trans "customer" as customer_tx%}
+									{{customer_tx|title}}
   							</th>
   							<th>
-  								{% trans "Options" %}
+  								{% trans "options" as opt_tx%}
+									{{opt_tx|title}}
   							</th>
   						</tr>
 					</thead>

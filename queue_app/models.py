@@ -95,7 +95,7 @@ class CounterBooth(models.Model):
  		}
 
 	def latest_queue(self):
-		return self.queues.order_by('date_modified').last()
+		return self.queues.today_filter().order_by('date_modified').last()
 
 	class Meta:
 		verbose_name = _('counter booth')
@@ -271,9 +271,9 @@ class Queue(models.Model):
 		editable=False
 	)
 
-	date_created=models.DateTimeField(auto_now_add=True)
+	date_created=models.DateTimeField(auto_now_add=True, verbose_name=_('date created'))
 
-	date_modified=models.DateTimeField(auto_now=True)
+	date_modified=models.DateTimeField(auto_now=True, verbose_name=_('date modified'))
 
 	service=models.ForeignKey(
 		Service,
@@ -319,15 +319,15 @@ class Queue(models.Model):
 
 	)#
 
-	is_booking=models.BooleanField(default=False)#
+	is_booking=models.BooleanField(default=False,verbose_name=_('booking'))#
 
-	is_called=models.BooleanField(default=False)#
+	is_called=models.BooleanField(default=False,verbose_name=_('called'))#
 
-	is_printed=models.BooleanField(default=False)#
+	is_printed=models.BooleanField(default=False,verbose_name=_('printed'))#
 
-	booking_datetime=models.DateTimeField(null=True,blank=True,)
+	booking_datetime=models.DateTimeField(null=True,blank=True,verbose_name=_('booking date time'))
 
-	print_datetime=models.DateTimeField(null=True, blank=True)
+	print_datetime=models.DateTimeField(null=True, blank=True,verbose_name=_('print date time'))
 
 	objects=QueueQueryset.as_manager()
 

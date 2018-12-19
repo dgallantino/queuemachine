@@ -24,7 +24,8 @@
 					class="nav-link"
 					href="{% url "queue:manager:add_booking" %}"
 				>
-         {% trans "Add Booking" %}
+         {% trans "add booking" as add_book_tx %}
+				 {{add_book_tx|title}}
         </a>
       </li>
 			<!-- add costomer form link -->
@@ -34,7 +35,8 @@
 					class="nav-link"
 					href="{% url "queue:manager:add_customer" %}"
 				>
-         {% trans "Add Customer" %}
+         {% trans "add customer" as add_customer_tx %}
+				 {{add_customer_tx|title}}
         </a>
       </li>
 			<!-- Counter chooser dropdown -->
@@ -47,8 +49,8 @@
 					aria-haspopup="true"
 					aria-expanded="false"
 				>
-				{% trans "Choose Counter" as choose_counter_text %}
-        {{ request.session.CounterBooth.display_name|default:choose_counter_text }}
+				{% trans "choose counter" as choose_counter_text %}
+        {{ request.session.CounterBooth.display_name|default:choose_counter_text|title }}
         </a>
         <div
 					id="booth-menu"
@@ -56,7 +58,8 @@
 					aria-labelledby="navbarDropdown"
 					url_data="{% url "queue:manager:booth_list" %}"
 				>
-				{% trans "Choose an Organization first" %}
+				{% trans "choose an organization first" as choose_tx %}
+				{{choose_tx|capfirst}}
         </div>
       </li>
 			<!-- Organization dropdown -->
@@ -69,8 +72,8 @@
 					aria-haspopup="true"
 					aria-expanded="false"
 				>
-				{% trans "Choose Organization" as choose_org_text %}
-        {{ request.session.Organization.name|default:choose_org_text }}
+				{% trans "choose organization" as choose_org_text %}
+        {{ request.session.Organization.name|default:choose_org_text|title }}
         </a>
         <div
 					id="organization-menu"
@@ -78,7 +81,8 @@
 					aria-labelledby="navbarDropdown"
 					url_data="{% url "queue:manager:organization_list" %}"
 				>
-					{% trans "No Data" %}
+					{% trans "no data" as no_data_tx%}
+					{{no_data_tx|capfirst}}
         </div>
       </li>
     </ul>

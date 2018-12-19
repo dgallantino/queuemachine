@@ -49,7 +49,8 @@ setInterval(function(){
     			logo CAHAYA
     		</div>
     		<div class="list-header text-right" id="list-header">
-    			{% trans "Booking Queue" %}
+    			{% trans "booking queue" as b_q_tx %}
+					{{b_q_tx|title}}
     			<hr class="white">
     		</div>
     		<div id="booking-list-body" class="list-body" queues_url="{% url 'queue:machine:booking_list' %}">
