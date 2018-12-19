@@ -189,9 +189,9 @@ msgid "new booking was created"
 msgstr "pembuatan booking baru berhasil"
 
 #: queue_machine/settings.py:118
-msgid "Indonesian"
-msgstr "Bahasa Indonesia"
+msgid "indonesian"
+msgstr "bahasa indonesia"
 
 #: queue_machine/settings.py:119
-msgid "English"
-msgstr "Inggris"
+msgid "english"
+msgstr "inggris"

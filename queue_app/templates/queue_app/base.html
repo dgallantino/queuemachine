@@ -16,9 +16,10 @@
 	{% block head_script %}{% endblock %}
 </head>
 <body class="base_bg">
+	{% block content-header %}
 	<header>
-	{% block content-header %}{% endblock %}
 	</header>
+	{% endblock %}
 	<main>
 		{% block content %}<h2>No content found</h2>{% endblock %}
 	</main>

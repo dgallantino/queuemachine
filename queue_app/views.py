@@ -329,6 +329,8 @@ class SetLanguageRedirect(QueueAppLoginMixin,RedirectView):
 		req_lang = kwargs.get('lang_id')
 		if dict(settings.LANGUAGES).get(req_lang):
 			self.request.session[translation.LANGUAGE_SESSION_KEY] = req_lang
+		if self.request.GET.get('next'):
+			return self.request.GET.get('next')
 		return super(SetLanguageRedirect,self).get_redirect_url(*args,**kwargs)
 
 class AddCustomerView(
