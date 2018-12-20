@@ -13,10 +13,13 @@
 {% endblock %}
 
 {% block content-header %}
-<header class="navbar fixed-top navbar-expand navbar-dark bg-dark flex-coloumn flex-md-row" >
+<header class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark flex-coloumn flex-md-row">
   <a class="navbar-brand" href="{% url 'queue:manager:index' %}">Queue Manager</a>
-  <div class="navbar-nav-scroll">
-    <ul class="navbar-nav flex-row">
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#managerNavbar" aria-controls="managerNavbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="managerNavbar">
+    <ul class="navbar-nav">
 			<!-- add booking form link -->
       <li class="nav-item">
         <a
@@ -84,34 +87,34 @@
         </div>
       </li>
     </ul>
+		<ul class="navbar-nav ml-auto">
+			<li class="nav-item dropdown ">
+				<a
+					aria-expanded="false" aria-haspopup="true"
+					class="nav-item nav-link dropdown-toggle mr-md-2"
+					data-toggle="dropdown" role="button"
+					href="#"
+					id="usermenutoggle"
+				>
+					{{ request.user.get_full_name|default:request.user.username|title }}
+				</a>
+				<div
+					id="usermenu"
+					class="dropdown-menu dropdown-menu-right"
+					aria-labelledby="usermenutoggle"
+				>
+					<a href="{% url 'queue:manager:language' 'en' %}?next={{request.get_full_path|urlencode}}" class="dropdown-item">
+						{% trans "english" as english_tx %}
+						{{english_tx|title}}
+					</a>
+					<a href="{% url 'queue:manager:language' 'id' %}?next={{request.get_full_path|urlencode}}" class="dropdown-item">
+						{% trans "indonesian" as indonesian_tx %}
+						{{indonesian_tx|title}}
+					</a>
+				</div>
+			</li>
+		</ul>
   </div>
-	<ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
-		<li class="nav-item dropdown">
-			<a
-				aria-expanded="false" aria-haspopup="true"
-				class="nav-item nav-link dropdown-toggle mr-md-2"
-				data-toggle="dropdown" role="button"
-				href="#"
-				id="usermenutoggle"
-			>
-				{{ request.user.get_full_name|default:request.user.username|title }}
-			</a>
-			<div
-				id="usermenu"
-				class="dropdown-menu dropdown-menu-right"
-				aria-labelledby="usermenutoggle"
-			>
-				<a href="{% url 'queue:manager:language' 'en' %}?next={{request.get_full_path|urlencode}}" class="dropdown-item">
-					{% trans "english" as english_tx %}
-					{{english_tx|title}}
-				</a>
-				<a href="{% url 'queue:manager:language' 'id' %}?next={{request.get_full_path|urlencode}}" class="dropdown-item">
-					{% trans "indonesian" as indonesian_tx %}
-					{{indonesian_tx|title}}
-				</a>
-			</div>
-		</li>
-	</ul>
 </header>
 
 {% comment %}
