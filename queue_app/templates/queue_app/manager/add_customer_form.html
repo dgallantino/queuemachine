@@ -37,13 +37,6 @@
 			</div>
 			<button type="submit" class="form-control">SUBMIT</button>
 		</form>
-		{% if messages %}
-		<div id="form-success" class="alert alert-success fade show" role="alert">
-	    {% for message in messages %}
-	    	{{ message }}</br>
-	    {% endfor %}
-		</div>
-		{% endif %}
 		{% if form.errors %}
 		<div id="form-error" class="alert alert-warning alert-dismissible fade show" role="alert">
 			<p>The operation could not be performed because one or more error(s) occurred.<br />Please resubmit the form after making the following changes:</p>
@@ -60,8 +53,5 @@
 {% block javascript-content %}
 <script type="text/javascript">
 
-$("#form-success").fadeTo(2000, 500).slideUp(500, function(){
-    $("#form-success").slideUp(500);
-});
 </script>
 {% endblock %}
