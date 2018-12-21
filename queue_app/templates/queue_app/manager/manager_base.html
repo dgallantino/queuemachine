@@ -109,6 +109,9 @@
 						{% trans "indonesian" as indonesian_tx %}
 						{{indonesian_tx|title}}
 					</a>
+					<div class="dropdown-divider"></div>
+					<a href="{% url 'admin:index' %}" class="dropdown-item">{% trans "admin" as admin_tx%}{{admin_tx|capfirst}}</a>
+					<a href="{% url 'logout' %}" class="dropdown-item">{% trans "logout" as logout_tx%}{{logout_tx|capfirst}}</a>
 				</div>
 			</li>
 		</ul>

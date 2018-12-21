@@ -9,7 +9,7 @@ Queue Manager App
 {% endblock %}
 {% block content %}
 <div class="fixed-top ">
-	<a id="admin-link" class="float-right" href="/admin/">
+	<a id="admin-link" class="float-right" href="{% url 'admin:index' %}">
 		<i class="fa fa-user-circle-o"></i>
 		{% trans "admin" as admin_tx %}
 		{{admin_tx|capfirst}}
