@@ -34,7 +34,7 @@
 		{% if form.errors %}
 		<div id="form-error" class="alert alert-warning fade show mt-3" role="alert">
 			{% trans "the operation could not be performed because one or more error(s) occurred." as err1_tx %}
-			{% trans "Please resubmit the form after making the following changes:" as err2_tx%}
+			{% trans "please resubmit the form after making the following changes:" as err2_tx%}
 			<p>{{err1_tx|capfirst}}<br/>{{err2_tx|capfirst}}</p>
 			<ul>
 			{% for field in form %}
