@@ -1,4 +1,5 @@
 {% extends "queue_app/manager/manager_base.html" %}
+{% load i18n %}
 {% load static %}
 {% load widget_tweaks %}
 {% block stylesheet-content %}
@@ -13,36 +14,31 @@
 			<input type="hidden" name="is_booking" value="True"/>
 			<div class ="form-group">
 				<label for="service">{{ form.service.label|capfirst }} </label>
-				<div>{{ form.service }}</div>
+				{{ form.service }}
 			</div>
 			<div class ="form-group">
 				<label for="id_customer">{{ form.customer.label|capfirst }} </label>
-				<div>{{ form.customer|attr:"required" }}</div>
+				{{ form.customer|attr:"required" }}
 			</div>
 			<div class ="form-group">
 				<label for="booking-time">{{ form.booking_time.label|capfirst }} </label>
-				<div>{{ form.booking_time|attr:"required"|add_class:"form-control" }}</div>
+				{{ form.booking_time|attr:"required"|add_class:"form-control" }}
 			</div>
 			<div class ="form-group">
 				<label for="booking-date">{{ form.booking_date.label|capfirst }} </label>
-				<div>{{ form.booking_date|attr:"required "|add_class:"form-control" }}</div>
+				{{ form.booking_date|attr:"required "|add_class:"form-control" }}
 			</div>
 			<button type="submit" class="form-control">SUBMIT</button>
 		</form>
-		{% if messages %}
-		<div id="form-success" class="alert alert-success fade show" role="alert">
-	    {% for message in messages %}
-	    	{{ message }}</br>
-	    {% endfor %}
-		</div>
-		{% endif %}
 
 		{% if form.errors %}
-		<div id="form-error" class="alert alert-warning fade show" role="alert">
-			<p>The operation could not be performed because one or more error(s) occurred.<br />Please resubmit the form after making the following changes:</p>
+		<div id="form-error" class="alert alert-warning fade show mt-3" role="alert">
+			{% trans "the operation could not be performed because one or more error(s) occurred." as err1_tx %}
+			{% trans "please resubmit the form after making the following changes:" as err2_tx%}
+			<p>{{err1_tx|capfirst}}<br/>{{err2_tx|capfirst}}</p>
 			<ul>
 			{% for field in form %}
-				{% if field.errors %}<li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
+				{% if field.errors %}<li>{{ field.label|title }}: {{ field.errors|striptags }}</li>{% endif %}
 			{% endfor %}
 			</ul>
 		</div>
@@ -63,11 +59,5 @@ $(document).ready(function(){
 		});
 });
 
-$('select').on("select2:close", function () { $(this).focus(); });
-
-
-$("#form-success").fadeTo(2000, 500).slideUp(500, function(){
-		$("#form-success").slideUp(500);
-});
 </script>
 {% endblock %}

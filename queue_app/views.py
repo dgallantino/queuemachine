@@ -65,9 +65,9 @@ class BaseBoothListView(QueueAppLoginMixin,ListView):
 class SessionInitializer(View):
 	def get(self, request, *args, **kwargs):
 		#set default language to indonesia
-		if not request.session.get(translation.LANGUAGE_SESSION_KEY):
-			translation.activate(const.LANG.ID)
-			request.session[translation.LANGUAGE_SESSION_KEY] = const.LANG.ID
+		# if not request.session.get(translation.LANGUAGE_SESSION_KEY):
+		# 	translation.activate(const.LANG.ID)
+		# 	request.session[translation.LANGUAGE_SESSION_KEY] = const.LANG.ID
 		#set organization if user only have one
 		if not request.session.get(const.IDX.ORG):
 			if request.user.organization.all().count() > 1:
@@ -329,6 +329,8 @@ class SetLanguageRedirect(QueueAppLoginMixin,RedirectView):
 		req_lang = kwargs.get('lang_id')
 		if dict(settings.LANGUAGES).get(req_lang):
 			self.request.session[translation.LANGUAGE_SESSION_KEY] = req_lang
+		if self.request.GET.get('next'):
+			return self.request.GET.get('next')
 		return super(SetLanguageRedirect,self).get_redirect_url(*args,**kwargs)
 
 class AddCustomerView(

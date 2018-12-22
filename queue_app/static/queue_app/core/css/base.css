@@ -11,3 +11,10 @@
 	background-position: right top;
 	background-repeat: no-repeat;
 }
+.notification-container{
+    position: fixed !important;
+    top: 60px;
+		right: 2%;
+		z-index: 2020;
+		width: 40%;
+}
