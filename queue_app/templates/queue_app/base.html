@@ -23,21 +23,25 @@
 		{% block content %}<h2>Temple render error</h2>{% endblock %}
 	</main>
 	<footer>
+
 		{% if messages %}
+		<!-- notification container -->
+		<div class="notification-container">
 			{% for message in messages %}
-			<div class="alert alert-{{message.tags}} alert-dismissible fade show notification-top" role="alert">
+			<div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
 			  <strong>{{message.tags|capfirst}}!</strong> {{message|capfirst}}
 			  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
 			    <span aria-hidden="true">&times;</span>
 			  </button>
 			</div>
 			{% endfor %}
+		</div>
+			<script type="text/javascript">
+				$(".alert-dismissible").fadeTo(5000, 500).slideUp(500, function(){
+						$(".notification-top").slideUp(500);
+				});
+			</script>
 		{% endif %}
 	</footer>
-	<script type="text/javascript">
-	$(".notification-top").fadeTo(2000, 500).slideUp(500, function(){
-			$(".notification-top").slideUp(500);
-	});
-	</script>
 	{% block javascript %}{% endblock %}
 </body>
