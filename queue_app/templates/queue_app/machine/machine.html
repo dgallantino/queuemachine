@@ -6,17 +6,48 @@
 	<link href="{% static 'queue_app/core/css/machine.css'%}" rel="stylesheet" type="text/css">
 	<link href="{% static 'queue_app/core/css/machine-sidebar.css'%}" rel="stylesheet" type="text/css">
 {% endblock %}
-{% block head_script %}
 
-<script type="text/javascript">
+{% block content %}
+<div class="wrapper">
+		<!-- sidebar -->
+    <div class="sidebar-wrapper text-white">
+    	<div class="sidebar-panel">
+	    	<div class="sidebar-brand">
+    			logo CAHAYA
+    		</div>
+    		<div class="list-header text-right" id="list-header">
+    			{% trans "booking queue" as b_q_tx %}
+					{{b_q_tx|title}}
+    			<hr class="white">
+    		</div>
+    		<div id="booking-list-body" class="list-body" queues_url="{% url 'queue:machine:booking_list' %}">
+    		</div>
+    	</div>
+    </div>
+		<!-- end of sidebar -->
 
-</script>
+		<!-- content -->
+    <div class="page-content-wrapper container-fluid">
+	    <a href="#menu-toggle" class="btn btn-secondary sharp" id="menu-toggle">
+				<i id="button-icon"class="fa fa-angle-double-right rotate"></i>
+			</a>
+    	<div class="container-fluid vertical-center">
+    		<div class="container-fluid">
+				{% for Service in Services %}
+				<div class="container-fluid  btn-container text-center">
+					<a class="service-button" href="{% url 'queue:machine:index' %}" service_id="{{ Service.id }}">{{ Service.name }}</a>
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+	<!-- end of content -->
+</div>
 {% endblock %}
+
 {% block javascript %}
 <script src="{% static 'queue_app/core/js/cookies_manager.js' %}"></script>
 <script src="{% static 'queue_app/core/js/machine.js' %}"></script>
-
-
 <script type="text/javascript">
 $("#menu-toggle").click(function(e) {
     e.preventDefault();
@@ -38,38 +69,4 @@ setInterval(function(){
 },5*60*1000);
 
 </script>
-{% endblock %}
-
-
-{% block content %}
-<div class="wrapper">
-    <div class="sidebar-wrapper text-white">
-    	<div class="sidebar-panel">
-	    	<div class="sidebar-brand">
-    			logo CAHAYA
-    		</div>
-    		<div class="list-header text-right" id="list-header">
-    			{% trans "booking queue" as b_q_tx %}
-					{{b_q_tx|title}}
-    			<hr class="white">
-    		</div>
-    		<div id="booking-list-body" class="list-body" queues_url="{% url 'queue:machine:booking_list' %}">
-    		</div>
-    	</div>
-    </div>
-    <div class="page-content-wrapper container-fluid">
-	    <a href="#menu-toggle" class="btn btn-secondary sharp" id="menu-toggle">
-			<i id="button-icon"class="fa fa-angle-double-right rotate"></i>
-		</a>
-    	<div class="container-fluid vertical-center">
-    		<div class="container-fluid">
-				{% for Service in Services %}
-				<div class="container-fluid  btn-container text-center">
-					<a class="service-button" href="{% url 'queue:machine:index' %}" service_id="{{ Service.id }}">{{ Service.name }}</a>
-				</div>
-				{% endfor %}
-			</div>
-		</div>
-	</div>
-</div>
 {% endblock %}
