@@ -334,11 +334,10 @@ class SetLanguageRedirect(QueueAppLoginMixin,RedirectView):
 		return super(SetLanguageRedirect,self).get_redirect_url(*args,**kwargs)
 
 class AddCustomerView(
-		LoginRequiredMixin,
+		QueueAppLoginMixin,
 		SuccessMessageMixin,
 		CreateView,
 	):
-	login_url = reverse_lazy('login')
 	success_url = reverse_lazy('queue:manager:add_customer')
 	template_name = 'queue_app/manager/add_customer_form.html'
 	model = models.User
@@ -346,16 +345,27 @@ class AddCustomerView(
 	success_message = _("customer data creation was successfull")
 
 class AddBookingQueueView(
-		LoginRequiredMixin,
+		QueueAppLoginMixin,
 		SuccessMessageMixin,
 		CreateView,
 	):
-	login_url = reverse_lazy('login')
 	success_url = reverse_lazy('queue:manager:add_booking')
 	template_name = 'queue_app/manager/add_booking_form.html'
 	model = models.Queue
 	form_class=forms.AddBookingQueuemodelForms
 	success_message = _("new booking was created")
+
+class EditUserView(
+		QueueAppLoginMixin,
+		SuccessMessageMixin,
+		UpdateView
+	):
+	success_url = reverse_lazy('queue:manager:edit_user')
+	template_name = 'queue_app/manager/test_form_template.html'
+	model = models.User
+	form_class = forms.CustomUserChangeForm
+	success_message = _("profile edit was successfull")
+
 
 #SingleObjectMixin get Service object from url kwargs
 #ListView list all Queues from that service

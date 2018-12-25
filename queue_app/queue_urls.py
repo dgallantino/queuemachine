@@ -68,7 +68,12 @@ manager_patterns = [
         name='session_org'
     ),
     path(
-        'queues/audiotest/',
+        'user/<uuid:pk>/edit''
+        views.EditUserView.as_view(),
+        name='edit_user'
+    ),
+    path(
+        'queues/audio/',
         views.playAudioFile,
         name='audio'
     ),
