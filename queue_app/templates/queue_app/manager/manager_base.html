@@ -94,7 +94,7 @@
 					href="#"
 					id="usermenutoggle"
 				>
-					{{ request.user.get_full_name|default:request.user.username|title }}
+					{{ user.get_full_name|default:user.username|title }}
 				</a>
 				<div
 					id="usermenu"

@@ -1,11 +1,13 @@
-todos:
-	-indonesian interface
-	-add booking form(own page not modal)
-	-add costumer form(own page not modal)
-	-create custom group model
-	-choose group option(kinda like booth)
-		-front :
-			-dropdown
-		-back :
-			-list view
-			-redirect view
+todos & notes:
+	-edit profile form
+		->form crueate another form inheriting CustomUserUpdateForm
+		->views get user data from  session
+		->template bootstrap form
+		->url queue:manager:edit_user /user/edit/
+		->put link on manager top right dropdown
+	-change password form
+		->form
+		->views
+		->template
+		->url
+		->put link on manager top right dropdown

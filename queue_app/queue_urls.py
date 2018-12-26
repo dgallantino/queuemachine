@@ -68,7 +68,7 @@ manager_patterns = [
         name='session_org'
     ),
     path(
-        'user/<uuid:pk>/edit''
+        'user/<uuid:pk>/edit',
         views.EditUserView.as_view(),
         name='edit_user'
     ),
