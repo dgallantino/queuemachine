@@ -363,8 +363,11 @@ class EditUserView(
 	success_url = reverse_lazy('queue:manager:edit_user')
 	template_name = 'queue_app/manager/test_form_template.html'
 	model = models.User
-	form_class = forms.CustomUserChangeForm
+	form_class = forms.EmployeeChangeForm
 	success_message = _("profile edit was successfull")
+
+	def get_object(self, queryset=None):
+		return self.request.user
 
 
 #SingleObjectMixin get Service object from url kwargs

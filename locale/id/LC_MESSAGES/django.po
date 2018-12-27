@@ -18,19 +18,19 @@ msgstr "hak akses"
 msgid "important dates"
 msgstr "tanggal penting"
 
-#: queue_app/forms.py:54
+#: queue_app/forms.py:54 queue_app/forms.py:96
 msgid "first name"
 msgstr "nama depan"
 
-#: queue_app/forms.py:55
+#: queue_app/forms.py:55 queue_app/forms.py:97
 msgid "last name"
 msgstr "nama belakang"
 
-#: queue_app/forms.py:56
-msgid "email"
-msgstr "email"
+#: queue_app/forms.py:56 queue_app/forms.py:99
+msgid "email address"
+msgstr "alamat email"
 
-#: queue_app/forms.py:57
+#: queue_app/forms.py:57 queue_app/forms.py:100
 msgid "phone"
 msgstr "telepon"
 
@@ -39,19 +39,24 @@ msgstr "telepon"
 msgid "organization"
 msgstr "organisasi"
 
-#: queue_app/forms.py:88 queue_app/templates/queue_app/manager/manager.html:98
+#: queue_app/forms.py:98
+msgid "user name"
+msgstr "nama penggina"
+
+#: queue_app/forms.py:120 queue_app/templates/queue_app/manager/manager.html:98
 msgid "booking time"
 msgstr "waktu booking"
 
+#: queue_app/forms.py:133
 msgid "booking date"
 msgstr "tanggal booking"
 
-#: queue_app/forms.py:123 queue_app/models.py:238 queue_app/models.py:284
+#: queue_app/forms.py:155 queue_app/models.py:238 queue_app/models.py:284
 #: queue_app/templates/queue_app/info_board/info_board.html:58
 msgid "service"
 msgstr "layanan"
 
-#: queue_app/forms.py:131 queue_app/models.py:308
+#: queue_app/forms.py:163 queue_app/models.py:308
 #: queue_app/templates/queue_app/manager/manager.html:102
 msgid "customer"
 msgstr "pelanggan"
@@ -94,11 +99,11 @@ msgstr "huruf antrian"
 
 #: queue_app/models.py:274
 msgid "date created"
-msgstr ""
+msgstr "tanggal dibuat"
 
 #: queue_app/models.py:276
 msgid "date modified"
-msgstr ""
+msgstr "tanggal diperbaharui"
 
 #: queue_app/models.py:291
 msgid "character"
@@ -112,6 +117,7 @@ msgstr "nomor"
 msgid "counter"
 msgstr "konter"
 
+#: queue_app/models.py:322
 msgid "booking"
 msgstr "booking"
 
@@ -128,8 +134,6 @@ msgid "booking date time"
 msgstr "waktu tanggal booking"
 
 #: queue_app/models.py:330
-#, fuzzy
-#| msgid "important dates"
 msgid "print date time"
 msgstr "waktu tanggal cetak"
 
@@ -140,6 +144,7 @@ msgid "queue"
 msgstr "antrian"
 
 #: queue_app/templates/queue_app/index.html:14
+#: queue_app/templates/queue_app/manager/manager_base.html:113
 msgid "admin"
 msgstr "administrasi"
 
@@ -164,17 +169,17 @@ msgstr "tidak ada data"
 msgid "ticket"
 msgstr "tiket"
 
-#: queue_app/templates/queue_app/machine/machine.html:52
+#: queue_app/templates/queue_app/machine/machine.html:19
 msgid "booking queue"
 msgstr "antrian booking"
 
-#: queue_app/templates/queue_app/manager/add_booking_form.html:35
-#: queue_app/templates/queue_app/manager/add_customer_form.html:42
+#: queue_app/templates/queue_app/manager/add_booking_form.html:36
+#: queue_app/templates/queue_app/manager/add_customer_form.html:43
 msgid "the operation could not be performed because one or more error(s) occurred."
 msgstr "operasi ini tidak dapat dilakukan karena terjadi beberapa kesalahan"
 
-#: queue_app/templates/queue_app/manager/add_booking_form.html:35
-#: queue_app/templates/queue_app/manager/add_customer_form.html:42
+#: queue_app/templates/queue_app/manager/add_booking_form.html:37
+#: queue_app/templates/queue_app/manager/add_customer_form.html:44
 msgid "please resubmit the form after making the following changes:"
 msgstr "silahkan lakukan kembali setelah melakukan pebaikan berikut:"
 
@@ -215,14 +220,18 @@ msgid "choose organization"
 msgstr "pilih organisasi"
 
 #: queue_app/templates/queue_app/manager/manager_base.html:105
-#: queue_machine/settings.py:119
+#: queue_machine/settings.py:122
 msgid "english"
 msgstr "inggris"
 
 #: queue_app/templates/queue_app/manager/manager_base.html:109
-#: queue_machine/settings.py:118
+#: queue_machine/settings.py:121
 msgid "indonesian"
 msgstr "bahasa indonesia"
+
+#: queue_app/templates/queue_app/manager/manager_base.html:114
+msgid "logout"
+msgstr "keluar"
 
 #: queue_app/templates/queue_app/manager/placeholder_queues.html:27
 msgid "call this queue"
@@ -232,10 +241,17 @@ msgstr "panggil antrian ini"
 msgid "you have more than one organization, please choose one"
 msgstr "anda memiliki lebih dari satu organisasi, mohon pilih salah satu"
 
-#: queue_app/views.py:346
+#: queue_app/views.py:345
 msgid "customer data creation was successfull"
 msgstr "pembuatan pelanggan telah berhasil"
 
-#: queue_app/views.py:358
+#: queue_app/views.py:356
 msgid "new booking was created"
 msgstr "pembuatan booking baru berhasil"
+
+#: queue_app/views.py:367
+msgid "profile edit was successfull"
+msgstr "perubahan profil telah berhasil"
+
+#~ msgid "email"
+#~ msgstr "email"

@@ -53,7 +53,7 @@ class CustomerCreationForm(CustomUserCreationForm):
         labels = {
             'first_name' : _('first name'),
             'last_name' : _('last name'),
-            'email' : _('email'),
+            'email' : _('email address'),
             'phone' : _('phone'),
             'organization' :_('organization')
         }
@@ -66,6 +66,38 @@ class CustomerCreationForm(CustomUserCreationForm):
                     'data-placeholder': _('organization'),
                 },
             ),
+        }
+
+    class Media:
+        css={
+            'all':(
+                'queue_app/bootstrap/css/bootstrap.min.css',
+                'queue_app/jquery-ui/jquery-ui.min.css',
+                'queue_app/core/css/manager-add_customer_form.css'
+            ),
+        }
+        js=(
+            'queue_app/jquery/jquery.js',
+            'queue_app/jquery-ui/jquery-ui.min.js',
+        )
+
+
+class EmployeeChangeForm(CustomUserChangeForm):
+    class Meta(CustomUserChangeForm.Meta):
+        fields = (
+            'first_name',
+            'last_name',
+            'username',
+            'email',
+            'phone',
+        )
+
+        abels = {
+            'first_name' : _('first name'),
+            'last_name' : _('last name'),
+            'username' : _('user name'),
+            'email' : _('email address'),
+            'phone' : _('phone'),
         }
 
     class Media:
