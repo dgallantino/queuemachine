@@ -12,6 +12,20 @@ from random import randint
 from django.db.utils import IntegrityError
 from django.utils.translation import gettext_lazy as _
 
+class BaseMedia:
+    css={
+        'all':(
+            'queue_app/bootstrap/css/bootstrap.min.css',
+            'queue_app/font-awesome/css/font-awesome.min.css',
+            'queue_app/jquery-ui/jquery-ui.min.css',
+            'queue_app/jquery-timepicker/jquery.timepicker.min.css',
+        ),
+    }
+    js=(
+        'queue_app/jquery/jquery.js',
+        'queue_app/jquery-ui/jquery-ui.min.js',
+        'queue_app/jquery-timepicker/jquery.timepicker.min.js',
+    )
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
@@ -68,7 +82,7 @@ class CustomerCreationForm(CustomUserCreationForm):
             ),
         }
 
-    class Media:
+    class Media():
         css={
             'all':(
                 'queue_app/bootstrap/css/bootstrap.min.css',
@@ -113,9 +127,7 @@ class EmployeeChangeForm(CustomUserChangeForm):
             'queue_app/jquery-ui/jquery-ui.min.js',
         )
 
-#its okay to split this into multiple forms
 class QueueModelBaseForms(forms.ModelForm):
-
     booking_time=forms.TimeField(
         label=_("booking time"),
         initial= datetime.now(),

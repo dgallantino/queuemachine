@@ -73,6 +73,11 @@ manager_patterns = [
         name='edit_user'
     ),
     path(
+        'users/edit/password/',
+        views.ChangePasswordView.as_view(),
+        name='change_password'
+    ),
+    path(
         'queues/audio/',
         views.playAudioFile,
         name='audio'
