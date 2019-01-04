@@ -87,7 +87,7 @@ class CustomerCreationForm(CustomUserCreationForm):
             'all':(
                 'queue_app/bootstrap/css/bootstrap.min.css',
                 'queue_app/jquery-ui/jquery-ui.min.css',
-                'queue_app/core/css/manager-add_customer_form.css'
+                'queue_app/core/css/manager-form.css'
             ),
         }
         js=(
@@ -97,6 +97,8 @@ class CustomerCreationForm(CustomUserCreationForm):
 
 
 class EmployeeChangeForm(CustomUserChangeForm):
+    # def __init__(self, *args, **kwargs):
+    #     super(EmployeeChangeForm,self).__init__(*args, **kwargs)
     class Meta(CustomUserChangeForm.Meta):
         fields = (
             'first_name',
@@ -104,9 +106,10 @@ class EmployeeChangeForm(CustomUserChangeForm):
             'username',
             'email',
             'phone',
+            'password',
         )
 
-        abels = {
+        labels = {
             'first_name' : _('first name'),
             'last_name' : _('last name'),
             'username' : _('user name'),
@@ -119,7 +122,7 @@ class EmployeeChangeForm(CustomUserChangeForm):
             'all':(
                 'queue_app/bootstrap/css/bootstrap.min.css',
                 'queue_app/jquery-ui/jquery-ui.min.css',
-                'queue_app/core/css/manager-add_customer_form.css'
+                'queue_app/core/css/manager-form.css'
             ),
         }
         js=(
@@ -183,7 +186,7 @@ class QueueModelBaseForms(forms.ModelForm):
             'all':(
                 'queue_app/bootstrap/css/bootstrap.min.css',
                 'queue_app/font-awesome/css/font-awesome.min.css',
-                'queue_app/core/css/manager-add_booking_form.css',
+                'queue_app/core/css/manager-form.css',
                 'queue_app/jquery-ui/jquery-ui.min.css',
                 'queue_app/jquery-timepicker/jquery.timepicker.min.css',
             ),

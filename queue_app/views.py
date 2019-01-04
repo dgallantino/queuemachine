@@ -363,7 +363,7 @@ class EditUserView(
 		UpdateView
 	):
 	success_url = reverse_lazy('queue:manager:edit_user')
-	template_name = 'queue_app/manager/test_form_template.html'
+	template_name = 'queue_app/manager/edit_user_form.html'
 	model = models.User
 	form_class = forms.EmployeeChangeForm
 	success_message = _("profile edit was successfull")

@@ -86,6 +86,7 @@
       </li>
     </ul>
 		<ul class="navbar-nav ml-auto">
+			<!-- Profile Dropdown -->
 			<li class="nav-item dropdown ">
 				<a
 					aria-expanded="false" aria-haspopup="true"
@@ -110,6 +111,7 @@
 						{{indonesian_tx|title}}
 					</a>
 					<div class="dropdown-divider"></div>
+					<a href="{% url 'queue:manager:edit_user' %}" class="dropdown-item">{% trans "edit profile" as edit_tx%}{{edit_tx|capfirst}}</a>
 					<a href="{% url 'admin:index' %}" class="dropdown-item">{% trans "admin" as admin_tx%}{{admin_tx|capfirst}}</a>
 					<a href="{% url 'logout' %}" class="dropdown-item">{% trans "logout" as logout_tx%}{{logout_tx|capfirst}}</a>
 				</div>
