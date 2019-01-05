@@ -4,7 +4,7 @@ Created on Oct 1, 2018
 @author: gallantino
 '''
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
 from queue_app import models
 from dal import autocomplete
 from datetime import datetime
@@ -128,6 +128,18 @@ class EmployeeChangeForm(CustomUserChangeForm):
         js=(
             'queue_app/jquery/jquery.js',
             'queue_app/jquery-ui/jquery-ui.min.js',
+        )
+
+class EmployeePasswordChangeForm(PasswordChangeForm):
+    class Media:
+        css={
+            'all':(
+                'queue_app/bootstrap/css/bootstrap.min.css',
+                'queue_app/core/css/manager-form.css'
+            ),
+        }
+        js=(
+            'queue_app/jquery/jquery.js',
         )
 
 class QueueModelBaseForms(forms.ModelForm):

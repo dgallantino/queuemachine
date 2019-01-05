@@ -19,7 +19,6 @@ from django.contrib.auth.decorators import login_required
 from django.utils import translation
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
-from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import PasswordChangeView
 
 from dal import autocomplete
@@ -377,9 +376,9 @@ class ChangePasswordView(
 		PasswordChangeView,
 	):
 	success_url = reverse_lazy('queue:manager:index')
-	template_name = 'queue_app/manager/test_form_template.html'
-	model = models.User
+	template_name = 'queue_app/manager/change_password_form.html'
 	success_message = _("password change was successfull")
+	form_class = forms.EmployeePasswordChangeForm
 
 #SingleObjectMixin get Service object from url kwargs
 #ListView list all Queues from that service

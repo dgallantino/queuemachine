@@ -4,8 +4,10 @@
 	width:100%
 }
 
-.form-container button{
-    text-transform: uppercase;
+.form-container button,
+.btn
+{
+  text-transform: uppercase;
 	cursor: pointer;
 	width: 100%;
 }

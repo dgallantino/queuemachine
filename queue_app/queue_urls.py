@@ -68,12 +68,12 @@ manager_patterns = [
         name='session_org'
     ),
     path(
-        'users/edit/',
+        'users/self/edit/',
         views.EditUserView.as_view(),
         name='edit_user'
     ),
     path(
-        'users/edit/password/',
+        'users/self/password/',
         views.ChangePasswordView.as_view(),
         name='change_password'
     ),
