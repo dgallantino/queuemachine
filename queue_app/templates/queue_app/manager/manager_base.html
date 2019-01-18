@@ -1,7 +1,7 @@
 {% extends 'queue_app/base.html' %}
 {% load static %}
 {% load i18n %}
-{% block title %}Manager Home{% endblock %}
+{% block title %}QM &#183; Manager Home{% endblock %}
 
 {% block stylesheet %}
 	<link href="{% static 'queue_app/core/css/manager-base.css'%}" rel="stylesheet" type="text/css">
@@ -11,8 +11,8 @@
 {% endblock %}
 
 {% block content-header %}
-<header class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark flex-coloumn flex-md-row">
-  <a class="navbar-brand" href="{% url 'queue:manager:index' %}">Queue Manager</a>
+<header class="navbar fixed-top navbar-expand-lg navbar-light bg-light flex-coloumn flex-md-row">
+  <a class="navbar-brand" href="{% url 'queue:manager:index' %}">Qm</a>
 	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#managerNavbar" aria-controls="managerNavbar" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>

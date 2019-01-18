@@ -6,6 +6,9 @@
 {% block stylesheet-content %}
 {{ form.media }}
 {% endblock %}
+{% block title %}
+	QM &#183; Add Booking
+{% endblock %}
 {% block content %}
 	<div class="container-fluid form-container">
 		<form id="add-booking-form" action="{% url "queue:manager:add_customer" %}" method="POST">

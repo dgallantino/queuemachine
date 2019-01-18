@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load static %}
 {% load widget_tweaks %}
+{% block title %}Edit profile{% endblock %}
 
 {% block stylesheet-content %}
 {{ form.media }}
@@ -36,12 +37,10 @@
 				<label for="id_phone">{{ form.phone.label|capfirst }} </label>
 				<div>{{ form.phone|add_class:"form-control" }}</div>
 			</div>
-			{% comment %}
 			<div class ="form-group">
 				<label for="organization">{{ form.password.label|capfirst }} </label>
 				<div>{{ form.password }}</div>
 			</div>
-			{% endcomment %}
 			<a class="btn btn-secondary mb-3" role="button"href="{% url 'queue:manager:change_password' %}">
 				{% trans "change password" as c_p_tx%}{{c_p_tx|upper}}
 			</a>
