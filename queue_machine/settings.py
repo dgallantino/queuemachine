@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['127.0.0.1']
 #repair this or make implementation of root URL
 LOGIN_REDIRECT_URL = reverse_lazy('queue:index')
 
+LOGIN_URL = reverse_lazy('login')
 
 LOGOUT_REDIRECT_URL = reverse_lazy('queue:index')
 # Application definition

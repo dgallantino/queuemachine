@@ -5,7 +5,7 @@ import math
 import re
 import requests
 
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, AccessMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.views.generic.edit import CreateView, UpdateView
@@ -53,7 +53,7 @@ Token._get_token_key = _patch_faulty_function
 Bases
 '''
 class QueueAppLoginMixin(LoginRequiredMixin):
-	login_url = reverse_lazy('login')
+	pass
 
 class BaseBoothListView(QueueAppLoginMixin,ListView):
 	context_object_name = const.TEMPLATE.BOOTHS
@@ -219,7 +219,13 @@ componen:
 - LookUps: Django auto complete views,
 	to list all result of auto complete queries for forms
 '''
-class ManagerDisplayView(QueueAppLoginMixin, SessionInitializer, ListView):
+class ManagerDisplayView(
+	QueueAppLoginMixin,
+	SessionInitializer,
+	PermissionRequiredMixin,
+	ListView
+):
+	permission_required = 'queue.can_edit'
 	template_name='queue_app/manager/manager.html'
 	context_object_name = const.TEMPLATE.SERVICES
 	def get_queryset(self):
