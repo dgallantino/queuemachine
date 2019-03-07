@@ -4,7 +4,7 @@ Created on Oct 1, 2018
 @author: gallantino
 '''
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
 from queue_app import models
 from dal import autocomplete
 from datetime import datetime
@@ -12,6 +12,20 @@ from random import randint
 from django.db.utils import IntegrityError
 from django.utils.translation import gettext_lazy as _
 
+class BaseMedia:
+    css={
+        'all':(
+            'queue_app/bootstrap/css/bootstrap.min.css',
+            'queue_app/font-awesome/css/font-awesome.min.css',
+            'queue_app/jquery-ui/jquery-ui.min.css',
+            'queue_app/jquery-timepicker/jquery.timepicker.min.css',
+        ),
+    }
+    js=(
+        'queue_app/jquery/jquery.js',
+        'queue_app/jquery-ui/jquery-ui.min.js',
+        'queue_app/jquery-timepicker/jquery.timepicker.min.js',
+    )
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
@@ -53,7 +67,7 @@ class CustomerCreationForm(CustomUserCreationForm):
         labels = {
             'first_name' : _('first name'),
             'last_name' : _('last name'),
-            'email' : _('email'),
+            'email' : _('email address'),
             'phone' : _('phone'),
             'organization' :_('organization')
         }
@@ -68,12 +82,12 @@ class CustomerCreationForm(CustomUserCreationForm):
             ),
         }
 
-    class Media:
+    class Media():
         css={
             'all':(
                 'queue_app/bootstrap/css/bootstrap.min.css',
                 'queue_app/jquery-ui/jquery-ui.min.css',
-                'queue_app/core/css/manager-add_customer_form.css'
+                'queue_app/core/css/manager-form.css'
             ),
         }
         js=(
@@ -81,9 +95,54 @@ class CustomerCreationForm(CustomUserCreationForm):
             'queue_app/jquery-ui/jquery-ui.min.js',
         )
 
-#its okay to split this into multiple forms
-class QueueModelBaseForms(forms.ModelForm):
 
+class EmployeeChangeForm(CustomUserChangeForm):
+    # def __init__(self, *args, **kwargs):
+    #     super(EmployeeChangeForm,self).__init__(*args, **kwargs)
+    class Meta(CustomUserChangeForm.Meta):
+        fields = (
+            'first_name',
+            'last_name',
+            'username',
+            'email',
+            'phone',
+            'password',
+        )
+
+        labels = {
+            'first_name' : _('first name'),
+            'last_name' : _('last name'),
+            'username' : _('user name'),
+            'email' : _('email address'),
+            'phone' : _('phone'),
+        }
+
+    class Media:
+        css={
+            'all':(
+                'queue_app/bootstrap/css/bootstrap.min.css',
+                'queue_app/jquery-ui/jquery-ui.min.css',
+                'queue_app/core/css/manager-form.css'
+            ),
+        }
+        js=(
+            'queue_app/jquery/jquery.js',
+            'queue_app/jquery-ui/jquery-ui.min.js',
+        )
+
+class EmployeePasswordChangeForm(PasswordChangeForm):
+    class Media:
+        css={
+            'all':(
+                'queue_app/bootstrap/css/bootstrap.min.css',
+                'queue_app/core/css/manager-form.css'
+            ),
+        }
+        js=(
+            'queue_app/jquery/jquery.js',
+        )
+
+class QueueModelBaseForms(forms.ModelForm):
     booking_time=forms.TimeField(
         label=_("booking time"),
         initial= datetime.now(),
@@ -139,7 +198,7 @@ class QueueModelBaseForms(forms.ModelForm):
             'all':(
                 'queue_app/bootstrap/css/bootstrap.min.css',
                 'queue_app/font-awesome/css/font-awesome.min.css',
-                'queue_app/core/css/manager-add_booking_form.css',
+                'queue_app/core/css/manager-form.css',
                 'queue_app/jquery-ui/jquery-ui.min.css',
                 'queue_app/jquery-timepicker/jquery.timepicker.min.css',
             ),

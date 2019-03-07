@@ -1,7 +1,6 @@
 {% extends "queue_app/manager/manager_base.html" %}
 {% load static %}
 {% load i18n %}
-{% block title %}Manager{% endblock %}
 {% block stylesheet-content %}
 	<link href="{% static 'queue_app/core/css/manager.css'%}" rel="stylesheet" type="text/css">
 	<link href="{% static 'queue_app/bootstrap-table/src/bootstrap-table.css'%}" rel="stylesheet" type="text/css">
@@ -94,11 +93,11 @@ $('body').on('click','a.btn-check',function(e){
   								{% trans "queue" as queue_tx%}
 									{{queue_tx|title}}
   							</th>
-  							<th>
+  							<th class="d-none d-lg-table-cell">
   								{% trans "booking time" as time_tx%}
 									{{time_tx|title}}
   							</th>
-  							<th>
+  							<th class="d-none d-md-table-cell">
   								{% trans "customer" as customer_tx%}
 									{{customer_tx|title}}
   							</th>

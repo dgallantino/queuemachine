@@ -5,7 +5,7 @@ import math
 import re
 import requests
 
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, AccessMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.views.generic.edit import CreateView, UpdateView
@@ -19,6 +19,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils import translation
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
+from django.contrib.auth.views import PasswordChangeView
 
 from dal import autocomplete
 
@@ -52,7 +53,7 @@ Token._get_token_key = _patch_faulty_function
 Bases
 '''
 class QueueAppLoginMixin(LoginRequiredMixin):
-	login_url = reverse_lazy('login')
+	pass
 
 class BaseBoothListView(QueueAppLoginMixin,ListView):
 	context_object_name = const.TEMPLATE.BOOTHS
@@ -218,7 +219,13 @@ componen:
 - LookUps: Django auto complete views,
 	to list all result of auto complete queries for forms
 '''
-class ManagerDisplayView(QueueAppLoginMixin, SessionInitializer, ListView):
+class ManagerDisplayView(
+	QueueAppLoginMixin,
+	SessionInitializer,
+	PermissionRequiredMixin,
+	ListView
+):
+	permission_required = 'queue.can_edit'
 	template_name='queue_app/manager/manager.html'
 	context_object_name = const.TEMPLATE.SERVICES
 	def get_queryset(self):
@@ -334,11 +341,10 @@ class SetLanguageRedirect(QueueAppLoginMixin,RedirectView):
 		return super(SetLanguageRedirect,self).get_redirect_url(*args,**kwargs)
 
 class AddCustomerView(
-		LoginRequiredMixin,
+		QueueAppLoginMixin,
 		SuccessMessageMixin,
 		CreateView,
 	):
-	login_url = reverse_lazy('login')
 	success_url = reverse_lazy('queue:manager:add_customer')
 	template_name = 'queue_app/manager/add_customer_form.html'
 	model = models.User
@@ -346,16 +352,39 @@ class AddCustomerView(
 	success_message = _("customer data creation was successfull")
 
 class AddBookingQueueView(
-		LoginRequiredMixin,
+		QueueAppLoginMixin,
 		SuccessMessageMixin,
 		CreateView,
 	):
-	login_url = reverse_lazy('login')
 	success_url = reverse_lazy('queue:manager:add_booking')
 	template_name = 'queue_app/manager/add_booking_form.html'
 	model = models.Queue
 	form_class=forms.AddBookingQueuemodelForms
 	success_message = _("new booking was created")
+
+class EditUserView(
+		QueueAppLoginMixin,
+		SuccessMessageMixin,
+		UpdateView
+	):
+	success_url = reverse_lazy('queue:manager:edit_user')
+	template_name = 'queue_app/manager/edit_user_form.html'
+	model = models.User
+	form_class = forms.EmployeeChangeForm
+	success_message = _("profile edit was successfull")
+
+	def get_object(self, queryset=None):
+		return self.request.user
+
+class ChangePasswordView(
+		QueueAppLoginMixin,
+		SuccessMessageMixin,
+		PasswordChangeView,
+	):
+	success_url = reverse_lazy('queue:manager:index')
+	template_name = 'queue_app/manager/change_password_form.html'
+	success_message = _("password change was successfull")
+	form_class = forms.EmployeePasswordChangeForm
 
 #SingleObjectMixin get Service object from url kwargs
 #ListView list all Queues from that service

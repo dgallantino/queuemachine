@@ -7,11 +7,10 @@
 	<td>
 		{{ queue.character }} {{ queue.number }}
 	</td>
-
-	<td>
+	<td  class="d-none d-lg-table-cell">
 		{{ queue.booking_datetime|time:"H:i"|default:"-" }}
 	</td>
-	<td>
+	<td class="d-none d-md-table-cell">
 		{{ queue.customer.get_full_name|default:queue.customer|default:"-" }}
 	</td>
 	<td>

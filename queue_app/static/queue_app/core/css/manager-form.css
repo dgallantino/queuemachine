@@ -1,12 +1,13 @@
-
 .form-container{
 	min-width:400px;
 	max-width: 600px;
 	width:100%
 }
 
-.form-container button{
-    text-transform: uppercase;
+.form-container button,
+.btn
+{
+  text-transform: uppercase;
 	cursor: pointer;
 	width: 100%;
 }

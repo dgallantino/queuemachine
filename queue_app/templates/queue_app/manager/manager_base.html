@@ -1,7 +1,7 @@
 {% extends 'queue_app/base.html' %}
 {% load static %}
 {% load i18n %}
-{% block title %}Manager Home{% endblock %}
+{% block title %}QM &#183; Manager Home{% endblock %}
 
 {% block stylesheet %}
 	<link href="{% static 'queue_app/core/css/manager-base.css'%}" rel="stylesheet" type="text/css">
@@ -11,8 +11,8 @@
 {% endblock %}
 
 {% block content-header %}
-<header class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark flex-coloumn flex-md-row">
-  <a class="navbar-brand" href="{% url 'queue:manager:index' %}">Queue Manager</a>
+<header class="navbar fixed-top navbar-expand-lg navbar-light bg-light flex-coloumn flex-md-row">
+  <a class="navbar-brand" href="{% url 'queue:manager:index' %}">Qm</a>
 	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#managerNavbar" aria-controls="managerNavbar" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -86,6 +86,7 @@
       </li>
     </ul>
 		<ul class="navbar-nav ml-auto">
+			<!-- Profile Dropdown -->
 			<li class="nav-item dropdown ">
 				<a
 					aria-expanded="false" aria-haspopup="true"
@@ -94,7 +95,7 @@
 					href="#"
 					id="usermenutoggle"
 				>
-					{{ request.user.get_full_name|default:request.user.username|title }}
+					{{ user.get_full_name|default:user.username|title }}
 				</a>
 				<div
 					id="usermenu"
@@ -110,6 +111,7 @@
 						{{indonesian_tx|title}}
 					</a>
 					<div class="dropdown-divider"></div>
+					<a href="{% url 'queue:manager:edit_user' %}" class="dropdown-item">{% trans "edit profile" as edit_tx%}{{edit_tx|capfirst}}</a>
 					<a href="{% url 'admin:index' %}" class="dropdown-item">{% trans "admin" as admin_tx%}{{admin_tx|capfirst}}</a>
 					<a href="{% url 'logout' %}" class="dropdown-item">{% trans "logout" as logout_tx%}{{logout_tx|capfirst}}</a>
 				</div>
