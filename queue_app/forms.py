@@ -22,7 +22,6 @@ class BaseMedia:
         ),
     }
     js=(
-        'queue_app/jquery/jquery.js',
         'queue_app/jquery-ui/jquery-ui.min.js',
         'queue_app/jquery-timepicker/jquery.timepicker.min.js',
     )
@@ -91,7 +90,6 @@ class CustomerCreationForm(CustomUserCreationForm):
             ),
         }
         js=(
-            'queue_app/jquery/jquery.js',
             'queue_app/jquery-ui/jquery-ui.min.js',
         )
 
@@ -126,7 +124,6 @@ class EmployeeChangeForm(CustomUserChangeForm):
             ),
         }
         js=(
-            'queue_app/jquery/jquery.js',
             'queue_app/jquery-ui/jquery-ui.min.js',
         )
 
@@ -138,9 +135,6 @@ class EmployeePasswordChangeForm(PasswordChangeForm):
                 'queue_app/core/css/manager-form.css'
             ),
         }
-        js=(
-            'queue_app/jquery/jquery.js',
-        )
 
 class QueueModelBaseForms(forms.ModelForm):
     booking_time=forms.TimeField(
@@ -204,7 +198,6 @@ class QueueModelBaseForms(forms.ModelForm):
             ),
         }
         js=(
-            'queue_app/jquery/jquery.js',
             'queue_app/jquery-ui/jquery-ui.min.js',
             'queue_app/jquery-timepicker/jquery.timepicker.min.js',
         )
