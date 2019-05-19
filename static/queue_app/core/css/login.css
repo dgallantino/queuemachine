@@ -1,0 +1,31 @@
+.login_menu{
+	position: fixed;
+	width: 400px;
+	height: 185px;
+	background-color: #b5ffca;
+	/* border: 5px ridge #b5ffca; */
+	border-radius: 9px;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	-webkit-box-shadow: 17px 14px 15px 5px rgba(0,0,0,0.33);
+	box-shadow: 17px 14px 15px 5px rgba(0,0,0,0.33);
+}
+input{
+	margin-left: 50%;
+	margin-top: 10px;
+	transform: translateX(-50%);
+}
+input.login_textbox{
+	height: 35px;
+	width: 70%
+}
+input.login_button{
+
+}
+.login_input_div{
+	position: relative;
+	width: 100%;
+	padding: 5px;
+
+}

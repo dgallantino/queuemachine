@@ -1,0 +1,59 @@
+.vertical-center {
+  min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
+  min-height: 100vh; /* These two lines are counted as one :-)       */
+
+  display: flex;
+  align-items: center;
+}
+
+.vertical-buffer{
+	padding-top : 5vh;
+	padding-bottom : 5vh;
+}
+
+a.service-button{
+	width:100% !important;
+	background-color: rgba(0,0,0,0);
+	border: none;
+	padding: 20px 32px;
+	font-weight: 900;
+	text-align: top;
+	text-decoration: none !important;
+    text-transform: uppercase;
+	display: block;
+	font-size: 30px;
+	line-height: 30px;
+	margin-bottom: 50px;
+	cursor: pointer;
+	width: 80%;
+	height:70px;
+	color: rgb(197,36,48) !important;
+    outline-color: rgb(197,36,48);
+    outline-style: solid;
+    outline-width: 2px;
+    -webkit-transition: all .5s ease;
+    -moz-transition: all .5s ease;
+	transition: all .5s ease;
+}
+
+a.service-button:active,  
+a.service-button:hover{
+   background-color: rgba(39,163,78,1);
+    color: rgba(255,255,255,.8) !important;
+    line-height: 30px;
+   	font-size: 40px;
+}
+
+/* making printed section invisibel */
+#section_to_print{
+	visibility: hidden;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #section_to_print, #section_to_print * {
+    visibility: visible;
+  }
+}
