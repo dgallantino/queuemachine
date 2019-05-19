@@ -25,9 +25,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '8jyisx^9c%bist-q7zxuos)@ab@^p#24%z&)a!b=k$#p48dv4e'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1', '103.14.45.172']
 
 #repair this or make implementation of root URL
 LOGIN_REDIRECT_URL = reverse_lazy('queue:index')
@@ -90,8 +90,12 @@ WSGI_APPLICATION = 'queue_machine.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'QueueMachine',
+		'USER': 'django',
+		'PASSWORD': 'django',
+		'HOST': 'localhost',
+		'PORT' : '3306',
     }
 }
 
