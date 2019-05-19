@@ -1,0 +1,36 @@
+@media print {
+    @page{
+      /* paper size */
+      width: 70mm;
+      margin: 5mm;
+      height: 70mm;
+      border: solid;
+    }
+    body{
+      width: 70mm;
+      height: 70mm;
+      border: solid;
+    }
+    div{
+      display: block;
+    }
+    .ticket_div{
+      width: 100%;
+      height: auto;
+      text-align: center;
+      font-size: 9px;
+    }
+    .ticket_div p{
+      margin: 0;
+      background: yellow;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-right: -50%;
+      transform: translate(-50%, -50%)
+    }
+    .ticket_div.big_number{
+      font-size: 120px;
+      /* padding:10px; */
+    }
+}
