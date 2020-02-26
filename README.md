@@ -27,7 +27,7 @@ source queuemachine/bin/activate
 download/clone repo ini
 ```bash
 cd ~ // masuk ke working directory anda
-git clone [https://github.com/dgallantino/queuemachine.git](https://github.com/dgallantino/queuemachine.git)
+git clone https://github.com/dgallantino/queuemachine.git
 ```
 
 masuk ke repo dan install kebutuhan repo yang ada 
