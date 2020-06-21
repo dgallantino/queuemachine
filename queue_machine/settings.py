@@ -22,14 +22,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '8jyisx^9c%bist-q7zxuos)@ab@^p#24%z&)a!b=k$#p48dv4e'
+SECRET_KEY = os.getenv('QUEUE_MACHINE_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', '103.14.45.172']
+ALLOWED_HOSTS = ['127.0.0.1', '103.14.45.172', '*']
 
-#repair this or make implementation of root URL
+# repair this or make implementation of root URL
 LOGIN_REDIRECT_URL = reverse_lazy('queue:index')
 
 LOGIN_URL = reverse_lazy('login')
@@ -38,16 +38,16 @@ LOGOUT_REDIRECT_URL = reverse_lazy('queue:index')
 # Application definition
 
 INSTALLED_APPS = [
-	'dal',
-	'dal_select2',
-	'django.contrib.admin',
-	'django.contrib.auth',
-	'django.contrib.contenttypes',
-	'django.contrib.sessions',
-	'django.contrib.messages',
-	'django.contrib.staticfiles',
-	'queue_app',
-	'widget_tweaks',
+    'dal',
+    'dal_select2',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'queue_app',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
@@ -55,7 +55,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-	'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -91,14 +91,13 @@ WSGI_APPLICATION = 'queue_machine.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'QueueMachine',
-		'USER': 'django',
-		'PASSWORD': 'django',
-		'HOST': 'localhost',
-		'PORT' : '3306',
+        'NAME': os.getenv('QUEUE_MACHINE_DB_NAME'),
+        'USER': os.getenv('QUEUE_MACHINE_DB_USER'),
+        'PASSWORD': os.getenv('QUEUE_MACHINE_DB_PASSWORD'),
+        'HOST': os.getenv('QUEUE_MACHINE_DB_HOST'),
+        'PORT': os.getenv('QUEUE_MACHINE_DB_PORT'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -118,13 +117,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
-LANGUAGES =(
-	('id',_('indonesian')),
-	('en',_('english')),
+LANGUAGES = (
+    ('id', _('indonesian')),
+    ('en', _('english')),
 )
 
 LANGUAGE_CODE = 'id'
@@ -138,9 +136,8 @@ USE_L10N = False
 USE_TZ = False
 
 LOCALE_PATHS = (
-	os.path.join(BASE_DIR, 'locale'),
+    os.path.join(BASE_DIR, 'locale'),
 )
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
@@ -149,41 +146,40 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATICFILES_FINDERS = (
-'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'django.contrib.staticfiles.finders.FileSystemFinder',
 )
 
-#custom user model
+# custom user model
 AUTH_USER_MODEL = 'queue_app.User'
 
-TIME_INPUT_FORMATS=[
-    '%H:%M:%S',     # '14:30:59'
+TIME_INPUT_FORMATS = [
+    '%H:%M:%S',  # '14:30:59'
     '%H:%M:%S.%f',  # '14:30:59.000200'
-    '%H:%M',        # '14:30'
+    '%H:%M',  # '14:30'
 ]
 DATE_INPUT_FORMATS = [
-    '%Y-%m-%d', '%m/%d/%Y', '%m/%d/%y', # '2006-10-25', '10/25/2006', '10/25/06'
-    '%b %d %Y', '%b %d, %Y',            # 'Oct 25 2006', 'Oct 25, 2006'
-    '%d %b %Y', '%d %b, %Y',            # '25 Oct 2006', '25 Oct, 2006'
-    '%B %d %Y', '%B %d, %Y',            # 'October 25 2006', 'October 25, 2006'
-    '%d %B %Y', '%d %B, %Y',            # '25 October 2006', '25 October, 2006'
-    '%d-%m-%Y',							# '25-10-2006'
+    '%Y-%m-%d', '%m/%d/%Y', '%m/%d/%y',  # '2006-10-25', '10/25/2006', '10/25/06'
+    '%b %d %Y', '%b %d, %Y',  # 'Oct 25 2006', 'Oct 25, 2006'
+    '%d %b %Y', '%d %b, %Y',  # '25 Oct 2006', '25 Oct, 2006'
+    '%B %d %Y', '%B %d, %Y',  # 'October 25 2006', 'October 25, 2006'
+    '%d %B %Y', '%d %B, %Y',  # '25 October 2006', '25 October, 2006'
+    '%d-%m-%Y',  # '25-10-2006'
 ]
 DATETIME_INPUT_FORMATS = [
-    '%Y-%m-%d %H:%M:%S',     # '2006-10-25 14:30:59'
+    '%Y-%m-%d %H:%M:%S',  # '2006-10-25 14:30:59'
     '%Y-%m-%d %H:%M:%S.%f',  # '2006-10-25 14:30:59.000200'
-    '%Y-%m-%d %H:%M',        # '2006-10-25 14:30'
-    '%Y-%m-%d',              # '2006-10-25'
-    '%m/%d/%Y %H:%M:%S',     # '10/25/2006 14:30:59'
+    '%Y-%m-%d %H:%M',  # '2006-10-25 14:30'
+    '%Y-%m-%d',  # '2006-10-25'
+    '%m/%d/%Y %H:%M:%S',  # '10/25/2006 14:30:59'
     '%m/%d/%Y %H:%M:%S.%f',  # '10/25/2006 14:30:59.000200'
-    '%m/%d/%Y %H:%M',        # '10/25/2006 14:30'
-    '%m/%d/%Y',              # '10/25/2006'
-    '%m/%d/%y %H:%M:%S',     # '10/25/06 14:30:59'
+    '%m/%d/%Y %H:%M',  # '10/25/2006 14:30'
+    '%m/%d/%Y',  # '10/25/2006'
+    '%m/%d/%y %H:%M:%S',  # '10/25/06 14:30:59'
     '%m/%d/%y %H:%M:%S.%f',  # '10/25/06 14:30:59.000200'
-    '%m/%d/%y %H:%M',        # '10/25/06 14:30'
-    '%m/%d/%y',              # '10/25/06'
+    '%m/%d/%y %H:%M',  # '10/25/06 14:30'
+    '%m/%d/%y',  # '10/25/06'
 ]
-
 
 # rest framework settings
 # REST_FRAMEWORK = {
