@@ -3,6 +3,7 @@ import os
 import sys
 import re
 
+
 def read_env():
     """Pulled from Honcho code with minor updates, reads local default
     environment variables from a .env file located in the project root
@@ -25,6 +26,7 @@ def read_env():
             if m3:
                 val = re.sub(r'\\(.)', r'\1', m3.group(1))
             os.environ.setdefault(key, val)
+
 
 if __name__ == '__main__':
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'queue_machine.settings')

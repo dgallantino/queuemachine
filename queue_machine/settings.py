@@ -27,7 +27,7 @@ SECRET_KEY = os.getenv('QUEUE_MACHINE_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', '103.14.45.172', '*']
+ALLOWED_HOSTS = ['127.0.0.1', '103.14.45.172', ]
 
 # repair this or make implementation of root URL
 LOGIN_REDIRECT_URL = reverse_lazy('queue:index')
