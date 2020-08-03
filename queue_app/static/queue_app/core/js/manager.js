@@ -3,7 +3,7 @@ var handle_call = function(event){
 	$(this).progressInitialize();
 
 	var defaults = {
-			is_called : "Tue",
+			is_called : "True",
 			url_location : "href",
 			booth_locatian : "session_booth",
 			sound_obj : $(event.target).closest('a').siblings('.call-audio')[0],
@@ -28,7 +28,7 @@ var handle_call = function(event){
 	var form_data = "is_called="+defaults.is_called+"&counter_booth="+session_booth;
 	if (!session_booth){
 		var error_message = "System Err:\n";
-		error_message += "[404] : Please choose your counter / desk first";
+		error_message += "[403] : Please choose your counter / desk first";
 		window.alert(error_message);
 		return false;
 	}
@@ -49,6 +49,30 @@ var handle_call = function(event){
 		$(event.target).closest('tr').addClass('called');
 	});
 	return false;
+};
+
+const handle_finish = function (event) {
+	event.preventDefault();
+	console.log('test');
+	var post_url = $(this).attr('href')
+	var form_data = "is_finished=True"
+	$.ajax({
+		url : post_url,
+		type : 'POST',
+		dataType : 'html',
+		contentType : 'application/x-www-form-urlencoded',
+		data : form_data,
+	})
+	.fail(function (xhr) {
+		var error_message = "AJAX Err:\n";
+		error_message += "["+xhr.status.toString()+"] : ";
+		error_message += xhr.statusText;
+		window.alert(error_message);
+	})
+	.done(function (data) {
+		$(event.target).closest('.called').remove()
+	})
+
 };
 
 var audio_progress = function(audio_obj){

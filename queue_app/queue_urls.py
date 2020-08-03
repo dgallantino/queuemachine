@@ -18,6 +18,16 @@ manager_patterns = [
         name='call'
     ),
     path(
+        'queues/<uuid:pk>/finish/',
+        views.FinishQueueView.as_view(),
+        name='finish'
+    ),
+    path(
+        'queues/<uuid:pk>/move/',
+        views.MoveQueueView.as_view(),
+        name='move'
+    ),
+    path(
         'queues/add-booking/',
         views.AddBookingQueueView.as_view(),
         name='add_booking'
