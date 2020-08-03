@@ -13,7 +13,31 @@
 	<td class="d-none d-md-table-cell">
 		{{ queue.customer.get_full_name|default:queue.customer|default:"-" }}
 	</td>
+    <td class="d-none d-md-table-cell">
+        {{ queue.print_datetime }}
+    </td>
 	<td>
+        <a class="btn progress-button animated-hover "
+           data-toggle="dropdown"
+           role="button"
+        >
+            <i class="fa fa-angle-double-right"></i>
+        </a>
+        <div class="dropdown-menu">
+            {% for srv in queue.service.organization.services.all %}
+                <form action="{% url 'queue:manager:move' queue.id %}" method="post">
+                    {% csrf_token %}
+                    <li>
+                        <input type="hidden" name="service" value="{{ srv.id }}">
+                        {% if srv.id == queue.service.id %}
+                            <button class="btn btn-link disabled" role="link" type="submit" value="{{ srv.name }}"> {{ srv.name }} </button>
+                        {% else %}
+                            <button class="btn btn-link " role="link" type="submit" value="{{ srv.name }}"> {{ srv.name }} </button>
+                        {% endif %}
+                    </li>
+                </form>
+            {% endfor %}
+        </div>
 		<audio class="call-audio" preload="none" ontimeupdate="audio_progress(this)">
 			<source src="{% url "queue:manager:audio" %}?queue={{ queue.id }}" type="audio/mpeg">
 		</audio>
@@ -30,7 +54,7 @@
 			<i class="fa fa-bell faa-ring"></i>
 		</a>
 		<a
-			href="#"
+			href="{% url 'queue:manager:finish' queue.id %}"
 			class="btn progress-button btn-check {{ request.session.CounterBooth|yesno:',disabled,' }}"
 			role="button"
 			data-placement="top" title="Selesai dan hapus" data-toggle="tooltip"

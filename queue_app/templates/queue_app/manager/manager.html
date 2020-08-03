@@ -38,11 +38,17 @@ $('.btn.btn-refresh').click(function(event){
 $('body').on('click','a.btn-bell',handle_call);
 
 
-$('body').on('click','a.btn-check',function(e){
-	e.preventDefault();
-	$(this).closest('.called').remove()
-});
+$('body').on('click','a.btn-check',handle_finish);
 
+$(document).ready(function(){
+    $('a[role="tab"]').on('show.bs.tab', function(e) {
+        localStorage.setItem('activeTab', $(e.target).attr('href'));
+    });
+    const activeTab = localStorage.getItem('activeTab');
+    if(activeTab){
+        $('#v-pills-tab a[href="' + activeTab + '"]').tab('show');
+    }
+});
 </script>
 {% endblock %}
 
@@ -83,8 +89,8 @@ $('body').on('click','a.btn-check',function(e){
   							<th rowspan="2">
   								#
   							</th>
-  							<th class="text-center" colspan="4">
-  								{% trans "booking detail" as detail_tx %}
+  							<th class="text-center" colspan="5">
+  								{% trans "queue list" as detail_tx %}
 									{{detail_tx|title}}
   							</th>
   						</tr>
@@ -101,6 +107,10 @@ $('body').on('click','a.btn-check',function(e){
   								{% trans "customer" as customer_tx%}
 									{{customer_tx|title}}
   							</th>
+                            <th class="d-none d-md-table-cell">
+                                {% trans "time" as time_tx%}
+                                {{time_tx|title}}
+                            </th>
   							<th>
   								{% trans "options" as opt_tx%}
 									{{opt_tx|title}}

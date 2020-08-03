@@ -12,8 +12,8 @@ admin.site.unregister(Group)
 class QueueAdmin(admin.ModelAdmin):
     form = forms.QueueModelBaseForms
     model = models.Queue
-    list_display = [ 'id', 'service','number','is_booking','is_called',]
-    list_filter = ('service','is_booking', 'is_printed','is_called')
+    list_display = [ 'id', 'service', 'number', 'is_booking', 'is_called', 'is_finished']
+    list_filter = ('service', 'is_booking', 'is_printed', 'is_called', 'is_finished',)
     date_hierarchy = 'date_created'
     readonly_fields = (
                     'date_created',
@@ -33,6 +33,7 @@ class QueueAdmin(admin.ModelAdmin):
                 'is_booking',
                 'is_called',
                 'is_printed',
+                'is_finished',
             )
         }),
         (_('read onlies'),{
