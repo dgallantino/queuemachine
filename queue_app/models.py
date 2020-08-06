@@ -184,7 +184,7 @@ class ServiceQueryset(models.QuerySet):
         return self.filter(organization__in=orgs)
 
     def is_hidden(self, flag=None):
-        if flag is not None :
+        if flag is not None:
             return self.filter(is_hidden=flag)
         return self
 
@@ -238,11 +238,7 @@ class Service(models.Model):
         verbose_name=_('queue character'),
     )
 
-    is_hidden = models.BooleanField(
-        default=False,
-        blank=True,
-        null=True,
-    )
+    is_hidden = models.BooleanField(default=False, verbose_name=_('hide'))
 
     objects = ServiceQueryset.as_manager()
 
