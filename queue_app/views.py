@@ -128,9 +128,8 @@ class MachineDisplayView(QueueAppLoginMixin, SessionInitializer, CreateView, ):
         context = super().get_context_data(**kwargs)
         context[const.TEMPLATE.SERVICES] = (
             models.Service.objects
-                .org_filter(
-                self.request.session.get(const.IDX.ORG, {}).get('id')
-            )
+                .org_filter(self.request.session.get(const.IDX.ORG, {}).get('id'))
+                .is_hidden(False)
         )
         return context
 

@@ -183,6 +183,11 @@ class ServiceQueryset(models.QuerySet):
     def orgs_filter(self, orgs):
         return self.filter(organization__in=orgs)
 
+    def is_hidden(self, flag=None):
+        if flag is not None :
+            return self.filter(is_hidden=flag)
+        return self
+
 
 class Service(models.Model):
     id = models.UUIDField(
@@ -231,6 +236,12 @@ class Service(models.Model):
         blank=True,
         max_length=1,
         verbose_name=_('queue character'),
+    )
+
+    is_hidden = models.BooleanField(
+        default=False,
+        blank=True,
+        null=True,
     )
 
     objects = ServiceQueryset.as_manager()
