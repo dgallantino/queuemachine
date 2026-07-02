@@ -1,6 +1,8 @@
 #!/bin/sh
 set -e
 
+export DJANGO_SETTINGS_MODULE=queue_machine.settings
+
 echo "==> Waiting for database..."
 python << 'PY'
 import os, sys, time

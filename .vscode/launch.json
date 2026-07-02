@@ -1,0 +1,22 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Django: runserver (settings_dev)",
+            "type": "debugpy",
+            "request": "launch",
+            "python": "${command:python.interpreterPath}",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "runserver",
+                "8000"
+            ],
+            "django": true,
+            "env": {
+                "DJANGO_SETTINGS_MODULE": "queue_machine.settings_dev"
+            },
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+    ]
+}

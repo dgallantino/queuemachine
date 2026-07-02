@@ -21,6 +21,7 @@ services:
     restart: unless-stopped
     env_file: .env
     environment:
+      DJANGO_SETTINGS_MODULE: queue_machine.settings
       QUEUE_MACHINE_DB_HOST: db
       QUEUE_MACHINE_DB_PORT: "3306"
     volumes:

@@ -141,8 +141,6 @@ TIME_ZONE = 'Asia/Jakarta'
 
 USE_I18N = True
 
-USE_L10N = False
-
 USE_TZ = False
 
 LOCALE_PATHS = (
