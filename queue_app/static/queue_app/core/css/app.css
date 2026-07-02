@@ -1,0 +1,70 @@
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../vendor/fonts/inter-latin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../vendor/fonts/inter-latin-600.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../vendor/fonts/inter-latin-700.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../vendor/fonts/outfit-latin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../vendor/fonts/outfit-latin-700.woff2') format('woff2');
+}
+
+[x-cloak] { display: none !important; }
+
+.htmx-request .htmx-indicator { opacity: 1; }
+.htmx-indicator { opacity: 0; transition: opacity 200ms ease-in; }
+
+@keyframes pulse-ring {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.45); }
+  50% { box-shadow: 0 0 0 12px rgba(13, 148, 136, 0); }
+}
+
+.queue-called { animation: pulse-ring 2s ease-in-out infinite; }
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slide-up { animation: slide-up 0.35s ease-out; }
+
+.ticket-print {
+  width: 80mm;
+  margin: 0 auto;
+  font-family: 'Inter', sans-serif;
+}
+
+@media print {
+  body * { visibility: hidden; }
+  .ticket-print, .ticket-print * { visibility: visible; }
+  .ticket-print { position: absolute; left: 0; top: 0; width: 80mm; }
+}

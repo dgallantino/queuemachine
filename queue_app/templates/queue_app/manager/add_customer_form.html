@@ -1,63 +1,76 @@
 {% extends "queue_app/manager/manager_base.html" %}
 {% load i18n %}
 {% load static %}
-{% load widget_tweaks %}
 
-{% block stylesheet-content %}
-{{ form.media }}
+{% block title %}QM · {% trans "add customer" as title_tx %}{{ title_tx|title }}{% endblock %}
+
+{% block vendor_css %}
+{% include 'queue_app/includes/vendor_forms.html' %}
 {% endblock %}
-{% block title %}
-	QM &#183; Add Booking
+
+{% block manager_content %}
+<div class="mx-auto max-w-xl px-4 py-8 sm:px-6">
+  <div class="mb-6">
+    <a href="{% url 'queue:manager:index' %}" class="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-brand-600">
+      <i data-lucide="arrow-left" class="h-4 w-4"></i>
+      {% trans "back to dashboard" as back_tx %}{{ back_tx|capfirst }}
+    </a>
+    <h1 class="mt-3 font-display text-2xl font-bold text-slate-800">{% trans "add customer" as heading_tx %}{{ heading_tx|title }}</h1>
+  </div>
+
+  <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <form action="{% url 'queue:manager:add_customer' %}" method="post" class="space-y-5">
+      {% csrf_token %}
+      <div class="grid gap-5 sm:grid-cols-2">
+        <div>
+          <label for="id_first_name" class="mb-1.5 block text-sm font-medium text-slate-700">{{ form.first_name.label|capfirst }}</label>
+          <input type="text" name="first_name" id="id_first_name" required value="{{ form.first_name.value|default:'' }}"
+                 class="w-full rounded-xl border-slate-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
+        </div>
+        <div>
+          <label for="id_last_name" class="mb-1.5 block text-sm font-medium text-slate-700">{{ form.last_name.label|capfirst }}</label>
+          <input type="text" name="last_name" id="id_last_name" value="{{ form.last_name.value|default:'' }}"
+                 class="w-full rounded-xl border-slate-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
+        </div>
+      </div>
+      <div>
+        <label for="id_email" class="mb-1.5 block text-sm font-medium text-slate-700">{{ form.email.label|capfirst }}</label>
+        <input type="email" name="email" id="id_email" required value="{{ form.email.value|default:'' }}"
+               class="w-full rounded-xl border-slate-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
+      </div>
+      <div>
+        <label for="id_phone" class="mb-1.5 block text-sm font-medium text-slate-700">{{ form.phone.label|capfirst }}</label>
+        <input type="text" name="phone" id="id_phone" value="{{ form.phone.value|default:'' }}"
+               class="w-full rounded-xl border-slate-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
+      </div>
+      <div>
+        <label for="organization" class="mb-1.5 block text-sm font-medium text-slate-700">{{ form.organization.label|capfirst }}</label>
+        <select name="organization" id="organization" required multiple
+                data-autocomplete-url="{% url 'queue:manager:organization_autocomplete' %}"
+                class="w-full rounded-xl border-slate-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
+        </select>
+      </div>
+      <button type="submit"
+              class="w-full rounded-xl bg-brand-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-brand-500">
+        {% trans "submit" as submit_tx %}{{ submit_tx|title }}
+      </button>
+    </form>
+    {% include 'queue_app/includes/form_errors.html' %}
+  </div>
+</div>
 {% endblock %}
-{% block content %}
-	<div class="container-fluid form-container">
-		<form id="add-booking-form" action="{% url "queue:manager:add_customer" %}" method="POST">
-			{% csrf_token %}
-			<div class="form-row">
-				<div class="col">
-					<div class ="form-group">
-						<label for="id_first_name">{{ form.first_name.label|capfirst }} </label>
-						<div>{{ form.first_name|attr:"required"|add_class:"form-control" }}</div>
-					</div>
-				</div>
-				<div class="col">
-					<div class ="form-group">
-						<label for="id_last_name">{{ form.last_name.label|capfirst }} </label>
-						<div>{{ form.last_name|add_class:"form-control" }}</div>
-					</div>
-				</div>
-			</div>
-			<div class ="form-group">
-				<label for="id_email">{{ form.email.label|capfirst }} </label>
-				<div>{{ form.email|attr:"required"|add_class:"form-control" }}</div>
-			</div>
-			<div class ="form-group">
-				<label for="id_phone">{{ form.phone.label|capfirst }} </label>
-				<div>{{ form.phone|add_class:"form-control" }}</div>
-			</div>
-			<div class ="form-group">
-				<label for="organization">{{ form.organization.label|capfirst }} </label>
-				<div>{{ form.organization|attr:"required" }}</div>
-			</div>
-			<button type="submit" class="form-control">SUBMIT</button>
-		</form>
-		{% if form.errors %}
-		<div id="form-error" class="alert alert-warning alert-dismissible fade show" role="alert">
-			{% trans "the operation could not be performed because one or more error(s) occurred." as erra_tx %}
-			{% trans "please resubmit the form after making the following changes:" as errb_tx %}
-			<p>{{err1_tx|capfirst}}<br/>{{err2_tx|capfirst}}</p>
-			<ul>
-			{% for field in form %}
-				{% if field.errors %}<li>{{field.label}}: {{ field.errors|striptags }}</li>{% endif %}
-			{% endfor %}
-			</ul>
-		</div>
-		{% endif %}
-	</div>
+
+{% block vendor_js %}
+{% include 'queue_app/includes/vendor_forms_js.html' %}
 {% endblock %}
 
 {% block javascript-content %}
-<script type="text/javascript">
-
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  qmInitAutocomplete(document.getElementById('organization'), '{% url "queue:manager:organization_autocomplete" %}', {
+    plugins: ['remove_button'],
+    maxItems: null,
+  });
+});
 </script>
 {% endblock %}

@@ -1,0 +1,13 @@
+{
+  "private": true,
+  "scripts": {
+    "vendor": "bash scripts/vendor_frontend.sh",
+    "build:css": "tailwindcss -i queue_app/static/queue_app/core/css/tailwind.src.css -o queue_app/static/queue_app/core/css/tailwind.css --minify",
+    "build": "npm run vendor && npm run build:css"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.9",
+    "@tailwindcss/typography": "^0.5.15",
+    "tailwindcss": "^3.4.17"
+  }
+}

@@ -1,11 +1,12 @@
 {% if Organizations %}
-	{% for organization in Organizations %}
-		{% if  request.session.Organization.id  == organization.id|stringformat:"s" %}
-			<a class="dropdown-item disabled" href="{% url 'queue:manager:session_org' organization.id %}?next={{ request.get_full_path|urlencode }}">{{ organization.name }}</a>
-		{% else %}
-			<a class="dropdown-item" href="{% url 'queue:manager:session_org' organization.id %}?next={{ request.get_full_path|urlencode }}">{{ organization.name }}</a>
-		{% endif %}
-	{% endfor %}
+  {% for organization in Organizations %}
+    {% if request.session.Organization.id == organization.id|stringformat:"s" %}
+    <span class="block px-4 py-2 text-sm font-medium text-brand-700">{{ organization.name }}</span>
+    {% else %}
+    <a href="{% url 'queue:manager:session_org' organization.id %}?next={{ request.get_full_path|urlencode }}"
+       class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">{{ organization.name }}</a>
+    {% endif %}
+  {% endfor %}
 {% else %}
-	No Data
+  <span class="block px-4 py-2 text-sm text-slate-400">{% trans "no data" as no_data_tx %}{{ no_data_tx|capfirst }}</span>
 {% endif %}

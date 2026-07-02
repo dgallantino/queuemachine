@@ -1,0 +1,16 @@
+{% load i18n %}
+{% if form.errors %}
+<div class="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-amber-900" role="alert">
+  {% trans "the operation could not be performed because one or more error(s) occurred." as err1_tx %}
+  {% trans "please resubmit the form after making the following changes:" as err2_tx %}
+  <p class="text-sm font-medium">{{ err1_tx|capfirst }}</p>
+  <p class="mt-1 text-sm">{{ err2_tx|capfirst }}</p>
+  <ul class="mt-3 list-disc space-y-1 pl-5 text-sm">
+    {% for field in form %}
+      {% if field.errors %}
+      <li><span class="font-medium">{{ field.label|title }}:</span> {{ field.errors|striptags }}</li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}

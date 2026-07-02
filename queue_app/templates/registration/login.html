@@ -1,40 +1,53 @@
-<!-- templates/registration/login.html -->
 {% extends 'queue_app/base.html' %}
 {% load static %}
-{% block title %}LOGIN{% endblock %}
-{% block stylesheet %}
-<link href="{% static 'queue_app/core/css/login.css'%}" rel="stylesheet" type="text/css">
-{% endblock %}
-{% block javascript %}
-{% if form.errors %}
-		<script>
-		$(window).on('load', function(){
-			var l = 5;
-			for( var i = 0; i <= 5; i++ ) {
-				$('.form-control' ).animate( {
-					'margin-left': '+=' + ( l = -l ) + 'px',
-					'margin-right': '-=' + l + 'px'
-				}, 50);
-			}
-		});
-		</script>
-{% endif %}
-{% endblock %}
+{% load i18n %}
+
+{% block title %}{% trans "login" as login_tx %}{{ login_tx|title }}{% endblock %}
+{% block body_class %}bg-gradient-to-br from-slate-900 via-brand-900 to-slate-950{% endblock %}
+{% block main_class %}min-h-screen flex items-center justify-center p-6{% endblock %}
 
 {% block content %}
-<div class="login_menu">
-	<form id="login-form" method="post" action="{% url 'login' %}">
-	    {% csrf_token %}
-			<div class="login_input_div">
-				<input id="id_username" name="username" type="text" class="form-control login_textbox" placeholder="Username">
+<div class="w-full max-w-md animate-slide-up" x-data="{ shake: {% if form.errors %}true{% else %}false{% endif %} }"
+     :class="shake && 'animate-[shake_0.4s_ease-in-out]'">
+  <div class="mb-8 text-center">
+    <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-500/20 ring-1 ring-brand-400/30">
+      <i data-lucide="log-in" class="h-7 w-7 text-brand-300"></i>
+    </div>
+    <h1 class="font-display text-2xl font-bold text-white">{% trans "sign in" as signin_tx %}{{ signin_tx|title }}</h1>
+    <p class="mt-1 text-sm text-slate-400">Queue Machine</p>
+  </div>
 
-				<input id="id_password" name="password" type="password" class="form-control login_textbox" placeholder="Password">
-			</div>
-			<div class="login_input_div">
-				<input type="submit" value="Login"
-		           class="btn btn-primary pull-right login_button" />
-			</div>
-	    <input type="hidden" name="next" value="{{ next }}" />
-	</form>
+  <form method="post" action="{% url 'login' %}"
+        class="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur">
+    {% csrf_token %}
+    <div class="space-y-4">
+      <div>
+        <label for="id_username" class="mb-1.5 block text-sm font-medium text-slate-300">Username</label>
+        <input id="id_username" name="username" type="text" required autocomplete="username"
+               class="block w-full rounded-xl border-0 bg-white/10 px-4 py-3 text-white placeholder-slate-500 ring-1 ring-white/10 focus:ring-2 focus:ring-brand-500">
+      </div>
+      <div>
+        <label for="id_password" class="mb-1.5 block text-sm font-medium text-slate-300">Password</label>
+        <input id="id_password" name="password" type="password" required autocomplete="current-password"
+               class="block w-full rounded-xl border-0 bg-white/10 px-4 py-3 text-white placeholder-slate-500 ring-1 ring-white/10 focus:ring-2 focus:ring-brand-500">
+      </div>
+    </div>
+    {% if form.errors %}
+    <p class="mt-4 text-sm text-red-300">{% trans "invalid username or password" as err_tx %}{{ err_tx|capfirst }}</p>
+    {% endif %}
+    <input type="hidden" name="next" value="{{ next }}">
+    <button type="submit"
+            class="mt-6 w-full rounded-xl bg-brand-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-900/40 transition hover:bg-brand-500">
+      {% trans "login" as btn_tx %}{{ btn_tx|title }}
+    </button>
+  </form>
+
+  <p class="mt-6 text-center text-sm text-slate-500">
+    <a href="{% url 'queue:index' %}" class="text-brand-400 hover:text-brand-300">← {% trans "back" as back_tx %}{{ back_tx|capfirst }}</a>
+  </p>
 </div>
+{% endblock %}
+
+{% block stylesheet %}
+<style>@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}</style>
 {% endblock %}

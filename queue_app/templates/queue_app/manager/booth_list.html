@@ -1,11 +1,12 @@
-{% if  CounterBooths %}
-	{% for booth in CounterBooths %}
-		{% if  request.session.CounterBooth.id  == booth.id|stringformat:"s" %}
-			<a class="dropdown-item disabled" href="{% url "queue:manager:session_booth" booth.id %}?next={{ request.get_full_path|urlencode }}">{{ booth.display_name }}</a>
-		{% else %}
-			<a class="dropdown-item" href="{% url "queue:manager:session_booth" booth.id %}?next={{ request.get_full_path|urlencode }}">{{ booth.display_name }}</a>
-		{% endif %}
-	{% endfor %}
+{% if CounterBooths %}
+  {% for booth in CounterBooths %}
+    {% if request.session.CounterBooth.id == booth.id|stringformat:"s" %}
+    <span class="block px-4 py-2 text-sm font-medium text-brand-700">{{ booth.display_name }}</span>
+    {% else %}
+    <a href="{% url 'queue:manager:session_booth' booth.id %}?next={{ request.get_full_path|urlencode }}"
+       class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">{{ booth.display_name }}</a>
+    {% endif %}
+  {% endfor %}
 {% else %}
-	Pilih organisasi dahulu
+  <span class="block px-4 py-2 text-sm text-slate-400">{% trans "choose an organization first" as choose_tx %}{{ choose_tx|capfirst }}</span>
 {% endif %}

@@ -1,7 +1,18 @@
 {% extends 'queue_app/base.html' %}
-{% block javascript %}
-  <script type="text/javascript">
-    window.alert('You have been loged out');
-    window.location = "{% url 'queue:machine_url' %}";
-  </script>
+{% load i18n %}
+
+{% block title %}{% trans "logged out" as title_tx %}{{ title_tx|title }}{% endblock %}
+{% block body_class %}bg-gradient-to-br from-slate-900 via-brand-900 to-slate-950{% endblock %}
+{% block main_class %}min-h-screen flex items-center justify-center p-6{% endblock %}
+
+{% block content %}
+<div class="text-center animate-slide-up">
+  <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-500/20">
+    <i data-lucide="log-out" class="h-7 w-7 text-brand-300"></i>
+  </div>
+  <h1 class="font-display text-2xl font-bold text-white">{% trans "you have been logged out" as msg_tx %}{{ msg_tx|capfirst }}</h1>
+  <a href="{% url 'queue:index' %}" class="mt-6 inline-block text-brand-400 hover:text-brand-300">
+    {% trans "return home" as home_tx %}{{ home_tx|capfirst }} →
+  </a>
+</div>
 {% endblock %}

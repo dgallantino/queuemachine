@@ -339,3 +339,10 @@ modules.xml
 .idea/sonarlint
 
 # End of https://www.toptal.com/developers/gitignore/api/pycharm+all
+# Queue Machine — generated at build/deploy (see README.md)
+/static/
+/staticfiles/
+queue_app/static/queue_app/vendor/
+queue_app/static/queue_app/core/css/tailwind.css
+node_modules/
+package-lock.json

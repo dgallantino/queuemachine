@@ -1,84 +1,121 @@
 {% extends 'queue_app/base.html' %}
 {% load static %}
 {% load i18n %}
-{% block title %}
-Info Board
-{% endblock %}
-{% block stylesheet %}
-<link href="{% static 'queue_app/core/css/info_board.css'%}" rel="stylesheet" type="text/css">
-{% endblock %}
-{% block javascript %}
-<script src="{% static 'queue_app/core/js/infoboard.js' %}"></script>
-<script type="text/javascript">
-$('.booth-card').as_booth_detail();
-$('.queue-list-table').as_queue_list();
-setInterval(function(){
-	$('.booth-card').as_booth_detail();
-	$('.queue-list-table').as_queue_list();
-},10*1000);
 
-</script>
-{% endblock %}
+{% block title %}{% trans "information board" as title_tx %}{{ title_tx|title }}{% endblock %}
+{% block body_class %}bg-slate-950 text-white{% endblock %}
+{% block main_class %}{% endblock %}
+
 {% block content %}
-<div class="container-fluid" >
-	<div class="row mt-3">
-		<div class="col">
-			<div class="card-deck booth-list" >
-				{% for booth in CounterBooths %}
-				<div class="card booth-card" booth_url="{% url "queue:infoboard:booth_detail"  booth.id%}">
-					<div class="card-header">{{ booth.display_name }}</div>
-					<div class="card-body">
-						{% if booth.queues.today_filter.last %}
-							{% with booth.queues.today_filter.last as last_queue %}
-							<h5 class="card-title">{% trans "queue" as queue_tx %}{{queue_tx|capfirst}}</h5>
-							<p class="card-text queue-data">{{ last_queue.character }}{{ last_queue.number }} ({{ last_queue.service }})</p>
-							{% endwith %}
-						{% else %}
-							<p class="card-text queue-data">{% trans "no data" as no_data_tx %} {{no_data_tx|capfirst}}</p><br/>
-						{% endif %}
-					</div>
-					<div class="card-footer">
-						footer
-					</div>
-				</div>
-				{% endfor %}
-			</div>
-		</div>
-	</div>
-	<div class="row mt-3">
-		<div class="col-4 h-100">
-			<table class="table">
-				<thead>
-					<tr>
-						<th>
-							{% trans "ticket" as ticket_tx %}
-							{{ticket_tx|capfirst}}
-						</th>
-						<th>
-							{% trans "service" as service_tx %}
-							{{service_tx|capfirst}}
-						</th>
-					</tr>
-				</thead>
-				<tbody class="queue-list-table" queues_url="{% url 'queue:infoboard:queues' %}">
-				</tbody>
-			</table>
-		</div>
-		<div class="col-8">
-			<div class="carousel slide" data-ride="carousel">
-				<div class="carousel-inner" style=" width:100%; max-height: 300px !important;">
-					<div class="carousel-item active">
-						<img class="d-block w-100" src="{% static 'queue_app/images/ad1.jpg' %}" alt="First slide">
-					</div>
-					<div class="carousel-item">
-						<img class="d-block w-100" src="{% static 'queue_app/images/ad2.jpg' %}" alt="Second slide">
-					</div>
-					<div class="carousel-item">
-						<img class="d-block w-100" src="{% static 'queue_app/images/ad3.jpg' %}" alt="Third slide">
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+<div class="min-h-screen">
+  <!-- Header -->
+  <header class="border-b border-white/10 bg-slate-900/80 px-6 py-4 backdrop-blur">
+    <div class="mx-auto flex max-w-7xl items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-600">
+          <i data-lucide="monitor" class="h-5 w-5"></i>
+        </div>
+        <div>
+          <h1 class="font-display text-xl font-bold">{% trans "queue status" as status_tx %}{{ status_tx|title }}</h1>
+          <p class="text-xs text-slate-400" x-data x-text="new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'})" x-init="setInterval(() => $el.textContent = new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'}), 1000)"></p>
+        </div>
+      </div>
+      <a href="{% url 'queue:index' %}" class="text-sm text-slate-500 hover:text-brand-400">Home</a>
+    </div>
+  </header>
+
+  <div class="mx-auto max-w-7xl px-6 py-8">
+    <!-- Booth cards - now serving -->
+    <section class="mb-10">
+      <h2 class="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-slate-400">
+        <i data-lucide="radio" class="h-4 w-4 text-brand-400"></i>
+        {% trans "now serving" as serving_tx %}{{ serving_tx|title }}
+      </h2>
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {% for booth in CounterBooths %}
+        <div class="booth-card overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-slate-800 to-slate-900 shadow-xl"
+             hx-get="{% url 'queue:infoboard:booth_detail' booth.id %}"
+             hx-trigger="every 10s"
+             hx-target="find .queue-data"
+             hx-swap="innerHTML">
+          <div class="border-b border-white/10 bg-white/5 px-5 py-3">
+            <span class="font-display text-sm font-semibold uppercase tracking-wide text-brand-300">{{ booth.display_name }}</span>
+          </div>
+          <div class="px-5 py-8 text-center">
+            <p class="mb-2 text-xs uppercase tracking-widest text-slate-500">{% trans "queue" as queue_tx %}{{ queue_tx|title }}</p>
+            <div class="queue-data font-display text-4xl font-bold text-white sm:text-5xl">
+              {% if booth.queues.today_filter.last %}
+                {% with booth.queues.today_filter.last as last_queue %}
+                <span class="text-brand-400">{{ last_queue.character }}</span>{{ last_queue.number }}
+                <p class="mt-2 text-base font-normal text-slate-400">{{ last_queue.service }}</p>
+                {% endwith %}
+              {% else %}
+                <span class="text-2xl text-slate-600">—</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <p class="col-span-full text-center text-slate-500">{% trans "no counters configured" as empty_tx %}{{ empty_tx|capfirst }}</p>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- Waiting list + carousel -->
+    <div class="grid gap-8 lg:grid-cols-5">
+      <section class="lg:col-span-2">
+        <h2 class="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-slate-400">
+          <i data-lucide="list-ordered" class="h-4 w-4 text-sky-400"></i>
+          {% trans "waiting" as waiting_tx %}{{ waiting_tx|title }}
+        </h2>
+        <div class="overflow-hidden rounded-2xl border border-white/10 bg-slate-900">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-white/10 bg-white/5 text-left text-xs uppercase tracking-wide text-slate-400">
+                <th class="px-5 py-3">{% trans "ticket" as ticket_tx %}{{ ticket_tx|capfirst }}</th>
+                <th class="px-5 py-3">{% trans "service" as service_tx %}{{ service_tx|capfirst }}</th>
+              </tr>
+            </thead>
+            <tbody id="waiting-queues"
+                   hx-get="{% url 'queue:infoboard:queues' %}"
+                   hx-trigger="load, every 10s"
+                   hx-swap="innerHTML">
+              <tr><td colspan="2" class="px-5 py-8 text-center text-slate-500">
+                <i data-lucide="loader-circle" class="mx-auto h-6 w-6 animate-spin"></i>
+              </td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="lg:col-span-3" x-data="qmCarousel(3, 8000)">
+        <h2 class="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-slate-400">
+          <i data-lucide="image" class="h-4 w-4 text-violet-400"></i>
+          Info
+        </h2>
+        <div class="relative overflow-hidden rounded-2xl border border-white/10 bg-slate-900">
+          <div class="relative aspect-[16/9] max-h-80">
+            <img src="{% static 'queue_app/images/ad1.jpg' %}" alt=""
+                 class="absolute inset-0 h-full w-full object-cover transition-opacity duration-700"
+                 :class="isSlide(0) ? 'opacity-100' : 'opacity-0'">
+            <img src="{% static 'queue_app/images/ad2.jpg' %}" alt=""
+                 class="absolute inset-0 h-full w-full object-cover transition-opacity duration-700"
+                 :class="isSlide(1) ? 'opacity-100' : 'opacity-0'">
+            <img src="{% static 'queue_app/images/ad3.jpg' %}" alt=""
+                 class="absolute inset-0 h-full w-full object-cover transition-opacity duration-700"
+                 :class="isSlide(2) ? 'opacity-100' : 'opacity-0'">
+          </div>
+          <div class="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
+            <template x-for="i in total" :key="i">
+              <button type="button" @click="current = i - 1"
+                      class="h-2 w-2 rounded-full transition"
+                      :class="current === i - 1 ? 'bg-brand-400 w-6' : 'bg-white/30'"></button>
+            </template>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
 </div>
 {% endblock %}
+

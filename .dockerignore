@@ -1,0 +1,26 @@
+# Python
+__pycache__
+*.pyc
+*.pyo
+.git
+.gitignore
+.env
+.venv
+venv
+node_modules
+staticfiles
+static
+
+# Frontend build artifacts (rebuilt in Docker)
+queue_app/static/queue_app/vendor
+queue_app/static/queue_app/core/css/tailwind.css
+
+# IDE / OS
+.idea
+*.iml
+.DS_Store
+
+# Docs / screenshots not needed in image
+screenshots
+*.md
+!README.md

@@ -1,21 +1,83 @@
 {% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="id">
 <head>
-	<link href="{% static 'queue_app/core/css/machine-placeholder_ticket.css' %}" rel="stylesheet" type="text/css">
+  <meta charset="utf-8">
+  <title>Ticket {{ Queue.character }}{{ Queue.number }}</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #fff; }
+    .ticket {
+      width: 80mm;
+      margin: 0 auto;
+      padding: 8mm 6mm;
+      text-align: center;
+    }
+    .ticket-header {
+      border-bottom: 2px dashed #0d9488;
+      padding-bottom: 4mm;
+      margin-bottom: 4mm;
+    }
+    .ticket-header h1 {
+      font-size: 11pt;
+      font-weight: 700;
+      color: #0f766e;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .ticket-number {
+      font-size: 42pt;
+      font-weight: 800;
+      color: #134e4a;
+      line-height: 1;
+      margin: 4mm 0;
+      letter-spacing: -0.02em;
+    }
+    .ticket-service {
+      font-size: 12pt;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 2mm;
+    }
+    .ticket-meta {
+      font-size: 9pt;
+      color: #64748b;
+      margin-top: 3mm;
+    }
+    .ticket-booking {
+      margin-top: 4mm;
+      padding-top: 3mm;
+      border-top: 1px dashed #cbd5e1;
+      font-size: 9pt;
+      color: #475569;
+    }
+    .ticket-footer {
+      margin-top: 5mm;
+      font-size: 8pt;
+      color: #94a3b8;
+    }
+  </style>
 </head>
-
 <body>
-	<!-- make the ticket layout here -->
-	<!-- dynamic content must have these as their ids -->
-	<!-- queue_service  : for service name -->
-	<!-- queue_time     : for date time the queue is created -->
-	<!-- queue_number   : for the queueu line number -->
-	<div class="ticket_div">HELLO</div>
-	<div class="ticket_div" id="queue_service">{{ Queue.service }}</div>
-	<div class="ticket_div" id="queue_time">{{ Queue.date_created }}</div>
-	<div class="ticket_div big_number" id="qeueu_number">{{ Queue.character|default:'' }} {{ Queue.number }}</div>
-	{% if Queue.customer or Queue.booking_datetime %}
-	<div class="ticket_div" >{{ Queue.customer.get_full_name|default:Queue.customer.username }}</div>
-	<div class="ticket_div" >your booking time is</div>
-	<div class="ticket_div" >{{ Queue.booking_datetime|date:"H:i" }}</div>
-	{% endif %}
+  <div class="ticket">
+    <div class="ticket-header">
+      <h1>{% trans "queue ticket" as ticket_tx %}{{ ticket_tx|title }}</h1>
+    </div>
+    <div class="ticket-service" id="queue_service">{{ Queue.service }}</div>
+    <div class="ticket-number" id="queue_number">{{ Queue.character|default:'' }}{{ Queue.number }}</div>
+    <div class="ticket-meta" id="queue_time">{{ Queue.date_created|date:"d M Y, H:i" }}</div>
+    {% if Queue.customer or Queue.booking_datetime %}
+    <div class="ticket-booking">
+      {% if Queue.customer %}
+      <div>{{ Queue.customer.get_full_name|default:Queue.customer.username }}</div>
+      {% endif %}
+      {% if Queue.booking_datetime %}
+      <div>{% trans "booking time" as bt_tx %}{{ bt_tx|title }}: {{ Queue.booking_datetime|date:"H:i" }}</div>
+      {% endif %}
+    </div>
+    {% endif %}
+    <div class="ticket-footer">{% trans "please wait for your number to be called" as wait_tx %}{{ wait_tx|capfirst }}</div>
+  </div>
 </body>
+</html>

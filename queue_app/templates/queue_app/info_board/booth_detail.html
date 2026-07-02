@@ -1,7 +1,8 @@
 {% if CounterBooth.latest_queue %}
   {% with CounterBooth.latest_queue as last_queue %}
-    {{ last_queue.character }}{{ last_queue.number }} ({{ last_queue.service }})
+  <span class="text-brand-400">{{ last_queue.character }}</span>{{ last_queue.number }}
+  <p class="mt-2 text-base font-normal text-slate-400">{{ last_queue.service }}</p>
   {% endwith %}
 {% else %}
-  No Data
+  <span class="text-2xl text-slate-600">{% trans "no data" as no_data_tx %}{{ no_data_tx|capfirst }}</span>
 {% endif %}

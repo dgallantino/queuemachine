@@ -1,14 +1,14 @@
 {% for queue in Queues %}
-{% if queue.is_booking %}
-<tr class="booking">
-{% else %}
+<tr class="border-b border-white/5 transition {% if queue.is_booking %}bg-sky-950/30{% endif %}">
+  <td class="px-5 py-3">
+    <span class="font-display text-lg font-bold text-brand-300">{{ queue.character }}{{ queue.number }}</span>
+  </td>
+  <td class="px-5 py-3 text-slate-300">{{ queue.service }}</td>
+</tr>
+{% empty %}
 <tr>
-{% endif %}
-	<td>
-		{{ queue.character }}{{ queue.number }}
-	</td>
-	<td>
-		{{ queue.service }}
-	</td>
+  <td colspan="2" class="px-5 py-12 text-center text-slate-500">
+    {% trans "no queues waiting" as empty_tx %}{{ empty_tx|capfirst }}
+  </td>
 </tr>
 {% endfor %}

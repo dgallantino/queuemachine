@@ -1,72 +1,99 @@
 {% extends "queue_app/base.html" %}
 {% load static %}
 {% load i18n %}
-{% block title %}Machine{% endblock %}
-{% block stylesheet %}
-	<link href="{% static 'queue_app/core/css/machine.css'%}" rel="stylesheet" type="text/css">
-	<link href="{% static 'queue_app/core/css/machine-sidebar.css'%}" rel="stylesheet" type="text/css">
-{% endblock %}
+
+{% block title %}{% trans "machine" as machine_tx %}{{ machine_tx|title }}{% endblock %}
+{% block body_class %}bg-slate-100{% endblock %}
+{% block main_class %}{% endblock %}
 
 {% block content %}
-<div class="wrapper">
-		<!-- sidebar -->
-    <div class="sidebar-wrapper text-white">
-    	<div class="sidebar-panel">
-	    	<div class="sidebar-brand">
-    			logo CAHAYA
-    		</div>
-    		<div class="list-header text-right" id="list-header">
-    			{% trans "booking queue" as b_q_tx %}
-					{{b_q_tx|title}}
-    			<hr class="white">
-    		</div>
-    		<div id="booking-list-body" class="list-body" queues_url="{% url 'queue:machine:booking_list' %}">
-    		</div>
-    	</div>
+<div class="flex min-h-screen" x-data="qmSidebar()">
+  <!-- Booking sidebar -->
+  <aside
+    class="flex shrink-0 flex-col bg-gradient-to-b from-brand-800 to-brand-950 text-white transition-all duration-300"
+    :class="open ? 'w-72' : 'w-0 overflow-hidden'"
+  >
+    <div class="flex h-16 items-center justify-between border-b border-white/10 px-5">
+      <span class="font-display text-lg font-bold tracking-wide">Queue</span>
+      <span class="rounded-full bg-white/10 px-2 py-0.5 text-xs text-brand-100">{% trans "bookings" as b_tx %}{{ b_tx|title }}</span>
     </div>
-		<!-- end of sidebar -->
+    <div class="flex-1 overflow-y-auto p-4" id="booking-list-body"
+         hx-get="{% url 'queue:machine:booking_list' %}"
+         hx-trigger="load"
+         hx-swap="innerHTML">
+      <div class="flex justify-center py-8 text-brand-300">
+        <i data-lucide="loader-circle" class="h-6 w-6 animate-spin"></i>
+      </div>
+    </div>
+  </aside>
 
-		<!-- content -->
-    <div class="page-content-wrapper container-fluid">
-	    <a href="#menu-toggle" class="btn btn-secondary sharp" id="menu-toggle">
-				<i id="button-icon"class="fa fa-angle-double-right rotate"></i>
-			</a>
-    	<div class="container-fluid vertical-center">
-    		<div class="container-fluid">
-				{% for Service in Services %}
-				<div class="container-fluid  btn-container text-center">
-					<a class="service-button" href="{% url 'queue:machine:index' %}" service_id="{{ Service.id }}">{{ Service.name }}</a>
-				</div>
-				{% endfor %}
-			</div>
-		</div>
-	</div>
-	<!-- end of content -->
+  <!-- Main kiosk area -->
+  <div class="relative flex flex-1 flex-col">
+    <header class="flex h-16 items-center justify-between border-b border-slate-200 bg-white px-6 shadow-sm">
+      <button type="button" @click="toggle()"
+              class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100">
+        <i data-lucide="panel-left" class="h-5 w-5"></i>
+        {% trans "bookings" as sidebar_tx %}{{ sidebar_tx|title }}
+      </button>
+      <a href="{% url 'queue:index' %}" class="text-sm text-slate-500 hover:text-brand-600">← Home</a>
+    </header>
+
+    <div class="flex flex-1 flex-col items-center justify-center gap-6 p-8">
+      <div class="text-center mb-4">
+        <h1 class="font-display text-3xl font-bold text-slate-800">{% trans "select service" as select_tx %}{{ select_tx|title }}</h1>
+        <p class="mt-2 text-slate-500">{% trans "tap a service to print your ticket" as tap_tx %}{{ tap_tx|capfirst }}</p>
+      </div>
+
+      <div class="grid w-full max-w-2xl gap-4">
+        {% for Service in Services %}
+        <button type="button"
+                class="service-button group relative overflow-hidden rounded-2xl border-2 border-brand-200 bg-white p-8 text-left shadow-sm transition hover:border-brand-500 hover:shadow-lg hover:shadow-brand-100 active:scale-[0.98]"
+                data-print-url="{% url 'queue:machine:index' %}"
+                data-service-id="{{ Service.id }}"
+                onclick="qmIssueTicket(this.dataset.printUrl, {service: this.dataset.serviceId})">
+          <div class="flex items-center gap-4">
+            <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-brand-600 text-white shadow-md group-hover:bg-brand-500">
+              <span class="font-display text-2xl font-bold">{{ Service.queue_char }}</span>
+            </div>
+            <div>
+              <span class="block font-display text-xl font-bold uppercase tracking-wide text-slate-800 group-hover:text-brand-700">{{ Service.name }}</span>
+              {% if Service.desc %}<span class="mt-1 block text-sm text-slate-500">{{ Service.desc }}</span>{% endif %}
+            </div>
+            <i data-lucide="printer" class="ml-auto h-6 w-6 text-slate-300 group-hover:text-brand-500"></i>
+          </div>
+        </button>
+        {% empty %}
+        <p class="text-center text-slate-500">{% trans "no services available" as empty_tx %}{{ empty_tx|capfirst }}</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}
 
 {% block javascript %}
-<script src="{% static 'queue_app/core/js/cookies_manager.js' %}"></script>
-<script src="{% static 'queue_app/core/js/machine.js' %}"></script>
-<script type="text/javascript">
-$("#menu-toggle").click(function(e) {
-    e.preventDefault();
-    $(".wrapper").toggleClass("toggled");
-    $("#button-icon").toggleClass("flip")
+<script>
+document.body.addEventListener('click', function (e) {
+  var link = e.target.closest('a.booking_link');
+  if (!link) return;
+  e.preventDefault();
+  qmIssueTicket(link.getAttribute('href'), { is_printed: 'True' }, function () {
+    var item = link.closest('.booking-item');
+    if (item) item.remove();
+  });
 });
 
-$('body').as_print_handler('a.booking_link');
-$('body').as_print_handler('a.service-button');
-$('#booking-list-body').get_queues();
-
-this.last_queue_id='asd';
-setInterval(function(){
-	var last_queue_id = $('#booking-list-body .list:last-child').attr('queue_id');
-	if(this.last_queue_id != last_queue_id){
-		this.last_queue_id = last_queue_id;
-		$('#booking-list-body').get_queues();
-	}
-},5*60*1000);
-
+(function () {
+  var baseUrl = '{% url "queue:machine:booking_list" %}';
+  var lastQueueId = null;
+  setInterval(function () {
+    var items = document.querySelectorAll('#booking-list-body .booking-item');
+    var latest = items.length ? items[items.length - 1].dataset.queueId : null;
+    if (latest === lastQueueId) return;
+    lastQueueId = latest;
+    var url = baseUrl + (latest ? latest + '/' : '');
+    htmx.ajax('GET', url, { target: '#booking-list-body', swap: 'beforeend' });
+  }, 5 * 60 * 1000);
+})();
 </script>
 {% endblock %}

@@ -1,22 +1,42 @@
-<!-- templates/registration/login.html -->
 {% extends 'queue_app/base.html' %}
-
 {% load static %}
+{% load i18n %}
 
-{% block title %}Sign Up{% endblock %}
-
-{% block stylesheet %}
-{% endblock %}
-
-{% block javascript %}
-{% endblock %}
+{% block title %}{% trans "sign up" as signup_tx %}{{ signup_tx|title }}{% endblock %}
+{% block body_class %}bg-gradient-to-br from-slate-900 via-brand-900 to-slate-950{% endblock %}
+{% block main_class %}min-h-screen flex items-center justify-center p-6{% endblock %}
 
 {% block content %}
-<div class="login_menu">
-	<form id="login-form" method="post">
-	    {% csrf_token %}
-	    {{ form.as_p }}
-	    <button type="submit">Sign up</button>
-	</form>
+<div class="w-full max-w-md animate-slide-up">
+  <div class="mb-8 text-center">
+    <h1 class="font-display text-2xl font-bold text-white">{% trans "create account" as create_tx %}{{ create_tx|title }}</h1>
+  </div>
+
+  <form method="post" class="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur space-y-4">
+    {% csrf_token %}
+    {% for field in form %}
+    <div>
+      <label for="{{ field.id_for_label }}" class="mb-1.5 block text-sm font-medium text-slate-300">{{ field.label|capfirst }}</label>
+      {% if field.errors %}<p class="mb-1 text-sm text-red-300">{{ field.errors|striptags }}</p>{% endif %}
+      {% if field.field.widget.input_type == 'password' %}
+      <input type="password" name="{{ field.html_name }}" id="{{ field.id_for_label }}" autocomplete="new-password"
+             class="block w-full rounded-xl border-0 bg-white/10 px-4 py-3 text-white ring-1 ring-white/10 focus:ring-2 focus:ring-brand-500">
+      {% else %}
+      <input type="text" name="{{ field.html_name }}" id="{{ field.id_for_label }}"
+             {% if field.value %}value="{{ field.value }}"{% endif %}
+             class="block w-full rounded-xl border-0 bg-white/10 px-4 py-3 text-white ring-1 ring-white/10 focus:ring-2 focus:ring-brand-500">
+      {% endif %}
+      {% if field.help_text %}<p class="mt-1 text-xs text-slate-500">{{ field.help_text }}</p>{% endif %}
+    </div>
+    {% endfor %}
+    <button type="submit"
+            class="w-full rounded-xl bg-brand-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-brand-500">
+      {% trans "sign up" as btn_tx %}{{ btn_tx|title }}
+    </button>
+  </form>
+
+  <p class="mt-6 text-center text-sm text-slate-500">
+    <a href="{% url 'login' %}" class="text-brand-400 hover:text-brand-300">{% trans "already have an account? sign in" as login_link %}{{ login_link|capfirst }}</a>
+  </p>
 </div>
 {% endblock %}

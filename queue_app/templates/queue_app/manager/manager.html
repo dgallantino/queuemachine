@@ -1,135 +1,103 @@
 {% extends "queue_app/manager/manager_base.html" %}
 {% load static %}
 {% load i18n %}
-{% block stylesheet-content %}
-	<link href="{% static 'queue_app/core/css/manager.css'%}" rel="stylesheet" type="text/css">
-	<link href="{% static 'queue_app/bootstrap-table/src/bootstrap-table.css'%}" rel="stylesheet" type="text/css">
+
+{% block manager_content %}
+<div class="mx-auto max-w-7xl px-4 py-6 sm:px-6"
+     x-data="qmTabs('tabContent_{% if Services %}{{ Services.0.id }}{% endif %}')">
+
+  <div class="mb-6 flex items-center justify-between">
+    <h1 class="font-display text-2xl font-bold text-slate-800">{% trans "queue dashboard" as dash_tx %}{{ dash_tx|title }}</h1>
+    {% if request.session.CounterBooth %}
+    <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-100 px-3 py-1 text-sm font-medium text-brand-800">
+      <i data-lucide="monitor-dot" class="h-4 w-4"></i>
+      {{ request.session.CounterBooth.display_name }}
+    </span>
+    {% else %}
+    <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1 text-sm font-medium text-amber-800">
+      <i data-lucide="alert-circle" class="h-4 w-4"></i>
+      {% trans "choose counter" as cc_tx %}{{ cc_tx|title }}
+    </span>
+    {% endif %}
+  </div>
+
+  <div class="flex flex-col gap-6 lg:flex-row">
+    <!-- Service tabs -->
+    <nav class="flex shrink-0 flex-row gap-2 overflow-x-auto lg:w-56 lg:flex-col lg:overflow-visible">
+      {% for service in Services %}
+      <button type="button"
+              @click="select('tabContent_{{ service.id }}')"
+              :class="isActive('tabContent_{{ service.id }}') ? 'bg-brand-600 text-white shadow-md' : 'bg-white text-slate-600 hover:bg-slate-50'"
+              class="whitespace-nowrap rounded-xl border border-slate-200 px-4 py-3 text-left text-sm font-medium transition">
+        <span class="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/10 text-xs font-bold">{{ service.queue_char }}</span>
+        {{ service.name }}
+      </button>
+      {% empty %}
+      <p class="text-sm text-slate-500">{% trans "make at least one service" as empty_tx %}{{ empty_tx|capfirst }}</p>
+      {% endfor %}
+    </nav>
+
+    <!-- Tab panels -->
+    <div class="min-w-0 flex-1">
+      {% for service in Services %}
+      <div x-show="isActive('tabContent_{{ service.id }}')" x-cloak class="rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div class="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+          <h2 class="font-display text-lg font-semibold text-slate-800">{{ service.name }}</h2>
+          <button type="button"
+                  class="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-200"
+                  hx-get="{% url 'queue:manager:service_queues' service.id %}"
+                  hx-target="#queue-body-{{ service.id }}"
+                  hx-swap="innerHTML">
+            <i data-lucide="refresh-cw" class="h-4 w-4"></i>
+            {% trans "refresh" as f5_tx %}{{ f5_tx|title }}
+          </button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-slate-100 bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                <th class="px-5 py-3">#</th>
+                <th class="px-5 py-3">{% trans "queue" as queue_tx %}{{ queue_tx|title }}</th>
+                <th class="hidden px-5 py-3 lg:table-cell">{% trans "booking time" as time_tx %}{{ time_tx|title }}</th>
+                <th class="hidden px-5 py-3 md:table-cell">{% trans "customer" as customer_tx %}{{ customer_tx|title }}</th>
+                <th class="hidden px-5 py-3 md:table-cell">{% trans "time" as print_time_tx %}{{ print_time_tx|title }}</th>
+                <th class="px-5 py-3">{% trans "options" as opt_tx %}{{ opt_tx|title }}</th>
+              </tr>
+            </thead>
+            <tbody id="queue-body-{{ service.id }}"
+                   class="divide-y divide-slate-100"
+                   hx-get="{% url 'queue:manager:service_queues' service.id %}"
+                   hx-trigger="revealed"
+                   hx-swap="innerHTML">
+              <tr>
+                <td colspan="6" class="px-5 py-8 text-center text-slate-400">
+                  <i data-lucide="loader-circle" class="mx-auto h-6 w-6 animate-spin"></i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
 {% endblock %}
-{% block head_script %}
-<script src="{% static 'queue_app/bootstrap-table/src/bootstrap-table.js' %}"></script>
-{% endblock %}
+
 {% block javascript-content %}
-<script src="{% static 'queue_app/core/js/cookies_manager.js' %}"></script>
-
-<script type="text/javascript">
-//activate tool tip
-$('body').tooltip({
-    selector: '[data-toggle="tooltip"]',
-		'delay' : { show: 3000, hide: 500 }
-});
-
-//queue table initialization
-$('.queue-list-table').as_queue_list();
-
-//uncoment these 3 lines for auto refresh
-//setInterval(function(){
-//	$('.queue-list-table').as_queue_list();
-//},5*60*1000);
-
-//recall queue table initialization for refresh button
-$('.btn.btn-refresh').click(function(event){
-	event.preventDefault();
-	$(this).parent().find('.queue-list-table').as_queue_list();
-});
-
-//calling queue update queue data in database
-//so a POST request to the server is required to change that data
-//if the request is successfull then the second click will play the audio
-$('body').on('click','a.btn-bell',handle_call);
-
-
-$('body').on('click','a.btn-check',handle_finish);
-
-$(document).ready(function(){
-    $('a[role="tab"]').on('show.bs.tab', function(e) {
-        localStorage.setItem('activeTab', $(e.target).attr('href'));
-    });
-    const activeTab = localStorage.getItem('activeTab');
-    if(activeTab){
-        $('#v-pills-tab a[href="' + activeTab + '"]').tab('show');
-    }
+<script>
+document.body.addEventListener('click', function (e) {
+  var callBtn = e.target.closest('a.btn-bell');
+  if (callBtn) {
+    e.preventDefault();
+    qmCallQueue(callBtn.getAttribute('href'), callBtn.dataset.booth, callBtn.closest('tr'));
+    return;
+  }
+  var finishBtn = e.target.closest('a.btn-check');
+  if (finishBtn) {
+    e.preventDefault();
+    qmFinishQueue(finishBtn.getAttribute('href'), finishBtn.closest('tr'));
+  }
 });
 </script>
-{% endblock %}
-
-{% block content %}
-<div class="row">
-	<div class="col-3">
-		<div class="nav flex-column nav-pills sticky-top" id="v-pills-tab" role="tablist" aria-orientation="vertical" >
-		{% for service in Services %}
-			<a
-				class="nav-link text-capitalize {{ forloop.first|yesno:"active,," }}"
-				id="tab_{{ service.id }}"
-				data-toggle="pill" href="#tabContent_{{ service.id }}" role="tab"
-				aria-controls="tabContent_{{ service.id }}"
-				aria-selected="{{ forloop.first }}"
-			>
-				{{ service.name }} <span class="badge badge-secondary"></span>
-			</a>
-		{% empty %}
-			<span><i class="fa fa-close"></i>Make atleast one service</span>
-    	{% endfor %}
-    	</div>
-	</div>
-  	<div class="col-9">
-    	<div class="tab-content" id="v-pills-tabContent">
-    	{% for service in Services %}
-      		<div class="tab-pane fade {{ forloop.first|yesno:"show active," }}" id="tabContent_{{ service.id }}" role="tabpanel" aria-labelledby="tab_{{ service.id }}" >
-      			<a
-							class="btn btn-primary btn-refresh"
-							href="#" role="button" style="margin-bottom:10px"
-							data-toggle="tooltip" data-placement="bottom"
-							title="{% trans "refresh queue table" as f5_tooltip_tx %}{{f5_tooltip_tx|capfirst}}"
-						>
-							{% trans "refresh" as f5_tx %}{{f5_tx|title}}
-						</a>
-  				<table id="tabTable_{{ service.id }}" class="table table-sm" data-toggle="#tabTable_{{ service.id }}" >
-					<thead>
-  						<tr>
-  							<th rowspan="2">
-  								#
-  							</th>
-  							<th class="text-center" colspan="5">
-  								{% trans "queue list" as detail_tx %}
-									{{detail_tx|title}}
-  							</th>
-  						</tr>
-  						<tr>
-  							<th>
-  								{% trans "queue" as queue_tx%}
-									{{queue_tx|title}}
-  							</th>
-  							<th class="d-none d-lg-table-cell">
-  								{% trans "booking time" as time_tx%}
-									{{time_tx|title}}
-  							</th>
-  							<th class="d-none d-md-table-cell">
-  								{% trans "customer" as customer_tx%}
-									{{customer_tx|title}}
-  							</th>
-                            <th class="d-none d-md-table-cell">
-                                {% trans "time" as time_tx%}
-                                {{time_tx|title}}
-                            </th>
-  							<th>
-  								{% trans "options" as opt_tx%}
-									{{opt_tx|title}}
-  							</th>
-  						</tr>
-					</thead>
-					<tbody class="queue-list-table" queues_url="{% url 'queue:manager:service_queues' service.id %}">
-						<tr>
-							<td class ="text-center" colspan="5">
-								<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-								<span class="sr-only">Loading...</span>
-							</td>
-						</tr>
-					</tbody>
-  				</table>
-      		</div>
-    	{% endfor %}
-		</div>
-	</div>
-</div>
-
 {% endblock %}

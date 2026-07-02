@@ -1,0 +1,17 @@
+{% if messages %}
+<div class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 max-w-sm w-full pointer-events-none">
+  {% for message in messages %}
+  <div
+    data-auto-dismiss
+    class="pointer-events-auto animate-slide-up rounded-xl border px-4 py-3 shadow-lg backdrop-blur-sm transition-all duration-300
+      {% if message.tags == 'error' %}bg-red-50 border-red-200 text-red-800
+      {% elif message.tags == 'warning' %}bg-amber-50 border-amber-200 text-amber-900
+      {% elif message.tags == 'success' %}bg-emerald-50 border-emerald-200 text-emerald-900
+      {% else %}bg-slate-50 border-slate-200 text-slate-800{% endif %}"
+    role="alert"
+  >
+    <p class="text-sm font-medium">{{ message|capfirst }}</p>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}

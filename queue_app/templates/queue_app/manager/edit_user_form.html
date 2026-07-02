@@ -1,68 +1,56 @@
 {% extends "queue_app/manager/manager_base.html" %}
 {% load i18n %}
 {% load static %}
-{% load widget_tweaks %}
-{% block title %}Edit profile{% endblock %}
 
-{% block stylesheet-content %}
-{{ form.media }}
-{% endblock %}
-{% block content %}
-	<div class="container-fluid form-container">
-		<form id="add-booking-form" action="{% url "queue:manager:edit_user" %}" method="POST">
-			{% csrf_token %}
-			<div class="form-row">
-				<div class="col">
-					<div class ="form-group">
-						<label for="id_first_name">{{ form.first_name.label|capfirst }} </label>
-						<div>{{ form.first_name|attr:"required"|add_class:"form-control" }}</div>
-					</div>
-				</div>
-				<div class="col">
-					<div class ="form-group">
-						<label for="id_last_name">{{ form.last_name.label|capfirst }} </label>
-						<div>{{ form.last_name|add_class:"form-control" }}</div>
-					</div>
-				</div>
-			</div>
-			<div class ="form-group">
-				<label for="id_username">{{ form.username.label|capfirst }} </label>
-				<div>{{ form.username|attr:"required"|add_class:"form-control" }}</div>
-			</div>
-			<div class ="form-group">
-				<label for="id_email">{{ form.email.label|capfirst }} </label>
-				<div>{{ form.email|attr:"required"|add_class:"form-control" }}</div>
-			</div>
-			<div class ="form-group">
-				<label for="id_phone">{{ form.phone.label|capfirst }} </label>
-				<div>{{ form.phone|add_class:"form-control" }}</div>
-			</div>
-			<div class ="form-group">
-				<label for="organization">{{ form.password.label|capfirst }} </label>
-				<div>{{ form.password }}</div>
-			</div>
-			<a class="btn btn-secondary mb-3" role="button"href="{% url 'queue:manager:change_password' %}">
-				{% trans "change password" as c_p_tx%}{{c_p_tx|upper}}
-			</a>
-			<button type="submit" class="form-control btn btn-primary">SUBMIT</button>
-		</form>
-		{% if form.errors %}
-		<div id="form-error" class="alert alert-warning alert-dismissible fade show" role="alert">
-			{% trans "the operation could not be performed because one or more error(s) occurred." as erra_tx %}
-			{% trans "please resubmit the form after making the following changes:" as errb_tx %}
-			<p>{{err1_tx|capfirst}}<br/>{{err2_tx|capfirst}}</p>
-			<ul>
-			{% for field in form %}
-				{% if field.errors %}<li>{{field.label}}: {{ field.errors|striptags }}</li>{% endif %}
-			{% endfor %}
-			</ul>
-		</div>
-		{% endif %}
-	</div>
-{% endblock %}
+{% block title %}{% trans "edit profile" as title_tx %}{{ title_tx|capfirst }}{% endblock %}
 
-{% block javascript-content %}
-<script type="text/javascript">
+{% block manager_content %}
+<div class="mx-auto max-w-xl px-4 py-8 sm:px-6">
+  <div class="mb-6">
+    <h1 class="font-display text-2xl font-bold text-slate-800">{% trans "edit profile" as heading_tx %}{{ heading_tx|capfirst }}</h1>
+  </div>
 
-</script>
+  <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <form action="{% url 'queue:manager:edit_user' %}" method="post" class="space-y-5">
+      {% csrf_token %}
+      <div class="grid gap-5 sm:grid-cols-2">
+        <div>
+          <label for="id_first_name" class="mb-1.5 block text-sm font-medium text-slate-700">{{ form.first_name.label|capfirst }}</label>
+          <input type="text" name="first_name" id="id_first_name" required value="{{ form.first_name.value|default:'' }}"
+                 class="w-full rounded-xl border-slate-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
+        </div>
+        <div>
+          <label for="id_last_name" class="mb-1.5 block text-sm font-medium text-slate-700">{{ form.last_name.label|capfirst }}</label>
+          <input type="text" name="last_name" id="id_last_name" value="{{ form.last_name.value|default:'' }}"
+                 class="w-full rounded-xl border-slate-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
+        </div>
+      </div>
+      <div>
+        <label for="id_username" class="mb-1.5 block text-sm font-medium text-slate-700">{{ form.username.label|capfirst }}</label>
+        <input type="text" name="username" id="id_username" required value="{{ form.username.value|default:'' }}"
+               class="w-full rounded-xl border-slate-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
+      </div>
+      <div>
+        <label for="id_email" class="mb-1.5 block text-sm font-medium text-slate-700">{{ form.email.label|capfirst }}</label>
+        <input type="email" name="email" id="id_email" required value="{{ form.email.value|default:'' }}"
+               class="w-full rounded-xl border-slate-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
+      </div>
+      <div>
+        <label for="id_phone" class="mb-1.5 block text-sm font-medium text-slate-700">{{ form.phone.label|capfirst }}</label>
+        <input type="text" name="phone" id="id_phone" value="{{ form.phone.value|default:'' }}"
+               class="w-full rounded-xl border-slate-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
+      </div>
+      <a href="{% url 'queue:manager:change_password' %}"
+         class="inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 hover:text-brand-500">
+        <i data-lucide="key-round" class="h-4 w-4"></i>
+        {% trans "change password" as c_p_tx %}{{ c_p_tx|title }}
+      </a>
+      <button type="submit"
+              class="w-full rounded-xl bg-brand-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-brand-500">
+        {% trans "submit" as submit_tx %}{{ submit_tx|title }}
+      </button>
+    </form>
+    {% include 'queue_app/includes/form_errors.html' %}
+  </div>
+</div>
 {% endblock %}

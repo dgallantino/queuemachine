@@ -1,158 +1,99 @@
 {% extends 'queue_app/base.html' %}
 {% load static %}
 {% load i18n %}
-{% block title %}QM &#183; Manager Home{% endblock %}
 
-{% block stylesheet %}
-	<link href="{% static 'queue_app/core/css/manager-base.css'%}" rel="stylesheet" type="text/css">
-
-	{% block stylesheet-content %}
-	{% endblock %}
-{% endblock %}
+{% block title %}QM · {% trans "manager" as mgr_tx %}{{ mgr_tx|title }}{% endblock %}
+{% block body_class %}bg-slate-100{% endblock %}
+{% block main_class %}pt-16 min-h-screen{% endblock %}
 
 {% block content-header %}
-<header class="navbar fixed-top navbar-expand-lg navbar-light bg-light flex-coloumn flex-md-row">
-  <a class="navbar-brand" href="{% url 'queue:index' %}">Qm</a>
-	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#managerNavbar" aria-controls="managerNavbar" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="managerNavbar">
-    <ul class="navbar-nav">
-			<!-- add booking form link -->
-      <li class="nav-item">
-        <a
-					id="booking-form-link"
-					class="nav-link"
-					href="{% url "queue:manager:add_booking" %}"
-				>
-         {% trans "add booking" as add_book_tx %}
-				 {{add_book_tx|title}}
-        </a>
-      </li>
-			<!-- add costomer form link -->
-			<li class="nav-item">
-        <a
-					id="customer-form-link"
-					class="nav-link"
-					href="{% url "queue:manager:add_customer" %}"
-				>
-         {% trans "add customer" as add_customer_tx %}
-				 {{add_customer_tx|title}}
-        </a>
-      </li>
-			<!-- Counter chooser dropdown -->
-      <li class="nav-item dropdown">
-        <a
-					class="nav-link dropdown-toggle"
-					href="#"
-					role="button"
-					data-toggle="dropdown"
-					aria-haspopup="true"
-					aria-expanded="false"
-				>
-				{% trans "choose counter" as choose_counter_text %}
-        {{ request.session.CounterBooth.display_name|default:choose_counter_text|title }}
-        </a>
-        <div
-					id="booth-menu"
-					class="dropdown-menu dropdown-ajax"
-					url_data="{% url "queue:manager:booth_list" %}"
-				>
-				{% trans "choose an organization first" as choose_tx %}
-				{{choose_tx|capfirst}}
-        </div>
-      </li>
-			<!-- Organization dropdown -->
-			<li class="nav-item dropdown">
-        <a
-					class="nav-link dropdown-toggle"
-					href="#"
-					role="button"
-					data-toggle="dropdown"
-					aria-haspopup="true"
-					aria-expanded="false"
-				>
-				{% trans "choose organization" as choose_org_text %}
-        {{ request.session.Organization.name|default:choose_org_text|title }}
-        </a>
-        <div
-					id="organization-menu"
-					class="dropdown-menu dropdown-ajax"
-					url_data="{% url "queue:manager:organization_list" %}"
-				>
-					{% trans "no data" as no_data_tx%}
-					{{no_data_tx|capfirst}}
-        </div>
-      </li>
-    </ul>
-		<ul class="navbar-nav ml-auto">
-			<!-- Profile Dropdown -->
-			<li class="nav-item dropdown ">
-				<a
-					aria-expanded="false" aria-haspopup="true"
-					class="nav-item nav-link dropdown-toggle mr-md-2"
-					data-toggle="dropdown" role="button"
-					href="#"
-					id="usermenutoggle"
-				>
-					{{ user.get_full_name|default:user.username|title }}
-				</a>
-				<div
-					id="usermenu"
-					class="dropdown-menu dropdown-menu-right"
-					aria-labelledby="usermenutoggle"
-				>
-					<a href="{% url 'queue:manager:language' 'en' %}?next={{request.get_full_path|urlencode}}" class="dropdown-item">
-						{% trans "english" as english_tx %}
-						{{english_tx|title}}
-					</a>
-					<a href="{% url 'queue:manager:language' 'id' %}?next={{request.get_full_path|urlencode}}" class="dropdown-item">
-						{% trans "indonesian" as indonesian_tx %}
-						{{indonesian_tx|title}}
-					</a>
-					<div class="dropdown-divider"></div>
-					<a href="{% url 'queue:manager:edit_user' %}" class="dropdown-item">{% trans "edit profile" as edit_tx%}{{edit_tx|capfirst}}</a>
-					<a href="{% url 'admin:index' %}" class="dropdown-item">{% trans "admin" as admin_tx%}{{admin_tx|capfirst}}</a>
-					<a href="{% url 'logout' %}" class="dropdown-item">{% trans "logout" as logout_tx%}{{logout_tx|capfirst}}</a>
-				</div>
-			</li>
-		</ul>
-  </div>
-</header>
+<header class="fixed top-0 z-40 w-full border-b border-slate-200 bg-white/95 backdrop-blur" x-data="{ mobileOpen: false }">
+  <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+    <a href="{% url 'queue:index' %}" class="flex items-center gap-2 font-display text-lg font-bold text-brand-700">
+      <i data-lucide="layout-dashboard" class="h-5 w-5"></i>
+      QM
+    </a>
 
-{% comment %}
-<!--modal-->
-<div class="modal fade" id="modal-form" tabindex="-1" role="dialog" aria-labelledby="modal-form-title" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modal-form-title">Tambah Booking</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+    <button type="button" class="rounded-lg p-2 text-slate-600 hover:bg-slate-100 md:hidden" @click="mobileOpen = !mobileOpen">
+      <i data-lucide="menu" class="h-5 w-5"></i>
+    </button>
+
+    <nav class="hidden items-center gap-1 md:flex" :class="mobileOpen && '!flex flex-col absolute top-16 left-0 right-0 bg-white border-b p-4 shadow-lg'">
+      <a href="{% url 'queue:manager:add_booking' %}"
+         class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-brand-700">
+        <i data-lucide="calendar-plus" class="h-4 w-4"></i>
+        {% trans "add booking" as add_book_tx %}{{ add_book_tx|title }}
+      </a>
+      <a href="{% url 'queue:manager:add_customer' %}"
+         class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-brand-700">
+        <i data-lucide="user-plus" class="h-4 w-4"></i>
+        {% trans "add customer" as add_customer_tx %}{{ add_customer_tx|title }}
+      </a>
+
+      <!-- Organization dropdown -->
+      <div class="relative" x-data="qmDropdown('{% url 'queue:manager:organization_list' %}')" @click.outside="close()">
+        <button type="button" @click="toggle(); if (!loaded && open) { $refs.orgMenu.setAttribute('hx-trigger', 'load'); htmx.process($refs.orgMenu); loaded = true; }"
+                class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100">
+          <i data-lucide="building-2" class="h-4 w-4"></i>
+          {{ request.session.Organization.name|default:"Organization"|title }}
+          <i data-lucide="chevron-down" class="h-3.5 w-3.5"></i>
         </button>
+        <div x-show="open" x-cloak x-transition
+             class="absolute left-0 top-full z-50 mt-1 min-w-[12rem] rounded-xl border border-slate-200 bg-white py-1 shadow-lg">
+          <div x-ref="orgMenu" hx-get="{% url 'queue:manager:organization_list' %}" hx-trigger="none" hx-swap="innerHTML">
+            <span class="block px-4 py-2 text-sm text-slate-400">{% trans "loading" as loading_tx %}…</span>
+          </div>
+        </div>
       </div>
-      <div class="modal-body" id="modal-form-body">
-      	<div class="embed-responsive embed-responsive-1by1">
-			<iframe class="embed-responsive-item" src="{% url "queue:add_booking_url" %}" allowfullscreen ></iframe>
-		</div>
+
+      <!-- Booth dropdown -->
+      <div class="relative" x-data="qmDropdown('{% url 'queue:manager:booth_list' %}')" @click.outside="close()">
+        <button type="button" @click="toggle(); if (!loaded && open) { $refs.boothMenu.setAttribute('hx-trigger', 'load'); htmx.process($refs.boothMenu); loaded = true; }"
+                class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100">
+          <i data-lucide="monitor-dot" class="h-4 w-4"></i>
+          {% trans "choose counter" as choose_counter_text %}
+          {{ request.session.CounterBooth.display_name|default:choose_counter_text|title }}
+          <i data-lucide="chevron-down" class="h-3.5 w-3.5"></i>
+        </button>
+        <div x-show="open" x-cloak x-transition
+             class="absolute left-0 top-full z-50 mt-1 min-w-[12rem] rounded-xl border border-slate-200 bg-white py-1 shadow-lg">
+          <div x-ref="boothMenu" hx-get="{% url 'queue:manager:booth_list' %}" hx-trigger="none" hx-swap="innerHTML">
+            <span class="block px-4 py-2 text-sm text-slate-400">…</span>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- User menu -->
+    <div class="relative hidden md:block" x-data="{ open: false }" @click.outside="open = false">
+      <button type="button" @click="open = !open"
+              class="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">
+        <span class="flex h-8 w-8 items-center justify-center rounded-full bg-brand-100 text-brand-700 text-xs font-bold">
+          {{ user.get_full_name|default:user.username|slice:":1"|upper }}
+        </span>
+        {{ user.get_full_name|default:user.username|title }}
+        <i data-lucide="chevron-down" class="h-3.5 w-3.5"></i>
+      </button>
+      <div x-show="open" x-cloak x-transition
+           class="absolute right-0 top-full z-50 mt-1 w-48 rounded-xl border border-slate-200 bg-white py-1 shadow-lg">
+        <a href="{% url 'queue:manager:language' 'en' %}?next={{ request.get_full_path|urlencode }}"
+           class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">{% trans "english" as english_tx %}{{ english_tx|title }}</a>
+        <a href="{% url 'queue:manager:language' 'id' %}?next={{ request.get_full_path|urlencode }}"
+           class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">{% trans "indonesian" as indonesian_tx %}{{ indonesian_tx|title }}</a>
+        <hr class="my-1 border-slate-100">
+        <a href="{% url 'queue:manager:edit_user' %}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">{% trans "edit profile" as edit_tx %}{{ edit_tx|capfirst }}</a>
+        <a href="{% url 'admin:index' %}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">{% trans "admin" as admin_tx %}{{ admin_tx|capfirst }}</a>
+        <a href="{% url 'logout' %}" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">{% trans "logout" as logout_tx %}{{ logout_tx|capfirst }}</a>
       </div>
     </div>
   </div>
-</div>
-{% endcomment %}
-
+</header>
 {% endblock %}
 
 {% block content %}
-
+{% block manager_content %}{% endblock %}
 {% endblock %}
 
 {% block javascript %}
-<script src="{% static 'queue_app/core/js/manager.js' %}"></script>
-<script type="text/javascript">
-$('.dropdown-ajax').initiate_dropdown();
-
-</script>
-{% block javascript-content %}
-{% endblock %}
+{% block javascript-content %}{% endblock %}
 {% endblock %}

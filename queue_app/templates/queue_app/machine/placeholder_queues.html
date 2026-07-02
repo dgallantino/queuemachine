@@ -1,8 +1,12 @@
 {% for queue in Queues %}
-<div class="container list" queue_id="{{ queue.id }}">
-	<a href="{% url 'queue:machine:print' queue.id  %}" class="booking_link">
-		<div>{{ queue.customer.get_full_name|default:queue.customer|default:"-" }}</div>
-		<div>{{ queue.booking_datetime|date:"H:i"|default:"-" }}</div>
-	</a>
+<div class="booking-item mb-3 rounded-xl border border-white/10 bg-white/5 p-3 transition hover:bg-white/10"
+     data-queue-id="{{ queue.id }}">
+  <a href="{% url 'queue:machine:print' queue.id %}" class="booking_link block cursor-pointer">
+    <div class="font-medium text-white">{{ queue.customer.get_full_name|default:queue.customer|default:"-" }}</div>
+    <div class="mt-1 flex items-center gap-1.5 text-sm text-brand-200">
+      <i data-lucide="clock" class="h-3.5 w-3.5"></i>
+      {{ queue.booking_datetime|date:"H:i"|default:"-" }}
+    </div>
+  </a>
 </div>
 {% endfor %}

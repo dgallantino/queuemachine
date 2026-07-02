@@ -1,31 +1,66 @@
 {% extends 'queue_app/base.html' %}
 {% load static %}
 {% load i18n %}
-{% block title %}
-Queue Manager App
-{% endblock %}
-{% block stylesheet %}
-	<link href="{% static 'queue_app/core/css/index.css'%}" rel="stylesheet" type="text/css">
-{% endblock %}
+
+{% block title %}{% trans "queue manager" as title_tx %}{{ title_tx|title }}{% endblock %}
+
+{% block body_class %}bg-gradient-to-br from-brand-900 via-slate-900 to-slate-950{% endblock %}
+{% block main_class %}min-h-screen flex items-center justify-center p-6{% endblock %}
+
 {% block content %}
-<div class="fixed-top ">
-	<a id="admin-link" class="float-right" href="{% url 'admin:index' %}">
-		<i class="fa fa-user-circle-o"></i>
-		{% trans "admin" as admin_tx %}
-		{{admin_tx|capfirst}}
-	</a>
-</div>
-<div class="container-fluid vertical-center">
-	<div class="container-fluid">
-		<div class="container-fluid  btn-container text-center">
-			<a href="{% url 'queue:machine:index' %}" >{% trans "machine" as machine_tx %}{{machine_tx|title}}</a>
-		</div>
-		<div class="container-fluid btn btn-container text-center">
-			<a  href="{% url 'queue:manager:index' %}">{% trans "manager" as manager_tx%}{{manager_tx|title}}</a>
-		</div>
-		<div class="container-fluid btn btn-container text-center">
-			<a  href="{% url 'queue:infoboard:index' %}">{% trans "information board" as inf_brd_tx%}{{inf_brd_tx|title}}</a>
-		</div>
-	</div>
+<div class="w-full max-w-lg animate-slide-up">
+  <div class="mb-8 text-center">
+    <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-500/20 ring-1 ring-brand-400/30">
+      <i data-lucide="layout-grid" class="h-8 w-8 text-brand-300"></i>
+    </div>
+    <h1 class="font-display text-3xl font-bold tracking-tight text-white">Queue Machine</h1>
+    <p class="mt-2 text-sm text-slate-400">{% trans "choose your workspace" as subtitle_tx %}{{ subtitle_tx|capfirst }}</p>
+  </div>
+
+  <div class="space-y-3">
+    <a href="{% url 'queue:machine:index' %}"
+       class="group flex items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur transition hover:border-brand-400/40 hover:bg-white/10">
+      <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-600 text-white shadow-lg shadow-brand-900/50">
+        <i data-lucide="ticket" class="h-6 w-6"></i>
+      </div>
+      <div class="flex-1 text-left">
+        <span class="block font-display text-lg font-semibold text-white">{% trans "machine" as machine_tx %}{{ machine_tx|title }}</span>
+        <span class="text-sm text-slate-400">{% trans "issue queue tickets" as machine_desc %}{{ machine_desc|capfirst }}</span>
+      </div>
+      <i data-lucide="chevron-right" class="h-5 w-5 text-slate-500 transition group-hover:translate-x-0.5 group-hover:text-brand-300"></i>
+    </a>
+
+    <a href="{% url 'queue:manager:index' %}"
+       class="group flex items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur transition hover:border-brand-400/40 hover:bg-white/10">
+      <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-violet-600 text-white shadow-lg shadow-violet-900/50">
+        <i data-lucide="users" class="h-6 w-6"></i>
+      </div>
+      <div class="flex-1 text-left">
+        <span class="block font-display text-lg font-semibold text-white">{% trans "manager" as manager_tx %}{{ manager_tx|title }}</span>
+        <span class="text-sm text-slate-400">{% trans "manage queues and bookings" as manager_desc %}{{ manager_desc|capfirst }}</span>
+      </div>
+      <i data-lucide="chevron-right" class="h-5 w-5 text-slate-500 transition group-hover:translate-x-0.5 group-hover:text-brand-300"></i>
+    </a>
+
+    <a href="{% url 'queue:infoboard:index' %}"
+       class="group flex items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur transition hover:border-brand-400/40 hover:bg-white/10">
+      <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-sky-600 text-white shadow-lg shadow-sky-900/50">
+        <i data-lucide="monitor" class="h-6 w-6"></i>
+      </div>
+      <div class="flex-1 text-left">
+        <span class="block font-display text-lg font-semibold text-white">{% trans "information board" as inf_brd_tx %}{{ inf_brd_tx|title }}</span>
+        <span class="text-sm text-slate-400">{% trans "display current queue status" as board_desc %}{{ board_desc|capfirst }}</span>
+      </div>
+      <i data-lucide="chevron-right" class="h-5 w-5 text-slate-500 transition group-hover:translate-x-0.5 group-hover:text-brand-300"></i>
+    </a>
+  </div>
+
+  <div class="mt-8 text-center">
+    <a href="{% url 'admin:index' %}"
+       class="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm text-slate-400 transition hover:text-white">
+      <i data-lucide="shield" class="h-4 w-4"></i>
+      {% trans "admin" as admin_tx %}{{ admin_tx|capfirst }}
+    </a>
+  </div>
 </div>
 {% endblock %}
