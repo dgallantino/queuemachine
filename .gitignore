@@ -346,3 +346,10 @@ queue_app/static/queue_app/vendor/
 queue_app/static/queue_app/core/css/tailwind.css
 node_modules/
 package-lock.json
+
+sound_map.json
+audio/id/*.wav
+audio/en/*.wav
+queue_app/static/queue_app/audio/sound_map.json
+queue_app/static/queue_app/audio/id/*.wav
+queue_app/static/queue_app/audio/en/*.wav
