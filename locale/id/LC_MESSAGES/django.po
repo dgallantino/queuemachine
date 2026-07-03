@@ -248,6 +248,10 @@ msgstr "panggil antrian ini"
 msgid "you have more than one organization, please choose one"
 msgstr "anda memiliki lebih dari satu organisasi, mohon pilih salah satu"
 
+#: queue_app/views.py:89
+msgid "you are not assigned to any organization"
+msgstr "anda tidak terdaftar pada organisasi manapun"
+
 #: queue_app/views.py:347
 msgid "customer data creation was successfull"
 msgstr "pembuatan pelanggan telah berhasil"

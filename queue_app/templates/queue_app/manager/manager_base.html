@@ -32,7 +32,7 @@
 
       <!-- Organization dropdown -->
       <div class="relative" x-data="qmDropdown('{% url 'queue:manager:organization_list' %}')" @click.outside="close()">
-        <button type="button" @click="toggle(); if (!loaded && open) { $refs.orgMenu.setAttribute('hx-trigger', 'load'); htmx.process($refs.orgMenu); loaded = true; }"
+        <button type="button" @click="toggle()"
                 class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100">
           <i data-lucide="building-2" class="h-4 w-4"></i>
           {{ request.session.Organization.name|default:"Organization"|title }}
@@ -40,7 +40,7 @@
         </button>
         <div x-show="open" x-cloak x-transition
              class="absolute left-0 top-full z-50 mt-1 min-w-[12rem] rounded-xl border border-slate-200 bg-white py-1 shadow-lg">
-          <div x-ref="orgMenu" hx-get="{% url 'queue:manager:organization_list' %}" hx-trigger="none" hx-swap="innerHTML">
+          <div x-ref="menu">
             <span class="block px-4 py-2 text-sm text-slate-400">{% trans "loading" as loading_tx %}…</span>
           </div>
         </div>
@@ -48,7 +48,7 @@
 
       <!-- Booth dropdown -->
       <div class="relative" x-data="qmDropdown('{% url 'queue:manager:booth_list' %}')" @click.outside="close()">
-        <button type="button" @click="toggle(); if (!loaded && open) { $refs.boothMenu.setAttribute('hx-trigger', 'load'); htmx.process($refs.boothMenu); loaded = true; }"
+        <button type="button" @click="toggle()"
                 class="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100">
           <i data-lucide="monitor-dot" class="h-4 w-4"></i>
           {% trans "choose counter" as choose_counter_text %}
@@ -57,7 +57,7 @@
         </button>
         <div x-show="open" x-cloak x-transition
              class="absolute left-0 top-full z-50 mt-1 min-w-[12rem] rounded-xl border border-slate-200 bg-white py-1 shadow-lg">
-          <div x-ref="boothMenu" hx-get="{% url 'queue:manager:booth_list' %}" hx-trigger="none" hx-swap="innerHTML">
+          <div x-ref="menu">
             <span class="block px-4 py-2 text-sm text-slate-400">…</span>
           </div>
         </div>

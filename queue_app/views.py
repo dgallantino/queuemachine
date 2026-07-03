@@ -16,7 +16,6 @@ from django.views.generic.detail import SingleObjectMixin
 from django.http.response import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.utils import translation
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from django.contrib.auth.views import PasswordChangeView
@@ -72,16 +71,24 @@ class BaseBoothListView(QueueAppLoginMixin, ListView):
 class SessionInitializer(View):
     def get(self, request, *args, **kwargs):
         # set default language to indonesia
-        # if not request.session.get(translation.LANGUAGE_SESSION_KEY):
+        # if not request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME):
         # 	translation.activate(const.LANG.ID)
-        # 	request.session[translation.LANGUAGE_SESSION_KEY] = const.LANG.ID
+        # 	response.set_cookie(settings.LANGUAGE_COOKIE_NAME, const.LANG.ID)
         # set organization if user only have one
         if not request.session.get(const.IDX.ORG):
-            if request.user.organization.all().count() > 1:
+            org_count = request.user.organization.all().count()
+            if org_count > 1:
                 messages.add_message(
                     request=request,
                     level=messages.WARNING,
                     message=_('you have more than one organization, please choose one'),
+                    fail_silently=True,
+                )
+            elif org_count == 0:
+                messages.add_message(
+                    request=request,
+                    level=messages.ERROR,
+                    message=_('you are not assigned to any organization'),
                     fail_silently=True,
                 )
             else:
@@ -220,7 +227,7 @@ class BookingQueueListView(
 
 '''
 Manager...
-...to manage queue like calling, delete and shit
+...to manage queue like calling, delete and moving
 componen:
 - Manager Display
     -> Context: list of services(with its related queues)
@@ -363,12 +370,25 @@ class SetLanguageRedirect(QueueAppLoginMixin, RedirectView):
     url = reverse_lazy('queue:manager:index')
 
     def get_redirect_url(self, *args, **kwargs):
-        req_lang = kwargs.get('lang_id')
-        if dict(settings.LANGUAGES).get(req_lang):
-            self.request.session[translation.LANGUAGE_SESSION_KEY] = req_lang
         if self.request.GET.get('next'):
             return self.request.GET.get('next')
         return super(SetLanguageRedirect, self).get_redirect_url(*args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        response = super().get(request, *args, **kwargs)
+        req_lang = kwargs.get('lang_id')
+        if dict(settings.LANGUAGES).get(req_lang):
+            response.set_cookie(
+                settings.LANGUAGE_COOKIE_NAME,
+                req_lang,
+                max_age=settings.LANGUAGE_COOKIE_AGE,
+                path=settings.LANGUAGE_COOKIE_PATH,
+                domain=settings.LANGUAGE_COOKIE_DOMAIN,
+                secure=settings.LANGUAGE_COOKIE_SECURE,
+                httponly=settings.LANGUAGE_COOKIE_HTTPONLY,
+                samesite=settings.LANGUAGE_COOKIE_SAMESITE,
+            )
+        return response
 
 
 class AddCustomerView(
@@ -490,7 +510,7 @@ def playAudioFile(request):
     if (queue and booth):
         tts_string = "antrian " + queue.character + " " + str(queue.number) + " ke " + booth.spoken_name
         mp3_fp = BytesIO()
-        tts = gTTS(tts_string, request.session.get(translation.LANGUAGE_SESSION_KEY, const.LANG.ID))
+        tts = gTTS(tts_string, request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME, const.LANG.ID))
         tts.write_to_fp(mp3_fp)
         response = HttpResponse()
         response.write(mp3_fp.getvalue())

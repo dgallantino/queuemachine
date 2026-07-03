@@ -140,9 +140,54 @@
         loadUrl: loadUrl,
         toggle: function () {
           this.open = !this.open;
+          if (this.open && !this.loaded) {
+            var menu = this.$refs.menu;
+            if (menu && typeof htmx !== 'undefined') {
+              htmx.ajax('GET', this.loadUrl, { target: menu, swap: 'innerHTML' });
+            }
+            this.loaded = true;
+          }
         },
         close: function () {
           this.open = false;
+        },
+      };
+    });
+
+    Alpine.data('qmFloatingMenu', function () {
+      return {
+        open: false,
+        menuTop: 0,
+        menuRight: 0,
+        toggle: function () {
+          this.open = !this.open;
+          if (this.open) this.positionMenu();
+        },
+        close: function () {
+          this.open = false;
+        },
+        positionMenu: function () {
+          var self = this;
+          this.$nextTick(function () {
+            var btn = self.$refs.trigger;
+            if (!btn) return;
+            var rect = btn.getBoundingClientRect();
+            self.menuTop = rect.bottom + 4;
+            self.menuRight = window.innerWidth - rect.right;
+          });
+        },
+        get menuStyle() {
+          return 'top:' + this.menuTop + 'px;right:' + this.menuRight + 'px;';
+        },
+        init: function () {
+          var self = this;
+          var onScroll = function () {
+            if (self.open) self.close();
+          };
+          window.addEventListener('scroll', onScroll, true);
+          window.addEventListener('resize', function () {
+            if (self.open) self.positionMenu();
+          });
         },
       };
     });

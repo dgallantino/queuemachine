@@ -160,13 +160,13 @@ class QueueModelBaseForms(forms.ModelForm):
         label=_("booking date"),
         initial=datetime.now(),
         required=False,
-        widget=forms.DateInput(
-            format='%d-%m-%Y',
-            attrs={
-                'id': 'booking-date',
-                'class': 'input-field',
-            },
-        ),
+        # widget=forms.DateInput(
+        #     format='%d-%m-%Y',
+        #     attrs={
+        #         'id': 'booking-date',
+        #         'class': 'input-field',
+        #     },
+        # ),
     )
 
     class Meta:
@@ -185,27 +185,27 @@ class QueueModelBaseForms(forms.ModelForm):
             'customer': autocomplete.ModelSelect2(
                 url='queue:manager:user_autocomplete',
                 attrs={
-                    'id': 'service',
+                    'id': 'customer',
                     'data-placeholder': _('customer'),
                     'data-minimum-input-length': 3,
                 },
             ),
         }
 
-    class Media:
-        css = {
-            'all': (
-                'queue_app/bootstrap/css/bootstrap.min.css',
-                'queue_app/font-awesome/css/font-awesome.min.css',
-                'queue_app/core/css/manager-form.css',
-                'queue_app/jquery-ui/jquery-ui.min.css',
-                'queue_app/jquery-timepicker/jquery.timepicker.min.css',
-            ),
-        }
-        js = (
-            'queue_app/jquery-ui/jquery-ui.min.js',
-            'queue_app/jquery-timepicker/jquery.timepicker.min.js',
-        )
+    # class Media:
+    #     css = {
+    #         'all': (
+    #             # 'queue_app/bootstrap/css/bootstrap.min.css',
+    #             # 'queue_app/font-awesome/css/font-awesome.min.css',
+    #             # 'queue_app/core/css/manager-form.css',
+    #             # 'queue_app/jquery-ui/jquery-ui.min.css',
+    #             # 'queue_app/jquery-timepicker/jquery.timepicker.min.css',
+    #         ),
+    #     }
+    #     js = (
+    #         # 'queue_app/jquery-ui/jquery-ui.min.js',
+    #         # 'queue_app/jquery-timepicker/jquery.timepicker.min.js',
+    #     )
 
     def save(self, commit=True):
         # get models.Queue isntance to create or edit

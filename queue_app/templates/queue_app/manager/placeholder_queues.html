@@ -14,26 +14,29 @@
   <td class="px-5 py-3">
     <div class="flex items-center gap-1.5">
       <!-- Move dropdown -->
-      <div class="relative" x-data="{ open: false }" @click.outside="open = false">
-        <button type="button" @click="open = !open"
+      <div x-data="qmFloatingMenu" @click.outside="close()">
+        <button type="button" x-ref="trigger" @click="toggle()"
                 class="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
                 title="{% trans 'move queue' as move_tx %}{{ move_tx|capfirst }}">
           <i data-lucide="arrow-right-left" class="h-4 w-4"></i>
         </button>
-        <div x-show="open" x-cloak x-transition
-             class="absolute right-0 top-full z-20 mt-1 min-w-[10rem] rounded-xl border border-slate-200 bg-white py-1 shadow-lg">
-          {% for srv in queue.service.organization.services.all %}
-          <form action="{% url 'queue:manager:move' queue.id %}" method="post">
-            {% csrf_token %}
-            <input type="hidden" name="service" value="{{ srv.id }}">
-            <button type="submit"
-                    class="block w-full px-4 py-2 text-left text-sm {% if srv.id == queue.service.id %}text-slate-400 cursor-default{% else %}text-slate-700 hover:bg-slate-50{% endif %}"
-                    {% if srv.id == queue.service.id %}disabled{% endif %}>
-              {{ srv.name }}
-            </button>
-          </form>
-          {% endfor %}
-        </div>
+        <template x-teleport="body">
+          <div x-show="open" x-cloak x-transition
+               :style="menuStyle"
+               class="fixed z-50 min-w-[10rem] rounded-xl border border-slate-200 bg-white py-1 shadow-lg">
+            {% for srv in queue.service.organization.services.all %}
+            <form action="{% url 'queue:manager:move' queue.id %}" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="service" value="{{ srv.id }}">
+              <button type="submit"
+                      class="block w-full px-4 py-2 text-left text-sm {% if srv.id == queue.service.id %}text-slate-400 cursor-default{% else %}text-slate-700 hover:bg-slate-50{% endif %}"
+                      {% if srv.id == queue.service.id %}disabled{% endif %}>
+                {{ srv.name }}
+              </button>
+            </form>
+            {% endfor %}
+          </div>
+        </template>
       </div>
 
       <audio class="call-audio hidden" preload="none">

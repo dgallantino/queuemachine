@@ -1,3 +1,4 @@
+{% load i18n %}
 {% if CounterBooths %}
   {% for booth in CounterBooths %}
     {% if request.session.CounterBooth.id == booth.id|stringformat:"s" %}

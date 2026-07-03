@@ -1,3 +1,4 @@
+{% load i18n %}
 {% if Organizations %}
   {% for organization in Organizations %}
     {% if request.session.Organization.id == organization.id|stringformat:"s" %}
