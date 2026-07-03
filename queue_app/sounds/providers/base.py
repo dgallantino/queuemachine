@@ -22,5 +22,7 @@ class StubTTSProvider(TTSProvider):
 
 
 def get_default_provider() -> TTSProvider:
-    """Return the active TTS provider. Swap implementation here later."""
-    return StubTTSProvider()
+    """Return the active TTS provider."""
+    from queue_app.sounds.providers.gtts import GTTSProvider
+
+    return GTTSProvider()

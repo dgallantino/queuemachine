@@ -22,10 +22,21 @@ The backend is **Django**. The frontend uses **Django templates**, **Tailwind CS
 - MySQL 5.7+ or 8.x
 - Node.js 18+ and npm
 - bash and curl (Git Bash or WSL on Windows)
+- **ffmpeg** — required for `queue_sounds generate` (converts gTTS MP3 output to WAV fragments)
+
+  ```bash
+  # Debian / Ubuntu
+  sudo apt install ffmpeg
+
+  # macOS (Homebrew)
+  brew install ffmpeg
+  ```
 
 ### Production (Docker)
 
 - Docker and Docker Compose
+
+The app image includes **ffmpeg** (installed in the Dockerfile) for sound fragment generation.
 
 ---
 

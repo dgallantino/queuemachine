@@ -114,15 +114,26 @@ class Command(BaseCommand):
     def _handle_generate(self, options):
         map_path = Path(options['map_path']) if options['map_path'] else None
         audio_root = Path(options['audio_root']) if options['audio_root'] else None
+        root = audio_root or paths.default_audio_root()
+
+        def on_progress(label, dest, index, total, phase):
+            try:
+                display_path = dest.relative_to(root)
+            except ValueError:
+                display_path = dest
+            if phase == 'start':
+                self.stdout.write(f'[{index}/{total}] Generating {label} -> {display_path}')
+            else:
+                self.stdout.write(self.style.SUCCESS(f'[{index}/{total}] Generated {display_path}'))
+
         written = generate.generate_fragments(
             map_path=map_path,
             audio_root=audio_root,
             dry_run=options['dry_run'],
+            on_progress=on_progress,
         )
         verb = 'Would generate' if options['dry_run'] else 'Generated'
         self.stdout.write(f'{verb} {len(written)} fragment(s).')
-        for path in written:
-            self.stdout.write(f'  {path}')
 
     def _handle_compose(self, options):
         if not options['fragments']:
