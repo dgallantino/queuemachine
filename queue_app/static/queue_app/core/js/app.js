@@ -73,6 +73,7 @@
     }
     return qmPostForm(url, { is_called: 'True', counter_booth: boothId })
       .then(function () {
+        rowEl.classList.remove('bg-sky-50/50');
         rowEl.classList.add('called', 'queue-called');
       })
       .catch(function () {

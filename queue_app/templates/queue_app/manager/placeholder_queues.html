@@ -1,6 +1,6 @@
 {% load i18n %}
 {% for queue in Queues %}
-<tr class="transition {% if queue.is_booking %}bg-sky-50/50{% endif %} {% if queue.is_called %}called queue-called{% endif %}"
+<tr class="transition {% if queue.is_called %}called queue-called{% elif queue.is_booking %}bg-sky-50/50{% endif %}"
     id="queue-row-{{ queue.id }}">
   <td class="px-5 py-3 text-slate-500">{{ queue.number }}</td>
   <td class="px-5 py-3">
