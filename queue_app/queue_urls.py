@@ -93,6 +93,11 @@ manager_patterns = [
         name='audio'
     ),
     path(
+        'queues/audio/composed/',
+        views.playComposedAudioFile,
+        name='audio_composed'
+    ),
+    path(
         'lang/<str:lang_id>/',
         views.SetLanguageRedirect.as_view(),
         name='language'

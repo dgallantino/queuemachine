@@ -9,6 +9,7 @@ from django.conf import settings
 from queue_app import constants as const
 from queue_app import models
 from queue_app.sounds import paths
+from queue_app.sounds.map import build_multi_lang_document, validate_lang_codes
 from queue_app.sounds.vocabulary import LANGUAGE_LABELS, NUMBERS_BY_LANG, PHRASES
 
 
@@ -85,20 +86,26 @@ def build_sound_map(
 
 def write_sound_map(
     map_path: Path | None = None,
-    lang_code: str | None = None,
+    lang_codes: list[str] | None = None,
     organization_id: str | None = None,
     *,
     indent: int = 2,
 ) -> Path:
-    """Write the sound map JSON to disk and ensure the language audio dir exists."""
+    """Write the sound map JSON to disk and ensure language audio dirs exist."""
     map_path = map_path or paths.default_map_path()
     audio_root = map_path.parent
-    lang_code = lang_code or settings.LANGUAGE_CODE
+    lang_codes = validate_lang_codes(lang_codes or [settings.LANGUAGE_CODE])
 
-    sound_map = build_sound_map(lang_code=lang_code, organization_id=organization_id)
-    paths.lang_audio_dir(audio_root, lang_code).mkdir(parents=True, exist_ok=True)
+    lang_maps = {
+        lang_code: build_sound_map(lang_code=lang_code, organization_id=organization_id)
+        for lang_code in lang_codes
+    }
+    document = build_multi_lang_document(lang_maps)
 
-    map_path.write_text(json.dumps(sound_map, indent=indent, ensure_ascii=False) + '\n', encoding='utf-8')
+    for lang_code in lang_codes:
+        paths.lang_audio_dir(audio_root, lang_code).mkdir(parents=True, exist_ok=True)
+
+    map_path.write_text(json.dumps(document, indent=indent, ensure_ascii=False) + '\n', encoding='utf-8')
     return map_path
 
 

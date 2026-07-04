@@ -1,19 +1,17 @@
 """Static phrase and number vocabulary per language.
 
-These defaults seed the sound map during ``init``. Phase 1 locks Indonesian (id)
-announcement atoms; English entries are deferred until Phase 2.
+These defaults seed the sound map during ``init``.
 """
 
 from queue_app import constants as const
 
-# Fixed announcement phrases for the locked id call template:
-# Nomor antrean -> letter -> number -> silakan menuju -> destination
+# Fixed announcement phrases for the queue call template:
+# queue_number -> letter -> number -> please_go_to -> destination
 PHRASES = {
     const.LANG.ID: {
         'queue_number': 'Nomor antrean',
         'please_go_to': 'silakan menuju',
     },
-    # deferred — phase 2
     const.LANG.EN: {
         'queue_number': 'Queue number',
         'please_go_to': 'please go to',
@@ -64,7 +62,6 @@ ID_HUNDREDS = {
     'ratus': 'ratus',
 }
 
-# deferred — phase 2
 EN_ONES = {str(i): name for i, name in enumerate(
     ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'],
     start=0,
@@ -74,6 +71,13 @@ EN_SPECIAL = {
     '10': 'ten',
     '11': 'eleven',
     '12': 'twelve',
+    '13': 'thirteen',
+    '14': 'fourteen',
+    '15': 'fifteen',
+    '16': 'sixteen',
+    '17': 'seventeen',
+    '18': 'eighteen',
+    '19': 'nineteen',
     '100': 'one hundred',
     '1000': 'one thousand',
 }
@@ -89,6 +93,10 @@ EN_TENS = {
     '90': 'ninety',
 }
 
+EN_HUNDREDS = {
+    'hundred': 'hundred',
+}
+
 NUMBERS_BY_LANG = {
     const.LANG.ID: {
         'ones': ID_ONES,
@@ -97,6 +105,10 @@ NUMBERS_BY_LANG = {
         'teens': ID_TEENS,
         'hundreds': ID_HUNDREDS,
     },
-    # deferred — phase 2
-    const.LANG.EN: {'ones': EN_ONES, 'special': EN_SPECIAL, 'tens': EN_TENS},
+    const.LANG.EN: {
+        'ones': EN_ONES,
+        'special': EN_SPECIAL,
+        'tens': EN_TENS,
+        'hundreds': EN_HUNDREDS,
+    },
 }

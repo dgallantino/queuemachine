@@ -50,7 +50,13 @@ FIXTURE_SOUND_MAP = {
 
 class ComposeRecipeTests(SimpleTestCase):
     def test_queue_call_a123_konter_satu(self):
-        recipe = build_queue_call_recipe('A', 123, 'konter_satu', sound_map=FIXTURE_SOUND_MAP)
+        recipe = build_queue_call_recipe(
+            'A',
+            123,
+            'konter_satu',
+            lang_code='id',
+            sound_map=FIXTURE_SOUND_MAP,
+        )
 
         self.assertEqual(
             recipe.to_dict(),

@@ -4,8 +4,10 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Sequence
 
+from queue_app import constants as const
 from queue_app.sounds import announcement, paths
 from queue_app.sounds.init import load_sound_map
+from queue_app.sounds.map import get_lang_map
 
 PLEASE_GO_TO_KEY = announcement.PHRASE_KEYS['please_go_to']
 
@@ -56,12 +58,16 @@ def build_recipe_text(fragment_keys: Sequence[str], entries: Sequence[dict[str, 
 
 def build_compose_recipe(
     fragment_keys: Sequence[str],
+    lang_code: str,
     sound_map: dict | None = None,
     map_path: Path | None = None,
 ) -> ComposeRecipe:
     """Build a compose recipe from fragment keys and the sound map."""
     if sound_map is None:
-        sound_map = load_sound_map(map_path)
+        document = load_sound_map(map_path)
+        sound_map = get_lang_map(document, lang_code)
+    elif 'languages' in sound_map:
+        sound_map = get_lang_map(sound_map, lang_code)
 
     entries = resolve_fragment_entries(fragment_keys, sound_map)
     return ComposeRecipe(
@@ -75,6 +81,7 @@ def build_queue_call_recipe(
     queue_character: str,
     queue_number: int,
     destination_key: str,
+    lang_code: str = const.LANG.ID,
     sound_map: dict | None = None,
     map_path: Path | None = None,
 ) -> ComposeRecipe:
@@ -83,8 +90,14 @@ def build_queue_call_recipe(
         queue_character,
         queue_number,
         destination_key,
+        lang_code=lang_code,
     )
-    return build_compose_recipe(fragment_keys, sound_map=sound_map, map_path=map_path)
+    return build_compose_recipe(
+        fragment_keys,
+        lang_code=lang_code,
+        sound_map=sound_map,
+        map_path=map_path,
+    )
 
 
 def recipe_fragment_abspaths(

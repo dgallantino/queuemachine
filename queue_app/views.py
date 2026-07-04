@@ -27,6 +27,8 @@ from gtts_token.gtts_token import Token
 
 from queue_app import forms, models
 from queue_app import constants as const
+from queue_app.sounds.announcement import destination_key_for_booth
+from queue_app.sounds.compose import compose_queue_call
 
 
 def _patch_faulty_function(self):
@@ -519,6 +521,30 @@ def playAudioFile(request):
         mp3_fp.close()
         return response
     return HttpResponseBadRequest
+
+
+@login_required
+def playComposedAudioFile(request):
+    queue = get_object_or_404(
+        models.Queue,
+        pk=request.GET.get('queue')
+    )
+    booth = get_object_or_404(
+        models.CounterBooth,
+        pk=request.session.get(const.IDX.BOOTH, {}).get('id')
+    )
+    if queue and booth:
+        lang_code = request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME, const.LANG.ID)
+        wav_bytes, _recipe = compose_queue_call(
+            queue.character,
+            queue.number,
+            destination_key_for_booth(booth.spoken_name),
+            lang_code=lang_code,
+        )
+        response = HttpResponse(wav_bytes, content_type='audio/wav')
+        response['Content-Length'] = len(wav_bytes)
+        return response
+    return HttpResponseBadRequest()
 
 
 '''

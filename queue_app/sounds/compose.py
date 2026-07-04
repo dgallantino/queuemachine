@@ -1,13 +1,14 @@
 """Compose announcement audio from pre-generated fragments."""
 
-import shutil
-import subprocess
-import tempfile
+import io
+import wave
 from pathlib import Path
 from typing import Sequence
 
+from queue_app import constants as const
 from queue_app.sounds import announcement, paths
 from queue_app.sounds.init import load_sound_map
+from queue_app.sounds.map import get_lang_map
 from queue_app.sounds.recipe import (
     ComposeRecipe,
     build_compose_recipe,
@@ -32,25 +33,10 @@ def resolve_fragment_paths(
     return [paths.fragment_abspath(audio_root, entry['file']) for entry in entries]
 
 
-def _ffmpeg_concat_escape(path: Path) -> str:
-    """Escape a path for ffmpeg's concat demuxer list file."""
-    return path.resolve().as_posix().replace("'", "'\\''")
-
-
-def concatenate_wav_fragments(
-    fragment_paths: Sequence[Path],
-    output_path: Path,
-) -> None:
-    """Concatenate WAV files in order into ``output_path`` using ffmpeg."""
+def concatenate_wav_fragments(fragment_paths: Sequence[Path]) -> bytes:
+    """Concatenate WAV files in order and return the combined WAV as bytes."""
     if not fragment_paths:
         raise ValueError('At least one audio fragment is required')
-
-    ffmpeg = shutil.which('ffmpeg')
-    if ffmpeg is None:
-        raise RuntimeError(
-            'ffmpeg is required to compose announcement audio. '
-            'Install ffmpeg and ensure it is on PATH.'
-        )
 
     missing = [path for path in fragment_paths if not path.is_file()]
     if missing:
@@ -58,94 +44,79 @@ def concatenate_wav_fragments(
             f'Audio fragment(s) not found: {", ".join(str(path) for path in missing)}'
         )
 
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+    frame_parts: list[bytes] = []
+    nchannels = sampwidth = framerate = None
+    comptype = compname = None
 
-    with tempfile.NamedTemporaryFile(
-        mode='w',
-        suffix='.txt',
-        delete=False,
-        encoding='utf-8',
-    ) as list_file:
-        for path in fragment_paths:
-            list_file.write(f"file '{_ffmpeg_concat_escape(path)}'\n")
-        list_path = Path(list_file.name)
+    for path in fragment_paths:
+        with wave.open(str(path), 'rb') as wav_in:
+            params = (
+                wav_in.getnchannels(),
+                wav_in.getsampwidth(),
+                wav_in.getframerate(),
+                wav_in.getcomptype(),
+                wav_in.getcompname(),
+            )
+            if nchannels is None:
+                nchannels, sampwidth, framerate, comptype, compname = params
+            elif params != (nchannels, sampwidth, framerate, comptype, compname):
+                raise ValueError(
+                    f'Incompatible WAV format in {path}: expected '
+                    f'{nchannels}ch/{sampwidth}byte/{framerate}Hz, '
+                    f'got {params[0]}ch/{params[1]}byte/{params[2]}Hz'
+                )
+            frame_parts.append(wav_in.readframes(wav_in.getnframes()))
 
-    try:
-        result = subprocess.run(
-            [
-                ffmpeg,
-                '-y',
-                '-loglevel',
-                'error',
-                '-f',
-                'concat',
-                '-safe',
-                '0',
-                '-i',
-                str(list_path),
-                '-ar',
-                '22050',
-                '-ac',
-                '1',
-                str(output_path),
-            ],
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-    finally:
-        list_path.unlink(missing_ok=True)
+    buf = io.BytesIO()
+    with wave.open(buf, 'wb') as wav_out:
+        wav_out.setnchannels(nchannels)
+        wav_out.setsampwidth(sampwidth)
+        wav_out.setframerate(framerate)
+        wav_out.setcomptype(comptype, compname)
+        wav_out.writeframes(b''.join(frame_parts))
 
-    if result.returncode != 0:
-        detail = (result.stderr or result.stdout or '').strip()
-        raise RuntimeError(f'ffmpeg failed to compose announcement audio: {detail}')
+    return buf.getvalue()
 
 
 def compose_announcement(
     fragment_keys: Sequence[str],
+    lang_code: str,
     map_path: Path | None = None,
     audio_root: Path | None = None,
-    output_path: Path | None = None,
-) -> tuple[Path, ComposeRecipe]:
-    """Stitch fragments into one playable file following a compose recipe.
+) -> tuple[bytes, ComposeRecipe]:
+    """Stitch fragments into one playable WAV following a compose recipe.
 
-    Returns the output path and the recipe used. Fragments are concatenated
-    in ``recipe.audio_sequence`` order via ffmpeg.
+    Returns the WAV bytes and the recipe used. Fragments are concatenated
+    in ``recipe.audio_sequence`` order.
     """
     map_path = map_path or paths.default_map_path()
     audio_root = audio_root or paths.default_audio_root()
-    sound_map = load_sound_map(map_path)
-    recipe = build_compose_recipe(fragment_keys, sound_map=sound_map)
-    fragment_paths = resolve_fragment_paths(fragment_keys, sound_map, audio_root)
-
-    if output_path is None:
-        suffix = paths.FRAGMENT_EXTENSION
-        tmp = tempfile.NamedTemporaryFile(suffix=f'.{suffix}', delete=False)
-        tmp.close()
-        output_path = Path(tmp.name)
-
-    concatenate_wav_fragments(fragment_paths, output_path)
-    return output_path, recipe
+    document = load_sound_map(map_path)
+    lang_map = get_lang_map(document, lang_code)
+    recipe = build_compose_recipe(fragment_keys, lang_code=lang_code, sound_map=lang_map)
+    fragment_paths = resolve_fragment_paths(fragment_keys, lang_map, audio_root)
+    return concatenate_wav_fragments(fragment_paths), recipe
 
 
 def compose_queue_call(
     queue_character: str,
     queue_number: int,
     destination_key: str,
+    lang_code: str = const.LANG.ID,
     map_path: Path | None = None,
     audio_root: Path | None = None,
-    output_path: Path | None = None,
-) -> tuple[Path, ComposeRecipe]:
+) -> tuple[bytes, ComposeRecipe]:
     """High-level helper: build the fragment list for a typical queue call."""
     map_path = map_path or paths.default_map_path()
     fragment_keys = announcement.compose_call_fragment_keys(
         queue_character,
         queue_number,
         destination_key,
+        lang_code=lang_code,
     )
     return compose_announcement(
         fragment_keys,
+        lang_code=lang_code,
         map_path=map_path,
         audio_root=audio_root,
-        output_path=output_path,
     )

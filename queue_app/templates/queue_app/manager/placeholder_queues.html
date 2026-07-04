@@ -40,7 +40,7 @@
       </div>
 
       <audio class="call-audio hidden" preload="none">
-        <source src="{% url 'queue:manager:audio' %}?queue={{ queue.id }}" type="audio/mpeg">
+        <source src="{% url 'queue:manager:audio_composed' %}?queue={{ queue.id }}" type="audio/mpeg">
       </audio>
 
       <a href="{% url 'queue:manager:call' queue.id %}"
