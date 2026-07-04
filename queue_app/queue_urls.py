@@ -97,11 +97,6 @@ manager_patterns = [
         views.playComposedAudioFile,
         name='audio_composed'
     ),
-    path(
-        'lang/<str:lang_id>/',
-        views.SetLanguageRedirect.as_view(),
-        name='language'
-    ),
 ]
 
 machine_patterns =[

@@ -43,6 +43,7 @@ LOGOUT_REDIRECT_URL = reverse_lazy('queue:index')
 # Application definition
 
 INSTALLED_APPS = [
+    'queue_app',
     'dal',
     'dal_select2',
     'django.contrib.admin',
@@ -52,7 +53,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'jquery',
-    'queue_app',
     'widget_tweaks',
 ]
 

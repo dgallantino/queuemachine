@@ -367,32 +367,6 @@ class OrganizationToSession(
         return super().get_redirect_url(*args, **kwargs)
 
 
-class SetLanguageRedirect(QueueAppLoginMixin, RedirectView):
-    http_method_names = ['get', ]
-    url = reverse_lazy('queue:manager:index')
-
-    def get_redirect_url(self, *args, **kwargs):
-        if self.request.GET.get('next'):
-            return self.request.GET.get('next')
-        return super(SetLanguageRedirect, self).get_redirect_url(*args, **kwargs)
-
-    def get(self, request, *args, **kwargs):
-        response = super().get(request, *args, **kwargs)
-        req_lang = kwargs.get('lang_id')
-        if dict(settings.LANGUAGES).get(req_lang):
-            response.set_cookie(
-                settings.LANGUAGE_COOKIE_NAME,
-                req_lang,
-                max_age=settings.LANGUAGE_COOKIE_AGE,
-                path=settings.LANGUAGE_COOKIE_PATH,
-                domain=settings.LANGUAGE_COOKIE_DOMAIN,
-                secure=settings.LANGUAGE_COOKIE_SECURE,
-                httponly=settings.LANGUAGE_COOKIE_HTTPONLY,
-                samesite=settings.LANGUAGE_COOKIE_SAMESITE,
-            )
-        return response
-
-
 class AddCustomerView(
     QueueAppLoginMixin,
     SuccessMessageMixin,
@@ -534,7 +508,7 @@ def playComposedAudioFile(request):
         pk=request.session.get(const.IDX.BOOTH, {}).get('id')
     )
     if queue and booth:
-        lang_code = request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME, const.LANG.ID)
+        lang_code = request.LANGUAGE_CODE
         wav_bytes, _recipe = compose_queue_call(
             queue.character,
             queue.number,

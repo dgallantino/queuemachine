@@ -1,0 +1,24 @@
+{% load i18n %}
+{% get_current_language as CURRENT_LANGUAGE %}
+{% with next_url=redirect_to|default:request.get_full_path %}
+  {% if switcher_style == 'admin' %}
+    {% for lang_code, lang_name in LANGUAGES %}
+    <form action="{% url 'set_language' %}" method="post" class="language-switcher-form">
+      {% csrf_token %}
+      <input name="next" type="hidden" value="{{ next_url }}">
+      <input name="language" type="hidden" value="{{ lang_code }}">
+      <button type="submit"{% if lang_code == CURRENT_LANGUAGE %} class="language-switcher-active"{% endif %}>{% trans lang_name %}</button>
+    </form>{% if not forloop.last %} / {% endif %}
+    {% endfor %}
+     /
+  {% else %}
+    {% for lang_code, lang_name in LANGUAGES %}
+    <form action="{% url 'set_language' %}" method="post" class="block">
+      {% csrf_token %}
+      <input name="next" type="hidden" value="{{ next_url }}">
+      <input name="language" type="hidden" value="{{ lang_code }}">
+      <button type="submit" class="block w-full px-4 py-2 text-sm text-left text-slate-700 hover:bg-slate-50{% if lang_code == CURRENT_LANGUAGE %} font-semibold text-brand-700{% endif %}">{% trans lang_name as lang_tx %}{{ lang_tx|title }}</button>
+    </form>
+    {% endfor %}
+  {% endif %}
+{% endwith %}

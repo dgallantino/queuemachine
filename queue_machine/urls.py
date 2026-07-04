@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import RedirectView
+from django.views.i18n import set_language
 from django.conf import settings
 
 
@@ -23,6 +24,7 @@ from django.conf import settings
 urlpatterns = [
     path('', RedirectView.as_view(url='queuemachine/')),
     path('favicon.ico',RedirectView.as_view(url=settings.STATIC_URL+'queue_app/images/favicon.png')),
+    path('i18n/setlang/', set_language, name='set_language'),
     path('admin/', admin.site.urls),
     path('queuemachine/', include('queue_app.queue_urls')),
     path('queuemachine/', include('django.contrib.auth.urls')),

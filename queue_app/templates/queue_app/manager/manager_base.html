@@ -76,10 +76,7 @@
       </button>
       <div x-show="open" x-cloak x-transition
            class="absolute right-0 top-full z-50 mt-1 w-48 rounded-xl border border-slate-200 bg-white py-1 shadow-lg">
-        <a href="{% url 'queue:manager:language' 'en' %}?next={{ request.get_full_path|urlencode }}"
-           class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">{% trans "english" as english_tx %}{{ english_tx|title }}</a>
-        <a href="{% url 'queue:manager:language' 'id' %}?next={{ request.get_full_path|urlencode }}"
-           class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">{% trans "indonesian" as indonesian_tx %}{{ indonesian_tx|title }}</a>
+        {% include "queue_app/includes/language_switcher.html" %}
         <hr class="my-1 border-slate-100">
         <a href="{% url 'queue:manager:edit_user' %}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">{% trans "edit profile" as edit_tx %}{{ edit_tx|capfirst }}</a>
         <a href="{% url 'admin:index' %}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">{% trans "admin" as admin_tx %}{{ admin_tx|capfirst }}</a>
