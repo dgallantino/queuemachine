@@ -17,6 +17,23 @@
             },
             "console": "integratedTerminal",
             "justMyCode": true
+        },
+        {
+            "name": "Django: tests (settings_test)",
+            "type": "debugpy",
+            "request": "launch",
+            "python": "${command:python.interpreterPath}",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "test",
+                "queue_app.tests"
+            ],
+            "django": true,
+            "env": {
+                "DJANGO_SETTINGS_MODULE": "queue_machine.settings_test"
+            },
+            "console": "integratedTerminal",
+            "justMyCode": true
         }
     ]
 }
