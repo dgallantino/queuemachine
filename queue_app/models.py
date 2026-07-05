@@ -1,3 +1,4 @@
+from operator import is_
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from datetime import date
@@ -148,44 +149,6 @@ class User(AbstractUser):
     objects = UserManager()
 
 
-# class CustomerProfile(models.Model):
-# 	id=models.UUIDField(
-# 		primary_key=True,
-# 		default=uuid.uuid4,
-# 		editable=False
-# 	)
-#
-# 	user=models.OneToOneField(
-# 		User,
-# 		on_delete=models.CASCADE,
-# 		related_name='customer_profile'
-# 	)
-#
-# 	groups=models.ManyToManyField(
-# 		Group,
-# 		blank=True,
-# 		related_name='customers',
-# 	)
-#
-# 	birth_modified=models.DateTimeField(null=True,blank=True)
-#
-# 	first_name = models.CharField(max_length=20)
-#
-# 	last_name = models.CharField(max_length=20)
-#
-# 	email = models.EmailField()
-#
-# 	address = models.CharField(max_length=200)
-#
-# 	phone=models.CharField(
-# 		null=True,
-# 		blank=True,
-# 		max_length = 12,
-# 	)
-#
-# 	date_created=models.DateTimeField(auto_now_add=True)
-#
-# 	date_modified=models.DateTimeField(auto_now=True)
 
 class ServiceQueryset(models.QuerySet):
     """docstring for ServiceQueryset."""
@@ -392,7 +355,7 @@ class Queue(models.Model):
     def assert_in_org(self, org_id):
         from django.core.exceptions import ValidationError
 
-        if org_id and self.service.organization_id != org_id:
+        if org_id and str(self.service.organization_id) != str(org_id):
             raise ValidationError(_('queue does not belong to this organization'))
 
     class Meta:

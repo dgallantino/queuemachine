@@ -52,7 +52,7 @@
             {% trans "refresh" as f5_tx %}{{ f5_tx|title }}
           </button>
         </div>
-        <table class="w-full text-sm">
+        <table id="queue-table-{{ service.id }}" class="w-full text-sm">
           <thead>
             <tr class="border-b border-slate-100 bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
               <th class="px-5 py-3">#</th>

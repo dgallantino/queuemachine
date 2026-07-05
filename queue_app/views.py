@@ -1,5 +1,6 @@
 from io import BytesIO
 import calendar
+import logging
 import time
 import math
 import re
@@ -14,7 +15,7 @@ from django.urls.base import reverse_lazy
 from django.views.generic.base import RedirectView
 from django.views.generic.detail import SingleObjectMixin
 from django.http.response import HttpResponse
-from django.http import Http404
+from django.http import Http404, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import gettext_lazy as _
@@ -195,6 +196,15 @@ class MachineDisplayView(QueueAppLoginMixin, SessionInitializer, OrgScopedMixin,
 
     def get_success_url(self):
         return reverse_lazy('queue:machine:print', kwargs={'pk': self.object.id})
+
+    def form_invalid(self, form):
+        logger = logging.getLogger(__name__)
+        logger.error('MachineDisplayView rejected queue creation: %s', form.errors)
+        lines = [
+            f'{field}: {"; ".join(errors)}'
+            for field, errors in form.errors.items()
+        ]
+        return HttpResponseBadRequest('\n'.join(lines) or str(_('invalid queue request')))
 
 
 # booking entry is updated right before printing

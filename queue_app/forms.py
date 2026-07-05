@@ -19,6 +19,12 @@ class OrgScopedFormMixin:
 
     org_scoped_fields = ('service', 'customer', 'counter_booth')
 
+    @staticmethod
+    def _same_org(org_id, other_org_id):
+        if not org_id or other_org_id is None:
+            return True
+        return str(org_id) == str(other_org_id)
+
     def __init__(self, *args, org_id=None, **kwargs):
         self.org_id = org_id
         super().__init__(*args, **kwargs)
@@ -32,7 +38,7 @@ class OrgScopedFormMixin:
 
     def clean_service(self):
         service = self.cleaned_data.get('service')
-        if service and self.org_id and service.organization_id != self.org_id:
+        if service and self.org_id and not self._same_org(self.org_id, service.organization_id):
             raise forms.ValidationError(_('service does not belong to this organization'))
         return service
 
@@ -44,7 +50,7 @@ class OrgScopedFormMixin:
 
     def clean_counter_booth(self):
         booth = self.cleaned_data.get('counter_booth')
-        if booth and self.org_id and booth.organization_id != self.org_id:
+        if booth and self.org_id and not self._same_org(self.org_id, booth.organization_id):
             raise forms.ValidationError(_('counter booth does not belong to this organization'))
         return booth
 
