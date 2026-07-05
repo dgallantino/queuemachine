@@ -8,9 +8,10 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm, Password
 from queue_app import models
 from dal import autocomplete
 from datetime import datetime
-from random import randint
-from django.db.utils import IntegrityError
+
 from django.utils.translation import gettext_lazy as _
+
+from queue_app.services import QueueService, UserService
 
 
 class BaseMedia:
@@ -50,12 +51,7 @@ class CustomerCreationForm(CustomUserCreationForm):
         new_customer.username = self.cleaned_data.get('first_name') + self.cleaned_data.get('last_name')
         new_customer.set_unusable_password()
         if commit:
-            try:
-                new_customer.save()
-            except IntegrityError:
-                new_customer.username = new_customer.username + str(randint(0, 100))
-                new_customer.save()
-            self.save_m2m()
+            UserService.save_customer(new_customer, save_m2m=self.save_m2m)
         return new_customer
 
     class Meta(CustomUserCreationForm.Meta):
@@ -160,13 +156,6 @@ class QueueModelBaseForms(forms.ModelForm):
         label=_("booking date"),
         initial=datetime.now(),
         required=False,
-        # widget=forms.DateInput(
-        #     format='%d-%m-%Y',
-        #     attrs={
-        #         'id': 'booking-date',
-        #         'class': 'input-field',
-        #     },
-        # ),
     )
 
     class Meta:
@@ -192,20 +181,6 @@ class QueueModelBaseForms(forms.ModelForm):
             ),
         }
 
-    # class Media:
-    #     css = {
-    #         'all': (
-    #             # 'queue_app/bootstrap/css/bootstrap.min.css',
-    #             # 'queue_app/font-awesome/css/font-awesome.min.css',
-    #             # 'queue_app/core/css/manager-form.css',
-    #             # 'queue_app/jquery-ui/jquery-ui.min.css',
-    #             # 'queue_app/jquery-timepicker/jquery.timepicker.min.css',
-    #         ),
-    #     }
-    #     js = (
-    #         # 'queue_app/jquery-ui/jquery-ui.min.js',
-    #         # 'queue_app/jquery-timepicker/jquery.timepicker.min.js',
-    #     )
 
     def save(self, commit=True):
         # get models.Queue isntance to create or edit
@@ -218,25 +193,15 @@ class QueueModelBaseForms(forms.ModelForm):
                     self.cleaned_data.pop('booking_time')
                 )
             except Exception:
-                pass
+                raise Exception('Failed to create booking')
 
-        # define queue number automaticly
-        if self.cleaned_data.pop('is_printed', False):
-            # get latest queue
-            recent_queue = (
-                models.Queue.objects
-                    .filter(service=new_queue.service)
-                    # .is_booking(self.cleaned_data.get('booking_flag', False))
-                    .today_filter()
-                    .is_printed(True)
-                    .order_by('print_datetime')
-                    .last()
-            )
-            new_queue.number = new_queue.number or (getattr(recent_queue, 'number', None) or 0) + 1
-            new_queue.print_datetime = new_queue.print_datetime or datetime.now()
-        # save when commited
+        should_print = self.cleaned_data.pop('is_printed', False)
         if commit:
+            if should_print:
+                new_queue.is_printed = False
             new_queue.save()
+            if should_print:
+                new_queue = QueueService.assign_ticket_number(new_queue)
         return new_queue
 
 
@@ -259,17 +224,21 @@ class FinishQueueModelForms(QueueModelBaseForms):
     class Meta(QueueModelBaseForms.Meta):
         fields = ('is_finished',)
 
+    def save(self, commit=True):
+        if commit:
+            return QueueService.finish_queue(self.instance)
+        return super().save(commit=False)
+
 
 class CallQueueModelForms(QueueModelBaseForms):
     class Meta(QueueModelBaseForms.Meta):
         fields = ('is_called', 'counter_booth')
 
     def save(self, commit=True):
-        new_queue = super(CallQueueModelForms, self).save(commit=False)
-        new_queue.is_called = self.cleaned_data.pop('is_called', new_queue.is_called)
+        counter_booth = self.cleaned_data.get('counter_booth')
         if commit:
-            new_queue.save()
-        return new_queue
+            return QueueService.call_queue(self.instance, counter_booth)
+        return super().save(commit=False)
 
 
 class MoveQueueModelForms(QueueModelBaseForms):
@@ -277,10 +246,7 @@ class MoveQueueModelForms(QueueModelBaseForms):
         fields = ('service',)
 
     def save(self, commit=True):
-        # make it look like its reprinted
-        new_queue = super(MoveQueueModelForms, self).save(commit=False)
-        new_queue.print_datetime = datetime.now()
-        new_queue.is_called = False
+        target_service = self.cleaned_data.get('service')
         if commit:
-            new_queue.save()
-        return new_queue
+            return QueueService.move_queue(self.instance, target_service)
+        return super().save(commit=False)
