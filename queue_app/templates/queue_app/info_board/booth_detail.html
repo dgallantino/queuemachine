@@ -1,3 +1,4 @@
+{% load i18n %}
 {% if CounterBooth.latest_queue %}
   {% with CounterBooth.latest_queue as last_queue %}
   <span class="text-brand-400">{{ last_queue.character }}</span>{{ last_queue.number }}

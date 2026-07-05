@@ -35,7 +35,7 @@
         {% for booth in CounterBooths %}
         <div class="booth-card overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-slate-800 to-slate-900 shadow-xl"
              hx-get="{% url 'queue:infoboard:booth_detail' booth.id %}"
-             hx-trigger="every 10s"
+             hx-trigger="every 5s"
              hx-target="find .queue-data"
              hx-swap="innerHTML">
           <div class="border-b border-white/10 bg-white/5 px-5 py-3">
@@ -44,14 +44,7 @@
           <div class="px-5 py-8 text-center">
             <p class="mb-2 text-xs uppercase tracking-widest text-slate-500">{% trans "queue" as queue_tx %}{{ queue_tx|title }}</p>
             <div class="queue-data font-display text-4xl font-bold text-white sm:text-5xl">
-              {% if booth.queues.today_filter.last %}
-                {% with booth.queues.today_filter.last as last_queue %}
-                <span class="text-brand-400">{{ last_queue.character }}</span>{{ last_queue.number }}
-                <p class="mt-2 text-base font-normal text-slate-400">{{ last_queue.service }}</p>
-                {% endwith %}
-              {% else %}
                 <span class="text-2xl text-slate-600">—</span>
-              {% endif %}
             </div>
           </div>
         </div>
