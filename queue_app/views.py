@@ -13,7 +13,8 @@ from django.views.generic import ListView, DetailView, TemplateView, View
 from django.urls.base import reverse_lazy
 from django.views.generic.base import RedirectView
 from django.views.generic.detail import SingleObjectMixin
-from django.http.response import HttpResponse, HttpResponseBadRequest
+from django.http.response import HttpResponse
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import gettext_lazy as _
@@ -56,18 +57,72 @@ Bases
 '''
 
 
+def session_org_id(request):
+    return request.session.get(const.IDX.ORG, {}).get('id')
+
+
+def user_has_org_access(user, org_id):
+    if not org_id:
+        return False
+    return user.organization.filter(pk=org_id).exists()
+
+
+def require_session_org(request):
+    """Return the session org id if the user may access it, else None."""
+    org_id = session_org_id(request)
+    if user_has_org_access(request.user, org_id):
+        return org_id
+    return None
+
+
+def get_org_queue(request, queue_pk):
+    org_id = require_session_org(request)
+    if not org_id:
+        raise Http404
+    return get_object_or_404(models.Queue.objects.for_org(org_id), pk=queue_pk)
+
+
+def get_session_booth(request):
+    org_id = require_session_org(request)
+    booth_id = request.session.get(const.IDX.BOOTH, {}).get('id')
+    if not org_id or not booth_id:
+        raise Http404
+    return get_object_or_404(models.CounterBooth.objects.for_org(org_id), pk=booth_id)
+
+
 class QueueAppLoginMixin(LoginRequiredMixin):
     pass
 
 
-class BaseBoothListView(QueueAppLoginMixin, ListView):
+class OrgScopedMixin:
+    def get_org_id(self):
+        return require_session_org(self.request)
+
+    def get_org_services(self):
+        return models.Service.objects.for_org(self.get_org_id())
+
+    def get_org_queues(self):
+        return models.Queue.objects.for_org(self.get_org_id())
+
+    def get_org_booths(self):
+        return models.CounterBooth.objects.for_org(self.get_org_id())
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['org_id'] = self.get_org_id()
+        return kwargs
+
+
+class OrgScopedQueueMixin(OrgScopedMixin):
+    def get_queryset(self):
+        return self.get_org_queues()
+
+
+class BaseBoothListView(QueueAppLoginMixin, OrgScopedMixin, ListView):
     context_object_name = const.TEMPLATE.BOOTHS
 
     def get_queryset(self):
-        return (
-            models.CounterBooth.objects
-                .filter(organization=self.request.session.get(const.IDX.ORG, {}).get('id'))
-        )
+        return self.get_org_booths()
 
 
 class SessionInitializer(View):
@@ -128,18 +183,14 @@ component
 # Implementation using form and normal html request
 # CreateView to create new normal Queue
 # context['services'] to list available services
-class MachineDisplayView(QueueAppLoginMixin, SessionInitializer, CreateView, ):
+class MachineDisplayView(QueueAppLoginMixin, SessionInitializer, OrgScopedMixin, CreateView, ):
     template_name = 'queue_app/machine/machine.html'
     model = models.Queue
     form_class = forms.AddQueueModelForms
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context[const.TEMPLATE.SERVICES] = (
-            models.Service.objects
-                .org_filter(self.request.session.get(const.IDX.ORG, {}).get('id'))
-                .is_hidden(False)
-        )
+        context[const.TEMPLATE.SERVICES] = self.get_org_services().is_hidden(False)
         return context
 
     def get_success_url(self):
@@ -149,20 +200,15 @@ class MachineDisplayView(QueueAppLoginMixin, SessionInitializer, CreateView, ):
 # booking entry is updated right before printing
 # so the number is sorted based on time it was printed
 # UpdateView class is there to handle booking queue
-class PrintTicketView(QueueAppLoginMixin, DetailView, UpdateView, ):
+class PrintTicketView(QueueAppLoginMixin, OrgScopedMixin, DetailView, UpdateView, ):
     template_name = 'queue_app/machine/placeholder_ticket.html'
     context_object_name = const.TEMPLATE.QUEUE
     form_class = forms.PrintQueueModelForms
 
     def get_queryset(self):
-        services = (
-            models.Service.objects
-                .org_filter(self.request.session.get(const.IDX.ORG, {}).get('id'))
-        )
         return (
-            models.Queue.objects
+            self.get_org_queues()
                 .today_filter()
-                .services_filter(services)
         )
 
     def get_success_url(self):
@@ -173,6 +219,7 @@ class PrintTicketView(QueueAppLoginMixin, DetailView, UpdateView, ):
 # SingleObjectMixin get Queue id in url and list the new queue after that one
 class BookingQueueListView(
     QueueAppLoginMixin,
+    OrgScopedMixin,
     SingleObjectMixin,
     ListView,
 ):
@@ -184,33 +231,18 @@ class BookingQueueListView(
         return None
 
     def get(self, request, *args, **kwargs):
-        services = (
-            models.Service.objects
-                .filter(
-                organization=self.request.session.get(const.IDX.ORG, {}).get('id')
-            )
-        )
-
         self.object = self.get_object(
-            models.Queue.objects
+            self.get_org_queues()
                 .today_filter()
-                .services_filter(services)
                 .is_printed(False)
                 .is_booking(True)
         )
         return super(BookingQueueListView, self).get(request, *args, **kwargs)
 
     def get_queryset(self):
-        services = (
-            models.Service.objects
-                .org_filter(
-                self.request.session.get(const.IDX.ORG, {}).get('id')
-            )
-        )
         qs = (
-            models.Queue.objects
+            self.get_org_queues()
                 .today_filter()
-                .services_filter(services)
                 .is_booking(True)
                 .is_printed(False)
         )
@@ -244,6 +276,7 @@ componen:
 class ManagerDisplayView(
     QueueAppLoginMixin,
     SessionInitializer,
+    OrgScopedMixin,
     PermissionRequiredMixin,
     ListView
 ):
@@ -252,23 +285,16 @@ class ManagerDisplayView(
     context_object_name = const.TEMPLATE.SERVICES
 
     def get_queryset(self):
-        return (
-            models.Service.objects
-                .org_filter(self.request.session.get(const.IDX.ORG, {}).get('id'))
-        )
+        return self.get_org_services()
 
 
 class UserLookupView(
     QueueAppLoginMixin,
+    OrgScopedMixin,
     autocomplete.Select2QuerySetView,
 ):
     def get_queryset(self):
-        query_set = (
-            models.User.objects
-                .filter(
-                organization=(self.request.session.get(const.IDX.ORG, {}).get('id'))
-            )
-        )
+        query_set = models.User.objects.for_org(self.get_org_id())
         if self.q:
             qs1 = query_set.filter(username__startswith=self.q)
             qs2 = query_set.filter(first_name__startswith=self.q)
@@ -285,15 +311,11 @@ class UserLookupView(
 
 class ServiceLookupView(
     QueueAppLoginMixin,
+    OrgScopedMixin,
     autocomplete.Select2QuerySetView,
 ):
     def get_queryset(self):
-        queryset = (
-            models.Service.objects
-                .org_filter(
-                self.request.session.get(const.IDX.ORG, {}).get('id')
-            )
-        )
+        queryset = self.get_org_services()
         if self.q:
             qs1 = queryset.filter(name__startswith=self.q)
             qs2 = queryset.filter(desc__startswith=self.q)
@@ -323,6 +345,7 @@ class ManagerBoothListView(BaseBoothListView):
 
 class BoothToSession(
     QueueAppLoginMixin,
+    OrgScopedMixin,
     SingleObjectMixin,
     RedirectView,
 ):
@@ -330,10 +353,7 @@ class BoothToSession(
     url = reverse_lazy("queue:manager:index")
 
     def get_queryset(self):
-        return (
-            models.CounterBooth.objects
-                .filter(organization=self.request.session.get(const.IDX.ORG, {}).get('id'))
-        )
+        return self.get_org_booths()
 
     def get_redirect_url(self, *args, **kwargs):
         CounterBooth_object = self.get_object()
@@ -381,6 +401,7 @@ class AddCustomerView(
 
 class AddBookingQueueView(
     QueueAppLoginMixin,
+    OrgScopedMixin,
     SuccessMessageMixin,
     CreateView,
 ):
@@ -422,16 +443,14 @@ class ChangePasswordView(
 # todos: exetend a basic Queue list view(?)
 class QueuePerServiceView(
     QueueAppLoginMixin,
+    OrgScopedMixin,
     ListView,
     SingleObjectMixin,
 ):
     template_name = 'queue_app/manager/placeholder_queues.html'
 
     def get(self, request, *args, **kwargs):
-        self.object = self.get_object(
-            models.Service.objects
-                .org_filter(self.request.session.get(const.IDX.ORG, {}).get('id'))
-        )
+        self.object = self.get_object(self.get_org_services())
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -452,22 +471,19 @@ class QueuePerServiceView(
         return qs
 
 
-class CallQueueView(LoginRequiredMixin, UpdateView):
-    login_url = reverse_lazy('login')
+class CallQueueView(QueueAppLoginMixin, OrgScopedQueueMixin, UpdateView):
     success_url = reverse_lazy('queue:manager:index')
     form_class = forms.CallQueueModelForms
     model = models.Queue
 
 
-class FinishQueueView(LoginRequiredMixin, UpdateView):
-    login_url = reverse_lazy('login')
+class FinishQueueView(QueueAppLoginMixin, OrgScopedQueueMixin, UpdateView):
     success_url = reverse_lazy('queue:manager:index')
     form_class = forms.FinishQueueModelForms
     model = models.Queue
 
 
-class MoveQueueView(LoginRequiredMixin, UpdateView, SingleObjectMixin):
-    login_url = reverse_lazy('login')
+class MoveQueueView(QueueAppLoginMixin, OrgScopedQueueMixin, UpdateView):
     success_url = reverse_lazy('queue:manager:index')
     form_class = forms.MoveQueueModelForms
     model = models.Queue
@@ -475,50 +491,34 @@ class MoveQueueView(LoginRequiredMixin, UpdateView, SingleObjectMixin):
 
 @login_required
 def playAudioFile(request):
-    queue = get_object_or_404(
-        models.Queue,
-        pk=request.GET.get('queue')
-    )
-    booth = get_object_or_404(
-        models.CounterBooth,
-        pk=request.session.get(const.IDX.BOOTH, {}).get('id')
-    )
-    if (queue and booth):
-        tts_string = "antrian " + queue.character + " " + str(queue.number) + " ke " + booth.spoken_name
-        mp3_fp = BytesIO()
-        tts = gTTS(tts_string, request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME, const.LANG.ID))
-        tts.write_to_fp(mp3_fp)
-        response = HttpResponse()
-        response.write(mp3_fp.getvalue())
-        response['Content-Type'] = 'audio/mp3'
-        response['Content-Length'] = mp3_fp.getbuffer().nbytes
-        mp3_fp.close()
-        return response
-    return HttpResponseBadRequest
+    queue = get_org_queue(request, request.GET.get('queue'))
+    booth = get_session_booth(request)
+    tts_string = "antrian " + queue.character + " " + str(queue.number) + " ke " + booth.spoken_name
+    mp3_fp = BytesIO()
+    tts = gTTS(tts_string, request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME, const.LANG.ID))
+    tts.write_to_fp(mp3_fp)
+    response = HttpResponse()
+    response.write(mp3_fp.getvalue())
+    response['Content-Type'] = 'audio/mp3'
+    response['Content-Length'] = mp3_fp.getbuffer().nbytes
+    mp3_fp.close()
+    return response
 
 
 @login_required
 def playComposedAudioFile(request):
-    queue = get_object_or_404(
-        models.Queue,
-        pk=request.GET.get('queue')
+    queue = get_org_queue(request, request.GET.get('queue'))
+    booth = get_session_booth(request)
+    lang_code = request.LANGUAGE_CODE
+    wav_bytes, _recipe = compose_queue_call(
+        queue.character,
+        queue.number,
+        destination_key_for_booth(booth.spoken_name),
+        lang_code=lang_code,
     )
-    booth = get_object_or_404(
-        models.CounterBooth,
-        pk=request.session.get(const.IDX.BOOTH, {}).get('id')
-    )
-    if queue and booth:
-        lang_code = request.LANGUAGE_CODE
-        wav_bytes, _recipe = compose_queue_call(
-            queue.character,
-            queue.number,
-            destination_key_for_booth(booth.spoken_name),
-            lang_code=lang_code,
-        )
-        response = HttpResponse(wav_bytes, content_type='audio/wav')
-        response['Content-Length'] = len(wav_bytes)
-        return response
-    return HttpResponseBadRequest()
+    response = HttpResponse(wav_bytes, content_type='audio/wav')
+    response['Content-Length'] = len(wav_bytes)
+    return response
 
 
 '''
@@ -533,18 +533,15 @@ hope i got this right
 class InfoBoardMainView(SessionInitializer, BaseBoothListView):
     template_name = 'queue_app/info_board/info_board.html'
 
-    def get_queryset(self):
-        return (
-            models.CounterBooth.objects
-                .filter(organization=self.request.session.get(const.IDX.ORG, {}).get('id'))
-        )
-
 
 # context : booth detail
-class InfoBoardBoothDetailView(QueueAppLoginMixin, DetailView):
+class InfoBoardBoothDetailView(QueueAppLoginMixin, OrgScopedMixin, DetailView):
     template_name = "queue_app/info_board/booth_detail.html"
     model = models.CounterBooth
     context_object_name = const.TEMPLATE.BOOTH
+
+    def get_queryset(self):
+        return self.get_org_booths()
 
 
 # havent been used
@@ -553,19 +550,14 @@ class InfoBoardQueuePerService(QueuePerServiceView):
 
 
 # context : all queues in loged in user's selected organization
-class InfoBoardQueueListView(QueueAppLoginMixin, ListView):
+class InfoBoardQueueListView(QueueAppLoginMixin, OrgScopedMixin, ListView):
     template_name = "queue_app/info_board/placeholder_queues.html"
     context_object_name = const.TEMPLATE.QUEUES
 
     def get_queryset(self):
-        services = (
-            models.Service.objects
-                .org_filter(self.request.session.get(const.IDX.ORG, {}).get('id'))
-        )
         return (
-            models.Queue.objects
+            self.get_org_queues()
                 .today_filter()
-                .services_filter(services)
                 .is_printed(True)
                 .is_called(False)
                 .order_by('print_datetime')

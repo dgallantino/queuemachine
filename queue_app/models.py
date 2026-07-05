@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from datetime import date
-from django.contrib.auth.models import AbstractUser, Group
+from django.contrib.auth.models import AbstractUser, Group, UserManager as DjangoUserManager
 import uuid
 
 
@@ -32,6 +32,13 @@ class Organization(models.Model):
     class Meta:
         verbose_name = _('organization')
         verbose_name_plural = verbose_name
+
+
+class CounterBoothQuerySet(models.QuerySet):
+    def for_org(self, org_id):
+        if not org_id:
+            return self.none()
+        return self.filter(organization_id=org_id)
 
 
 class CounterBooth(models.Model):
@@ -96,9 +103,22 @@ class CounterBooth(models.Model):
     def latest_queue(self):
         return self.queues.today_filter().order_by('date_modified').last()
 
+    objects = CounterBoothQuerySet.as_manager()
+
     class Meta:
         verbose_name = _('counter booth')
         verbose_name_plural = verbose_name
+
+
+class UserQuerySet(models.QuerySet):
+    def for_org(self, org_id):
+        if not org_id:
+            return self.none()
+        return self.filter(organization=org_id)
+
+
+class UserManager(DjangoUserManager.from_queryset(UserQuerySet)):
+    pass
 
 
 class User(AbstractUser):
@@ -124,6 +144,8 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+    objects = UserManager()
 
 
 # class CustomerProfile(models.Model):
@@ -178,7 +200,12 @@ class ServiceQueryset(models.QuerySet):
         return self.filter(group=group_obj)
 
     def org_filter(self, org):
-        return self.filter(organization=org)
+        return self.for_org(org)
+
+    def for_org(self, org_id):
+        if not org_id:
+            return self.none()
+        return self.filter(organization=org_id)
 
     def orgs_filter(self, orgs):
         return self.filter(organization__in=orgs)
@@ -277,6 +304,11 @@ class QueueQueryset(models.QuerySet):
     def services_filter(self, iterable):
         return self.filter(service__in=iterable)
 
+    def for_org(self, org_id):
+        if not org_id:
+            return self.none()
+        return self.filter(service__organization_id=org_id)
+
     def last_modified(self):
         return self.order_by('date_modified').last()
 
@@ -356,6 +388,12 @@ class Queue(models.Model):
     def save(self, *args, **kwargs):
         self.character = self.character or self.service.queue_char
         super().save(*args, **kwargs)
+
+    def assert_in_org(self, org_id):
+        from django.core.exceptions import ValidationError
+
+        if org_id and self.service.organization_id != org_id:
+            raise ValidationError(_('queue does not belong to this organization'))
 
     class Meta:
         ordering = ['date_created']

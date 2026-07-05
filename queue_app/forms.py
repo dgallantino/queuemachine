@@ -14,6 +14,41 @@ from django.utils.translation import gettext_lazy as _
 from queue_app.services import QueueService, UserService
 
 
+class OrgScopedFormMixin:
+    """Restrict FK choices and pass org context into queue service calls."""
+
+    org_scoped_fields = ('service', 'customer', 'counter_booth')
+
+    def __init__(self, *args, org_id=None, **kwargs):
+        self.org_id = org_id
+        super().__init__(*args, **kwargs)
+        if org_id:
+            if 'service' in self.fields:
+                self.fields['service'].queryset = models.Service.objects.for_org(org_id)
+            if 'customer' in self.fields:
+                self.fields['customer'].queryset = models.User.objects.for_org(org_id)
+            if 'counter_booth' in self.fields:
+                self.fields['counter_booth'].queryset = models.CounterBooth.objects.for_org(org_id)
+
+    def clean_service(self):
+        service = self.cleaned_data.get('service')
+        if service and self.org_id and service.organization_id != self.org_id:
+            raise forms.ValidationError(_('service does not belong to this organization'))
+        return service
+
+    def clean_customer(self):
+        customer = self.cleaned_data.get('customer')
+        if customer and self.org_id and not customer.organization.filter(pk=self.org_id).exists():
+            raise forms.ValidationError(_('customer does not belong to this organization'))
+        return customer
+
+    def clean_counter_booth(self):
+        booth = self.cleaned_data.get('counter_booth')
+        if booth and self.org_id and booth.organization_id != self.org_id:
+            raise forms.ValidationError(_('counter booth does not belong to this organization'))
+        return booth
+
+
 class BaseMedia:
     css = {
         'all': (
@@ -138,7 +173,7 @@ class EmployeePasswordChangeForm(PasswordChangeForm):
         }
 
 
-class QueueModelBaseForms(forms.ModelForm):
+class QueueModelBaseForms(OrgScopedFormMixin, forms.ModelForm):
     booking_time = forms.TimeField(
         label=_("booking time"),
         initial=datetime.now(),
@@ -201,13 +236,23 @@ class QueueModelBaseForms(forms.ModelForm):
                 new_queue.is_printed = False
             new_queue.save()
             if should_print:
-                new_queue = QueueService.assign_ticket_number(new_queue)
+                new_queue = QueueService.assign_ticket_number(
+                    new_queue,
+                    organization_id=self.org_id,
+                )
         return new_queue
 
 
 class AddQueueModelForms(QueueModelBaseForms):
     class Meta(QueueModelBaseForms.Meta):
         fields = ('service', 'is_printed',)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.org_id:
+            self.fields['service'].queryset = (
+                self.fields['service'].queryset.is_hidden(False)
+            )
 
 
 class AddBookingQueuemodelForms(QueueModelBaseForms):
@@ -226,7 +271,7 @@ class FinishQueueModelForms(QueueModelBaseForms):
 
     def save(self, commit=True):
         if commit:
-            return QueueService.finish_queue(self.instance)
+            return QueueService.finish_queue(self.instance, organization_id=self.org_id)
         return super().save(commit=False)
 
 
@@ -237,7 +282,11 @@ class CallQueueModelForms(QueueModelBaseForms):
     def save(self, commit=True):
         counter_booth = self.cleaned_data.get('counter_booth')
         if commit:
-            return QueueService.call_queue(self.instance, counter_booth)
+            return QueueService.call_queue(
+                self.instance,
+                counter_booth,
+                organization_id=self.org_id,
+            )
         return super().save(commit=False)
 
 
@@ -248,5 +297,9 @@ class MoveQueueModelForms(QueueModelBaseForms):
     def save(self, commit=True):
         target_service = self.cleaned_data.get('service')
         if commit:
-            return QueueService.move_queue(self.instance, target_service)
+            return QueueService.move_queue(
+                self.instance,
+                target_service,
+                organization_id=self.org_id,
+            )
         return super().save(commit=False)

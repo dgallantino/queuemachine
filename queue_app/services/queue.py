@@ -2,6 +2,7 @@ from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from datetime import date
 
 from queue_app import models
 
@@ -9,7 +10,7 @@ from queue_app import models
 class QueueService:
     @staticmethod
     def _next_number(service, *, exclude_queue_id=None):
-        today = timezone.localdate()
+        today = date.today()
         qs = models.Queue.objects.filter(
             service=service,
             is_printed=True,
@@ -22,7 +23,7 @@ class QueueService:
 
     @staticmethod
     @transaction.atomic
-    def assign_ticket_number(queue):
+    def assign_ticket_number(queue, *, organization_id=None):
         """Assign queue number and print timestamp under a service lock."""
         if not queue.pk:
             queue.is_printed = False
@@ -34,6 +35,7 @@ class QueueService:
             .select_related('service')
             .get(pk=queue.pk)
         )
+        locked_queue.assert_in_org(organization_id)
         if locked_queue.is_printed and locked_queue.number is not None:
             return locked_queue
 
@@ -47,13 +49,14 @@ class QueueService:
 
     @staticmethod
     @transaction.atomic
-    def call_queue(queue, counter_booth):
+    def call_queue(queue, counter_booth, *, organization_id=None):
         locked_queue = (
             models.Queue.objects
             .select_for_update()
             .select_related('service', 'service__organization')
             .get(pk=queue.pk)
         )
+        locked_queue.assert_in_org(organization_id)
         if not locked_queue.is_printed:
             raise ValidationError(_('queue must be printed before it can be called'))
         if locked_queue.is_finished:
@@ -70,23 +73,32 @@ class QueueService:
 
     @staticmethod
     @transaction.atomic
-    def finish_queue(queue):
-        locked_queue = models.Queue.objects.select_for_update().get(pk=queue.pk)
-        locked_queue.is_finished = True
-        locked_queue.save()
-        return locked_queue
-
-    @staticmethod
-    @transaction.atomic
-    def move_queue(queue, target_service):
+    def finish_queue(queue, *, organization_id=None):
         locked_queue = (
             models.Queue.objects
             .select_for_update()
             .select_related('service')
             .get(pk=queue.pk)
         )
+        locked_queue.assert_in_org(organization_id)
+        locked_queue.is_finished = True
+        locked_queue.save()
+        return locked_queue
+
+    @staticmethod
+    @transaction.atomic
+    def move_queue(queue, target_service, *, organization_id=None):
+        locked_queue = (
+            models.Queue.objects
+            .select_for_update()
+            .select_related('service')
+            .get(pk=queue.pk)
+        )
+        locked_queue.assert_in_org(organization_id)
         target_service = models.Service.objects.select_for_update().get(pk=target_service.pk)
 
+        if organization_id and target_service.organization_id != organization_id:
+            raise ValidationError(_('target service does not belong to this organization'))
         if target_service.organization_id != locked_queue.service.organization_id:
             raise ValidationError(_('target service does not belong to this organization'))
         if locked_queue.service_id == target_service.id:
