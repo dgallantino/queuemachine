@@ -20,9 +20,9 @@ def test_on_progress_reports_start_and_done():
         map_path = Path(tmpdir) / 'sound_map.json'
         audio_root = Path(tmpdir) / 'audio'
         map_path.write_text(
-            '{"lang_code":"id","phrases":{"queue_number":{"text":"Nomor antrean",'
+            '{"languages":{"id":{"lang_code":"id","phrases":{"queue_number":{"text":"Nomor antrean",'
             '"file":"id/phrases_nomor_antrean.wav"}},"letters":{},"numbers":{},'
-            '"destinations":{}}'
+            '"destinations":{}}}}'
         )
 
         with patch('queue_app.sounds.generate.get_default_provider') as get_provider:

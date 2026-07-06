@@ -68,12 +68,11 @@ def _collect_numbers(lang_code: str) -> dict[str, dict[str, dict[str, str]]]:
     return result
 
 
-def build_sound_map(
-    lang_code: str | None = None,
+def _build_lang_map(
+    lang_code: str,
     organization_id: str | None = None,
 ) -> dict[str, Any]:
-    """Assemble the full sound map document for one language."""
-    lang_code = lang_code or settings.LANGUAGE_CODE
+    """Assemble the sound map section for one language."""
     return {
         'language': LANGUAGE_LABELS.get(lang_code, lang_code),
         'lang_code': lang_code,
@@ -82,6 +81,20 @@ def build_sound_map(
         'numbers': _collect_numbers(lang_code),
         'destinations': _collect_destinations(lang_code, organization_id),
     }
+
+
+def build_sound_map(
+    lang_codes: list[str] | None = None,
+    organization_id: str | None = None,
+) -> dict[str, Any]:
+    """Assemble the full multi-language sound map document."""
+    lang_codes = validate_lang_codes(lang_codes or [settings.LANGUAGE_CODE])
+    return build_multi_lang_document(
+        {
+            lang_code: _build_lang_map(lang_code, organization_id)
+            for lang_code in lang_codes
+        }
+    )
 
 
 def write_sound_map(
@@ -95,12 +108,7 @@ def write_sound_map(
     map_path = map_path or paths.default_map_path()
     audio_root = map_path.parent
     lang_codes = validate_lang_codes(lang_codes or [settings.LANGUAGE_CODE])
-
-    lang_maps = {
-        lang_code: build_sound_map(lang_code=lang_code, organization_id=organization_id)
-        for lang_code in lang_codes
-    }
-    document = build_multi_lang_document(lang_maps)
+    document = build_sound_map(lang_codes=lang_codes, organization_id=organization_id)
 
     for lang_code in lang_codes:
         paths.lang_audio_dir(audio_root, lang_code).mkdir(parents=True, exist_ok=True)

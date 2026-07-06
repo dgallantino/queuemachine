@@ -22,37 +22,18 @@ def validate_lang_codes(lang_codes: list[str]) -> list[str]:
     return lang_codes
 
 
-def is_multi_lang_document(document: dict[str, Any]) -> bool:
-    """Return True when the document uses the combined ``languages`` wrapper."""
-    return 'languages' in document
-
-
 def iter_lang_maps(document: dict[str, Any]) -> Iterable[tuple[str, dict[str, Any]]]:
-    """Yield ``(lang_code, lang_map)`` pairs from a sound map document.
-
-    Legacy single-language documents (flat top-level ``lang_code``) are yielded
-    as a single pair.
-    """
-    if is_multi_lang_document(document):
-        for lang_code, lang_map in document['languages'].items():
-            yield lang_code, lang_map
-        return
-
-    yield document['lang_code'], document
+    """Yield ``(lang_code, lang_map)`` pairs from a sound map document."""
+    for lang_code, lang_map in document['languages'].items():
+        yield lang_code, lang_map
 
 
 def get_lang_map(document: dict[str, Any], lang_code: str) -> dict[str, Any]:
     """Return the language section for ``lang_code``."""
-    if is_multi_lang_document(document):
-        try:
-            return document['languages'][lang_code]
-        except KeyError as exc:
-            raise KeyError(f'Language {lang_code!r} not found in sound map') from exc
-
-    if document.get('lang_code') == lang_code:
-        return document
-
-    raise KeyError(f'Language {lang_code!r} not found in sound map')
+    try:
+        return document['languages'][lang_code]
+    except KeyError as exc:
+        raise KeyError(f'Language {lang_code!r} not found in sound map') from exc
 
 
 def build_multi_lang_document(lang_maps: dict[str, dict[str, Any]]) -> dict[str, Any]:
